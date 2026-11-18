@@ -2,10 +2,18 @@
 __pycache__/
 *.pyc
 
+# Node.js
+node_modules/
+dist/
+
 # Virtual Environment
 .venv
 venv
 .env*
+!.env.example
+
+# Large Binaries
+data/raw/
 
 # IDE
 .vscode/
