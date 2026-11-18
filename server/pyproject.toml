@@ -1,7 +1,7 @@
 [project]
 name = "server"
 version = "0.1.0"
-description = "Add your description here"
+description = "Backend for translation-assumption-flags: detects where an LLM's Python-to-Java translation made semantic assumptions."
 readme = "README.md"
 authors = [
     { name = "Armaan Jhanji", email = "axj393@student.bham.ac.uk" }
@@ -10,8 +10,55 @@ requires-python = ">=3.13"
 dependencies = []
 
 [project.scripts]
-server = "server:main"
+detect = "server.detection.__main__:main"
+tests = "server.dev:run_tests"
+check = "server.dev:check"
+fix = "server.dev:fix"
 
 [build-system]
 requires = ["uv_build>=0.13.1,<0.14.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.5",
+]
+
+# Linting rules for ruff
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # pyflakes
+    "I",       # import sorting
+    "B",       # bugbear
+    "UP",      # pyupgrade
+    "N",       # pep8 naming
+    "SIM",     # simplify
+    "D",       # docstrings
+]
+ignore = [
+    "D100",  # module docstrings optional
+    "D104",  # package docstrings optional
+    "E501",  # line length is left to the formatter
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# NodeVisitor dispatches on node class names, e.g. visit_BinOp.
+"src/server/detection/visitor.py" = ["N802"]
+
+# Type checking rules for mypy
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
