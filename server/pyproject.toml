@@ -46,10 +46,9 @@ select = [
     "N",       # pep8 naming
     "SIM",     # simplify
     "D",       # docstrings
+    "RUF022",  # unsorted-dunder-all
 ]
 ignore = [
-    "D100",  # module docstrings optional
-    "D104",  # package docstrings optional
     "E501",  # line length is left to the formatter
 ]
 
