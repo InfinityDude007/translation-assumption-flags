@@ -1,5 +1,5 @@
 """Backend for flagging semantic assumptions in LLM Python-to-Java translations."""
 
-from .detection import Category, detect
+from .detection import RULES, Category, RuleId, detect
 
-__all__ = ["Category", "detect"]
+__all__ = ["RULES", "Category", "RuleId", "detect"]

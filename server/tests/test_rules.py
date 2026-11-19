@@ -1,6 +1,6 @@
 """Tests for the rule booklet."""
 
-from server.detection import RULES, RuleId, detect
+from server import RULES, RuleId, detect
 
 
 def test_every_rule_id_has_an_entry() -> None:
