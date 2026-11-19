@@ -4,8 +4,9 @@ import json
 import random
 from pathlib import Path
 
-from server.dataset.models import Label, Program
-from server.dataset.samples import (
+from server.dataset import (
+    Label,
+    Program,
     find_tests,
     parse_label_rows,
     select_buggy,
