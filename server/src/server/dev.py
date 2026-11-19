@@ -11,6 +11,7 @@ CHECKS: list[tuple[str, list[str]]] = [
     ("ruff format", ["ruff", "format", "--check", "."]),
     ("ruff lint", ["ruff", "check", "."]),
     ("mypy", ["mypy"]),
+    ("pyright", ["pyright"]),
     ("pytest", ["pytest", "-q"]),
 ]
 """Each check's display name and the module command that runs it."""
