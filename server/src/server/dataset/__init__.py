@@ -1,3 +1,1 @@
-from .download import main
-
-__all__ = ["main"]
+"""Fetching and preparing Pan et al.'s translation dataset."""
