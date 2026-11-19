@@ -2,7 +2,8 @@
 
 import ast
 
-from .models import Category, Site
+from .models import RuleId, Site
+from .rules import RULES
 from .utils import MAX_INT32, ast_int
 
 
@@ -18,16 +19,23 @@ class MismatchVisitor(ast.NodeVisitor):
         self.source = source
         self.sites: list[Site] = []
 
-    def _add(self, category: Category, node: ast.expr | ast.stmt, reason: str) -> None:
-        """Record a site for the given node."""
+    def _add(self, rule_id: RuleId, node: ast.expr | ast.stmt) -> None:
+        """Record a site for the node, taking its category and reason from the booklet.
+
+        Args:
+            rule_id: The rule that matched.
+            node: The node that matched it.
+        """
+        rule = RULES[rule_id]
         snippet = ast.get_source_segment(self.source, node) or type(node).__name__
         self.sites.append(
             Site(
-                category=category,
+                rule=rule.id,
+                category=rule.category,
                 line=node.lineno,
                 end_line=node.end_lineno or node.lineno,
                 snippet=snippet.splitlines()[0][:60],
-                reason=reason,
+                reason=rule.reason,
             )
         )
 
@@ -58,46 +66,20 @@ class MismatchVisitor(ast.NodeVisitor):
                 else:
                     value = lv * rv
                 if abs(value) > MAX_INT32:
-                    self._add(
-                        Category.NUMERIC,
-                        node,
-                        "Constant exceeds Java int range; needs long or BigInteger.",
-                    )
+                    self._add(RuleId.CONST_OVERFLOW, node)
             else:
-                self._add(
-                    Category.NUMERIC,
-                    node,
-                    "Python ints never overflow; a Java int/long result can wrap around.",
-                )
+                self._add(RuleId.INT_OVERFLOW, node)
         elif isinstance(op, ast.Div):
-            self._add(
-                Category.DIVISION,
-                node,
-                "Python / always gives a float; Java int / int truncates to an int.",
-            )
+            self._add(RuleId.TRUE_DIVISION, node)
         elif isinstance(op, ast.FloorDiv):
-            self._add(
-                Category.DIVISION,
-                node,
-                "Python // rounds toward negative infinity; Java / truncates toward zero "
-                "(differs for negatives; Math.floorDiv matches).",
-            )
+            self._add(RuleId.FLOOR_DIVISION, node)
         elif isinstance(op, ast.Mod):
             if isinstance(left, (ast.Constant, ast.JoinedStr)) and isinstance(
                 getattr(left, "value", None), str
             ):
-                self._add(
-                    Category.OUTPUT,
-                    node,
-                    "%-formatting rules differ from Java String.format.",
-                )
+                self._add(RuleId.PERCENT_FORMAT, node)
             else:
-                self._add(
-                    Category.DIVISION,
-                    node,
-                    "Python % takes the divisor's sign; Java % takes the dividend's "
-                    "(differs for negatives; Math.floorMod matches).",
-                )
+                self._add(RuleId.MODULO_SIGN, node)
 
     def visit_BinOp(self, node: ast.BinOp) -> None:
         """Check binary operations such as `a * b` or `a // b`."""
@@ -112,17 +94,9 @@ class MismatchVisitor(ast.NodeVisitor):
     def visit_Constant(self, node: ast.Constant) -> None:
         """Flag integer literals beyond Java int range and all float literals."""
         if type(node.value) is int and abs(node.value) > MAX_INT32:
-            self._add(
-                Category.NUMERIC,
-                node,
-                "Literal exceeds Java int range; needs long or BigInteger.",
-            )
+            self._add(RuleId.LITERAL_OVERFLOW, node)
         elif type(node.value) is float:
-            self._add(
-                Category.NUMERIC,
-                node,
-                "Python float is 64-bit; Java float is 32-bit, so use double.",
-            )
+            self._add(RuleId.FLOAT_PRECISION, node)
 
     def visit_Call(self, node: ast.Call) -> None:
         """Flag calls for input, number conversion, rounding, printing and formatting."""
@@ -138,130 +112,59 @@ class MismatchVisitor(ast.NodeVisitor):
         )
 
         if name == "input" or reads_stdin:
-            self._add(
-                Category.INPUT,
-                node,
-                "Python reads whole lines; Java Scanner token reads (nextInt/next) "
-                "can split or skip lines differently.",
-            )
+            self._add(RuleId.LINE_INPUT, node)
         elif attr == "split" and not node.args:
-            self._add(
-                Category.INPUT,
-                node,
-                "split() with no argument splits on any whitespace run and drops "
-                'empties; Java String.split(" ") keeps empty strings.',
-            )
+            self._add(RuleId.WHITESPACE_SPLIT, node)
         elif name == "int":
-            self._add(
-                Category.NUMERIC,
-                node,
-                "Python int() is unbounded; the translation must choose Java int, "
-                "long or BigInteger for this value.",
-            )
+            self._add(RuleId.INT_PARSE, node)
         elif name == "float":
-            self._add(
-                Category.NUMERIC,
-                node,
-                "Python float is 64-bit; Java float is 32-bit, so use double.",
-            )
+            self._add(RuleId.FLOAT_PRECISION, node)
         elif name == "sum":
-            self._add(
-                Category.NUMERIC,
-                node,
-                "A Python sum never overflows; a Java int accumulator can.",
-            )
+            self._add(RuleId.SUM_OVERFLOW, node)
         elif name == "pow" and len(node.args) == 3:
-            self._add(
-                Category.NUMERIC,
-                node,
-                "Three-argument pow is modular exponentiation; Java needs "
-                "BigInteger.modPow or a manual loop.",
-            )
+            self._add(RuleId.MODULAR_POW, node)
         elif name == "round":
-            self._add(
-                Category.API,
-                node,
-                "Python round() rounds half to even; Java Math.round() rounds half up.",
-            )
+            self._add(RuleId.ROUNDING, node)
         elif name == "print":
             self._check_print(node)
         elif attr == "format":
-            self._add(
-                Category.OUTPUT,
-                node,
-                "The str.format mini-language differs from Java String.format.",
-            )
+            self._add(RuleId.STR_FORMAT, node)
         self.generic_visit(node)
 
     def _check_print(self, node: ast.Call) -> None:
         """Flag print calls whose output Java would not reproduce by default."""
         kw = {k.arg for k in node.keywords}
         if kw & {"sep", "end"}:
-            self._add(
-                Category.OUTPUT,
-                node,
-                "Custom sep/end must be reproduced exactly in Java.",
-            )
+            self._add(RuleId.PRINT_SEP_END, node)
         elif any(isinstance(a, ast.Starred) for a in node.args):
-            self._add(
-                Category.OUTPUT,
-                node,
-                "print(*xs) prints space-separated items; Java prints arrays/lists "
-                "differently.",
-            )
+            self._add(RuleId.PRINT_STARRED, node)
         elif len(node.args) > 1:
-            self._add(
-                Category.OUTPUT,
-                node,
-                "print(a, b) inserts spaces between arguments; Java concatenation doesn't.",
-            )
+            self._add(RuleId.PRINT_ARGS, node)
         elif any(
             isinstance(a, (ast.Compare, ast.BoolOp))
             or (isinstance(a, ast.Constant) and type(a.value) is bool)
             for a in node.args
         ):
-            self._add(
-                Category.OUTPUT,
-                node,
-                "Python prints True/False; Java prints true/false.",
-            )
+            self._add(RuleId.PRINT_BOOL, node)
 
     def visit_JoinedStr(self, node: ast.JoinedStr) -> None:
         """Flag f-strings that use format specs, such as `f"{x:.2f}"`."""
         if any(
             isinstance(v, ast.FormattedValue) and v.format_spec for v in node.values
         ):
-            self._add(
-                Category.OUTPUT,
-                node,
-                "f-string format specs differ from Java String.format.",
-            )
+            self._add(RuleId.FSTRING_SPEC, node)
         self.generic_visit(node)
 
     def visit_Subscript(self, node: ast.Subscript) -> None:
         """Flag slicing and negative indexing."""
         s = node.slice
         if isinstance(s, ast.Slice):
-            self._add(
-                Category.API,
-                node,
-                "Python slicing copies and clamps out-of-range bounds; Java needs "
-                "subList/copyOfRange, which throw instead.",
-            )
+            self._add(RuleId.SLICING, node)
         elif isinstance(s, ast.UnaryOp) and isinstance(s.op, ast.USub):
-            self._add(
-                Category.API,
-                node,
-                "Negative indices count from the end in Python; Java throws.",
-            )
+            self._add(RuleId.NEGATIVE_INDEX, node)
         self.generic_visit(node)
 
     def visit_Try(self, node: ast.Try) -> None:
         """Flag try/except blocks, since exception types differ between the languages."""
-        self._add(
-            Category.ERRORS,
-            node,
-            "Python exception types (ValueError, IndexError, ...) map to different "
-            "Java exceptions; the translation must pick what to catch.",
-        )
+        self._add(RuleId.EXCEPTIONS, node)
         self.generic_visit(node)
