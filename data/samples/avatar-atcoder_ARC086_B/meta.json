@@ -1,0 +1,22 @@
+{
+  "id": "avatar-atcoder_ARC086_B",
+  "dataset": "avatar",
+  "program": "atcoder_ARC086_B",
+  "group": "buggy",
+  "pan_labels": [
+    {
+      "code": "B6",
+      "bug_type": "B6: Mismatch of behavior after replacing API call",
+      "impact": "Wrong Output"
+    }
+  ],
+  "tests": [
+    "atcoder_ARC086_B_0.in",
+    "atcoder_ARC086_B_0.out"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

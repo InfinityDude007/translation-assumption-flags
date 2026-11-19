@@ -1,0 +1,22 @@
+{
+  "id": "codenet-s875904659",
+  "dataset": "codenet",
+  "program": "s875904659",
+  "group": "buggy",
+  "pan_labels": [
+    {
+      "code": "C3",
+      "bug_type": "C3: Output formatting",
+      "impact": "Wrong Output"
+    }
+  ],
+  "tests": [
+    "s875904659_in.txt",
+    "s875904659_out.txt"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

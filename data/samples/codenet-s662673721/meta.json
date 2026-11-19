@@ -1,0 +1,16 @@
+{
+  "id": "codenet-s662673721",
+  "dataset": "codenet",
+  "program": "s662673721",
+  "group": "control",
+  "pan_labels": [],
+  "tests": [
+    "s662673721_in.txt",
+    "s662673721_out.txt"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

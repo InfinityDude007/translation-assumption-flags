@@ -1,0 +1,22 @@
+{
+  "id": "codenet-s259116349",
+  "dataset": "codenet",
+  "program": "s259116349",
+  "group": "buggy",
+  "pan_labels": [
+    {
+      "code": "C2",
+      "bug_type": "C2: Incorrect input parsing",
+      "impact": "Infinite Loop"
+    }
+  ],
+  "tests": [
+    "s259116349_in.txt",
+    "s259116349_out.txt"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

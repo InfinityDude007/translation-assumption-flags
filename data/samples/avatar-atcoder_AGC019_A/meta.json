@@ -1,0 +1,58 @@
+{
+  "id": "avatar-atcoder_AGC019_A",
+  "dataset": "avatar",
+  "program": "atcoder_AGC019_A",
+  "group": "buggy",
+  "pan_labels": [
+    {
+      "code": "C1",
+      "bug_type": "C1: Incorrect data type",
+      "impact": "Wrong Output"
+    }
+  ],
+  "tests": [
+    "atcoder_AGC019_A_0.in",
+    "atcoder_AGC019_A_0.out",
+    "atcoder_AGC019_A_1.in",
+    "atcoder_AGC019_A_1.out",
+    "atcoder_AGC019_A_10.in",
+    "atcoder_AGC019_A_10.out",
+    "atcoder_AGC019_A_11.in",
+    "atcoder_AGC019_A_11.out",
+    "atcoder_AGC019_A_12.in",
+    "atcoder_AGC019_A_12.out",
+    "atcoder_AGC019_A_13.in",
+    "atcoder_AGC019_A_13.out",
+    "atcoder_AGC019_A_14.in",
+    "atcoder_AGC019_A_14.out",
+    "atcoder_AGC019_A_15.in",
+    "atcoder_AGC019_A_15.out",
+    "atcoder_AGC019_A_16.in",
+    "atcoder_AGC019_A_16.out",
+    "atcoder_AGC019_A_17.in",
+    "atcoder_AGC019_A_17.out",
+    "atcoder_AGC019_A_18.in",
+    "atcoder_AGC019_A_18.out",
+    "atcoder_AGC019_A_2.in",
+    "atcoder_AGC019_A_2.out",
+    "atcoder_AGC019_A_3.in",
+    "atcoder_AGC019_A_3.out",
+    "atcoder_AGC019_A_4.in",
+    "atcoder_AGC019_A_4.out",
+    "atcoder_AGC019_A_5.in",
+    "atcoder_AGC019_A_5.out",
+    "atcoder_AGC019_A_6.in",
+    "atcoder_AGC019_A_6.out",
+    "atcoder_AGC019_A_7.in",
+    "atcoder_AGC019_A_7.out",
+    "atcoder_AGC019_A_8.in",
+    "atcoder_AGC019_A_8.out",
+    "atcoder_AGC019_A_9.in",
+    "atcoder_AGC019_A_9.out"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+The files in data/samples/ are taken from the artefact of:
+
+  Pan, R. et al. (2024). Lost in Translation: A Study of Bugs Introduced by
+  Large Language Models while Translating Code. ICSE 2024.
+  https://doi.org/10.5281/zenodo.10447705
+
+Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+Changes made by this project: programs were selected and copied into one
+folder each, renamed to source.py and translation.java. Pan et al.'s bug
+labels were converted to JSON in meta.json, the bug_lines and notes fields
+were added for hand-tagging.

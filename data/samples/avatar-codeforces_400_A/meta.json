@@ -1,0 +1,26 @@
+{
+  "id": "avatar-codeforces_400_A",
+  "dataset": "avatar",
+  "program": "codeforces_400_A",
+  "group": "buggy",
+  "pan_labels": [
+    {
+      "code": "B6",
+      "bug_type": "B6: Mismatch of behavior after replacing API call",
+      "impact": "Wrong Output"
+    }
+  ],
+  "tests": [
+    "codeforces_400_A_0.in",
+    "codeforces_400_A_0.out",
+    "codeforces_400_A_1.in",
+    "codeforces_400_A_1.out",
+    "codeforces_400_A_2.in",
+    "codeforces_400_A_2.out"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

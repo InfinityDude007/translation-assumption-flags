@@ -1,0 +1,16 @@
+{
+  "id": "codenet-s764169243",
+  "dataset": "codenet",
+  "program": "s764169243",
+  "group": "control",
+  "pan_labels": [],
+  "tests": [
+    "s764169243_in.txt",
+    "s764169243_out.txt"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}

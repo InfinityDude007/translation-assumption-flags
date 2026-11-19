@@ -1,0 +1,22 @@
+{
+  "id": "codenet-s813548165",
+  "dataset": "codenet",
+  "program": "s813548165",
+  "group": "buggy",
+  "pan_labels": [
+    {
+      "code": "B6",
+      "bug_type": "B6: Mismatch of behavior after replacing API call",
+      "impact": "Runtime Error"
+    }
+  ],
+  "tests": [
+    "s813548165_in.txt",
+    "s813548165_out.txt"
+  ],
+  "bug_lines": {
+    "source": [],
+    "translation": []
+  },
+  "notes": ""
+}
