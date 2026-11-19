@@ -1,6 +1,6 @@
 """Tests for the rule-based mismatch detector."""
 
-from server import Category, detect
+from server.detection import Category, detect
 
 
 def cats(source: str) -> set[tuple[Category, int]]:
