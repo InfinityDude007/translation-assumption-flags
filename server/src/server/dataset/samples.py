@@ -11,7 +11,8 @@ from pathlib import Path
 from openpyxl import load_workbook
 
 from ..settings import get_dataset_settings
-from .models import Dataset, Group, Label, Program, SampleMeta
+from .models import Label, Program, SampleMeta
+from .types import Dataset, Group
 
 SEMANTIC_CODES = ("A3", "A4", "B6", "C1", "C2", "C3")
 """Pan et al. bug codes for language-semantics bugs that the detector targets."""
