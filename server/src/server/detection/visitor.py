@@ -1,7 +1,9 @@
+"""AST visitor that records where Python and Java semantics differ."""
+
 import ast
 
-from ..models import Category, Site
-from ..utils import MAX_INT32, ast_int
+from .models import Category, Site
+from .utils import MAX_INT32, ast_int
 
 
 class MismatchVisitor(ast.NodeVisitor):
@@ -21,11 +23,11 @@ class MismatchVisitor(ast.NodeVisitor):
         snippet = ast.get_source_segment(self.source, node) or type(node).__name__
         self.sites.append(
             Site(
-                category,
-                node.lineno,
-                node.end_lineno or node.lineno,
-                snippet.splitlines()[0][:60],
-                reason,
+                category=category,
+                line=node.lineno,
+                end_line=node.end_lineno or node.lineno,
+                snippet=snippet.splitlines()[0][:60],
+                reason=reason,
             )
         )
 

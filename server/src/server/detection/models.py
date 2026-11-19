@@ -1,6 +1,8 @@
-from dataclasses import asdict, dataclass
+"""Data models for detected mismatch sites."""
+
 from enum import StrEnum
-from typing import Any
+
+from pydantic import BaseModel, ConfigDict
 
 
 class Category(StrEnum):
@@ -14,24 +16,21 @@ class Category(StrEnum):
     ERRORS = "errors"  # exception handling
 
 
-@dataclass(frozen=True)
-class Site:
+class Site(BaseModel):
     """A place in the source where the translation had to make an assumption.
 
     Attributes:
         category: The kind of mismatch.
         line: First source line of the construct (1-based).
         end_line: Last source line of the construct.
-        construct: Source snippet, truncated to 60 characters.
+        snippet: Source text of the construct, truncated to 60 characters.
         reason: How Python and Java differ at this construct.
     """
+
+    model_config = ConfigDict(frozen=True)
 
     category: Category
     line: int
     end_line: int
-    construct: str
+    snippet: str
     reason: str
-
-    def to_dict(self) -> dict[str, Any]:
-        """Return the site as a JSON-serialisable dict."""
-        return asdict(self)

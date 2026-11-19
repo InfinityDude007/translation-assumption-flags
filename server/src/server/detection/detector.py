@@ -2,7 +2,7 @@
 
 import ast
 
-from ..models import Category, Site
+from .models import Category, Site
 from .visitor import MismatchVisitor
 
 
