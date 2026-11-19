@@ -55,6 +55,10 @@ class Program(BaseModel):
         """Name of folder with sample, e.g. "avatar-atcoder_ABC149_B"."""
         return f"{self.dataset}-{self.name}"
 
+    def __hash__(self) -> int:
+        """Hash by field values so programs can be dict keys and set members."""
+        return hash((self.dataset, self.name))
+
 
 class BugLines(BaseModel):
     """Hand-tagged line numbers (1-based) of a bug in each file.
