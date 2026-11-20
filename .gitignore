@@ -27,3 +27,6 @@ data/raw/
 
 # Logs
 logs/
+
+# Sample Tagging Artefacts
+*.class
