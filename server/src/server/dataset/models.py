@@ -61,7 +61,7 @@ class Program(BaseModel):
 
 
 class BugLines(BaseModel):
-    """Hand-tagged line numbers (1-based) of a bug in each file.
+    """Hand-tagged line numbers (1-based) in each file.
 
     Attributes:
         source: Lines in the Python source.
@@ -82,7 +82,8 @@ class SampleMeta(BaseModel):
         group: "buggy" if Pan et al. labelled a semantic bug, else "control".
         pan_labels: Pan et al.'s labels for the translation.
         tests: Test file names in the raw data's TestCases folder.
-        bug_lines: Hand-tagged bug lines, empty until tagged.
+        bug_lines: Lines of the bug the tests expose, empty until tagged.
+        latent: Lines where the translation differs from the source but no test catches it.
         notes: Free-text tagging notes.
     """
 
@@ -93,4 +94,5 @@ class SampleMeta(BaseModel):
     pan_labels: list[Label]
     tests: list[str]
     bug_lines: BugLines = BugLines()
+    latent: BugLines = BugLines()
     notes: str = ""
