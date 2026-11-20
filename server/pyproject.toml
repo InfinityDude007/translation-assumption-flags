@@ -15,9 +15,12 @@ dependencies = [
 ]
 
 [project.scripts]
-detect = "server.detection.cli:main"
+# Setup scripts
 get-dataset = "server.dataset.download:main"
 make-samples = "server.dataset.samples:main"
+# Entrypoints to test core logic
+detect = "server.detection.cli:main"
+explain = "server.explanation.cli:main"
 # Dev scripts
 tests = "server.dev:run_tests"
 check = "server.dev:check"
