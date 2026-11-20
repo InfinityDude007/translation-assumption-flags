@@ -3,6 +3,7 @@
 import sys
 from pathlib import Path
 
+from ..claude import ClaudeError
 from .explainer import explain
 
 
@@ -18,7 +19,12 @@ def main() -> None:
         Path(arg).read_text(encoding="utf-8") for arg in sys.argv[1:]
     )
 
-    print(explain(source, translation).model_dump_json(indent=2))
+    try:
+        result = explain(source, translation)
+    except (ClaudeError, ValueError) as error:
+        sys.exit(f"explain: {error}")
+
+    print(result.model_dump_json(indent=2))
 
 
 if __name__ == "__main__":
