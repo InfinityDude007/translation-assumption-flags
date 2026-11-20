@@ -1,34 +1,38 @@
 {
-  "id": "avatar-atcoder_ABC178_A",
-  "dataset": "avatar",
-  "program": "atcoder_ABC178_A",
-  "group": "control",
-  "pan_labels": [],
-  "tests": [
-    "atcoder_ABC178_A_0.in",
-    "atcoder_ABC178_A_0.out",
-    "atcoder_ABC178_A_1.in",
-    "atcoder_ABC178_A_1.out",
-    "atcoder_ABC178_A_2.in",
-    "atcoder_ABC178_A_2.out",
-    "atcoder_ABC178_A_3.in",
-    "atcoder_ABC178_A_3.out",
-    "atcoder_ABC178_A_4.in",
-    "atcoder_ABC178_A_4.out",
-    "atcoder_ABC178_A_5.in",
-    "atcoder_ABC178_A_5.out",
-    "atcoder_ABC178_A_6.in",
-    "atcoder_ABC178_A_6.out",
-    "atcoder_ABC178_A_7.in",
-    "atcoder_ABC178_A_7.out",
-    "atcoder_ABC178_A_8.in",
-    "atcoder_ABC178_A_8.out",
-    "atcoder_ABC178_A_9.in",
-    "atcoder_ABC178_A_9.out"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "avatar-atcoder_ABC178_A",
+    "dataset": "avatar",
+    "program": "atcoder_ABC178_A",
+    "group": "control",
+    "pan_labels": [],
+    "tests": [
+        "atcoder_ABC178_A_0.in",
+        "atcoder_ABC178_A_0.out",
+        "atcoder_ABC178_A_1.in",
+        "atcoder_ABC178_A_1.out",
+        "atcoder_ABC178_A_2.in",
+        "atcoder_ABC178_A_2.out",
+        "atcoder_ABC178_A_3.in",
+        "atcoder_ABC178_A_3.out",
+        "atcoder_ABC178_A_4.in",
+        "atcoder_ABC178_A_4.out",
+        "atcoder_ABC178_A_5.in",
+        "atcoder_ABC178_A_5.out",
+        "atcoder_ABC178_A_6.in",
+        "atcoder_ABC178_A_6.out",
+        "atcoder_ABC178_A_7.in",
+        "atcoder_ABC178_A_7.out",
+        "atcoder_ABC178_A_8.in",
+        "atcoder_ABC178_A_8.out",
+        "atcoder_ABC178_A_9.in",
+        "atcoder_ABC178_A_9.out"
+    ],
+    "bug_lines": {
+        "source": [],
+        "translation": []
+    },
+    "latent": {
+        "source": [],
+        "translation": []
+    },
+    "notes": ""
 }

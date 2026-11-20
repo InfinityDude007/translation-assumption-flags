@@ -1,16 +1,17 @@
 {
-  "id": "codenet-s662673721",
-  "dataset": "codenet",
-  "program": "s662673721",
-  "group": "control",
-  "pan_labels": [],
-  "tests": [
-    "s662673721_in.txt",
-    "s662673721_out.txt"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "codenet-s662673721",
+    "dataset": "codenet",
+    "program": "s662673721",
+    "group": "control",
+    "pan_labels": [],
+    "tests": ["s662673721_in.txt", "s662673721_out.txt"],
+    "bug_lines": {
+        "source": [],
+        "translation": []
+    },
+    "latent": {
+        "source": [4, 11],
+        "translation": [7, 14]
+    },
+    "notes": "Control (ABC144 C, N up to 1e12). Latent: N read with nextInt into int (L7), so any N > 2^31-1 throws InputMismatchException; Python ints are unbounded. The only test has N=10. Fix: long n = nextLong() and long j (L14 must change to compile). Java != Python on 204/306 valid inputs to 0/306, test still passes."
 }

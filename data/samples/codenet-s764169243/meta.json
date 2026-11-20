@@ -1,16 +1,17 @@
 {
-  "id": "codenet-s764169243",
-  "dataset": "codenet",
-  "program": "s764169243",
-  "group": "control",
-  "pan_labels": [],
-  "tests": [
-    "s764169243_in.txt",
-    "s764169243_out.txt"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "codenet-s764169243",
+    "dataset": "codenet",
+    "program": "s764169243",
+    "group": "control",
+    "pan_labels": [],
+    "tests": ["s764169243_in.txt", "s764169243_out.txt"],
+    "bug_lines": {
+        "source": [],
+        "translation": []
+    },
+    "latent": {
+        "source": [50, 53, 57, 60],
+        "translation": [58, 75]
+    },
+    "notes": "Control (AGC005 B, N up to 2e5). Latent: int[] ans and int sum overflow from N=2999 (sorted input); N=200000 gives -2083774016 instead of 1333353333400000. The only test has N=3. Fix: long[] ans (L58), long sum (L75). Java != Python on 13/305 valid inputs to 0/305, test still passes."
 }

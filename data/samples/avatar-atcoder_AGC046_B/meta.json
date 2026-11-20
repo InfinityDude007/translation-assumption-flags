@@ -1,54 +1,58 @@
 {
-  "id": "avatar-atcoder_AGC046_B",
-  "dataset": "avatar",
-  "program": "atcoder_AGC046_B",
-  "group": "buggy",
-  "pan_labels": [
-    {
-      "code": "C1",
-      "bug_type": "C1: Incorrect data type",
-      "impact": "Wrong Output"
-    }
-  ],
-  "tests": [
-    "atcoder_AGC046_B_0.in",
-    "atcoder_AGC046_B_0.out",
-    "atcoder_AGC046_B_1.in",
-    "atcoder_AGC046_B_1.out",
-    "atcoder_AGC046_B_10.in",
-    "atcoder_AGC046_B_10.out",
-    "atcoder_AGC046_B_11.in",
-    "atcoder_AGC046_B_11.out",
-    "atcoder_AGC046_B_12.in",
-    "atcoder_AGC046_B_12.out",
-    "atcoder_AGC046_B_13.in",
-    "atcoder_AGC046_B_13.out",
-    "atcoder_AGC046_B_14.in",
-    "atcoder_AGC046_B_14.out",
-    "atcoder_AGC046_B_15.in",
-    "atcoder_AGC046_B_15.out",
-    "atcoder_AGC046_B_16.in",
-    "atcoder_AGC046_B_16.out",
-    "atcoder_AGC046_B_2.in",
-    "atcoder_AGC046_B_2.out",
-    "atcoder_AGC046_B_3.in",
-    "atcoder_AGC046_B_3.out",
-    "atcoder_AGC046_B_4.in",
-    "atcoder_AGC046_B_4.out",
-    "atcoder_AGC046_B_5.in",
-    "atcoder_AGC046_B_5.out",
-    "atcoder_AGC046_B_6.in",
-    "atcoder_AGC046_B_6.out",
-    "atcoder_AGC046_B_7.in",
-    "atcoder_AGC046_B_7.out",
-    "atcoder_AGC046_B_8.in",
-    "atcoder_AGC046_B_8.out",
-    "atcoder_AGC046_B_9.in",
-    "atcoder_AGC046_B_9.out"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "avatar-atcoder_AGC046_B",
+    "dataset": "avatar",
+    "program": "atcoder_AGC046_B",
+    "group": "buggy",
+    "pan_labels": [
+        {
+            "code": "C1",
+            "bug_type": "C1: Incorrect data type",
+            "impact": "Wrong Output"
+        }
+    ],
+    "tests": [
+        "atcoder_AGC046_B_0.in",
+        "atcoder_AGC046_B_0.out",
+        "atcoder_AGC046_B_1.in",
+        "atcoder_AGC046_B_1.out",
+        "atcoder_AGC046_B_10.in",
+        "atcoder_AGC046_B_10.out",
+        "atcoder_AGC046_B_11.in",
+        "atcoder_AGC046_B_11.out",
+        "atcoder_AGC046_B_12.in",
+        "atcoder_AGC046_B_12.out",
+        "atcoder_AGC046_B_13.in",
+        "atcoder_AGC046_B_13.out",
+        "atcoder_AGC046_B_14.in",
+        "atcoder_AGC046_B_14.out",
+        "atcoder_AGC046_B_15.in",
+        "atcoder_AGC046_B_15.out",
+        "atcoder_AGC046_B_16.in",
+        "atcoder_AGC046_B_16.out",
+        "atcoder_AGC046_B_2.in",
+        "atcoder_AGC046_B_2.out",
+        "atcoder_AGC046_B_3.in",
+        "atcoder_AGC046_B_3.out",
+        "atcoder_AGC046_B_4.in",
+        "atcoder_AGC046_B_4.out",
+        "atcoder_AGC046_B_5.in",
+        "atcoder_AGC046_B_5.out",
+        "atcoder_AGC046_B_6.in",
+        "atcoder_AGC046_B_6.out",
+        "atcoder_AGC046_B_7.in",
+        "atcoder_AGC046_B_7.out",
+        "atcoder_AGC046_B_8.in",
+        "atcoder_AGC046_B_8.out",
+        "atcoder_AGC046_B_9.in",
+        "atcoder_AGC046_B_9.out"
+    ],
+    "bug_lines": {
+        "source": [7],
+        "translation": [19]
+    },
+    "latent": {
+        "source": [],
+        "translation": []
+    },
+    "notes": "Java % keeps the dividend's sign; Python's does not. Verified category A4 (operator), not Pan's C1: long[][] (Pan-implied fix) gives 12/17, normalising % gives 17/17."
 }

@@ -1,22 +1,23 @@
 {
-  "id": "codenet-s259116349",
-  "dataset": "codenet",
-  "program": "s259116349",
-  "group": "buggy",
-  "pan_labels": [
-    {
-      "code": "C2",
-      "bug_type": "C2: Incorrect input parsing",
-      "impact": "Infinite Loop"
-    }
-  ],
-  "tests": [
-    "s259116349_in.txt",
-    "s259116349_out.txt"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "codenet-s259116349",
+    "dataset": "codenet",
+    "program": "s259116349",
+    "group": "buggy",
+    "pan_labels": [
+        {
+            "code": "C2",
+            "bug_type": "C2: Incorrect input parsing",
+            "impact": "Infinite Loop"
+        }
+    ],
+    "tests": ["s259116349_in.txt", "s259116349_out.txt"],
+    "bug_lines": {
+        "source": [12, 13],
+        "translation": [15, 16]
+    },
+    "latent": {
+        "source": [],
+        "translation": []
+    },
+    "notes": "Java i /= p mutates the for-loop counter (Python only rebinds until the next iteration), so the loop never ends. Not Pan's C2: the program reads a single int. No exact Pan code (loop-variable semantics). Tests 0/1 to 1/1."
 }

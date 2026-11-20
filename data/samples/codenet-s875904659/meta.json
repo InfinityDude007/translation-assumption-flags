@@ -1,22 +1,23 @@
 {
-  "id": "codenet-s875904659",
-  "dataset": "codenet",
-  "program": "s875904659",
-  "group": "buggy",
-  "pan_labels": [
-    {
-      "code": "C3",
-      "bug_type": "C3: Output formatting",
-      "impact": "Wrong Output"
-    }
-  ],
-  "tests": [
-    "s875904659_in.txt",
-    "s875904659_out.txt"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "codenet-s875904659",
+    "dataset": "codenet",
+    "program": "s875904659",
+    "group": "buggy",
+    "pan_labels": [
+        {
+            "code": "C3",
+            "bug_type": "C3: Output formatting",
+            "impact": "Wrong Output"
+        }
+    ],
+    "tests": ["s875904659_in.txt", "s875904659_out.txt"],
+    "bug_lines": {
+        "source": [8, 20],
+        "translation": [17, 35]
+    },
+    "latent": {
+        "source": [29],
+        "translation": [53]
+    },
+    "notes": "' '.join replaced by Arrays.toString (brackets and commas), C3. Tests 0/1 to 1/1. Latent: Arrays.equals on Card objects without equals() (L53) always says 'Not stable'; Java != Python on 242/300 random hands, 0/300 when comparing by string."
 }

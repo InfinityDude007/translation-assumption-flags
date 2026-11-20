@@ -1,22 +1,23 @@
 {
-  "id": "codenet-s826716211",
-  "dataset": "codenet",
-  "program": "s826716211",
-  "group": "buggy",
-  "pan_labels": [
-    {
-      "code": "C2",
-      "bug_type": "C2: Incorrect input parsing",
-      "impact": "Runtime Error"
-    }
-  ],
-  "tests": [
-    "s826716211_in.txt",
-    "s826716211_out.txt"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "codenet-s826716211",
+    "dataset": "codenet",
+    "program": "s826716211",
+    "group": "buggy",
+    "pan_labels": [
+        {
+            "code": "C2",
+            "bug_type": "C2: Incorrect input parsing",
+            "impact": "Runtime Error"
+        }
+    ],
+    "tests": ["s826716211_in.txt", "s826716211_out.txt"],
+    "bug_lines": {
+        "source": [3, 4],
+        "translation": [47]
+    },
+    "latent": {
+        "source": [],
+        "translation": []
+    },
+    "notes": "input() replaced by System.console().readLine(); console is null when stdin is piped, as judges do. C2 (B6 also defensible). Tests 0/1 to 1/1."
 }

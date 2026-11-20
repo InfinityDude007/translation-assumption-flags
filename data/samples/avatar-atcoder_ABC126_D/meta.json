@@ -1,22 +1,23 @@
 {
-  "id": "avatar-atcoder_ABC126_D",
-  "dataset": "avatar",
-  "program": "atcoder_ABC126_D",
-  "group": "buggy",
-  "pan_labels": [
-    {
-      "code": "C2",
-      "bug_type": "C2: Incorrect input parsing",
-      "impact": "Wrong Output"
-    }
-  ],
-  "tests": [
-    "atcoder_ABC126_D_0.in",
-    "atcoder_ABC126_D_0.out"
-  ],
-  "bug_lines": {
-    "source": [],
-    "translation": []
-  },
-  "notes": ""
+    "id": "avatar-atcoder_ABC126_D",
+    "dataset": "avatar",
+    "program": "atcoder_ABC126_D",
+    "group": "buggy",
+    "pan_labels": [
+        {
+            "code": "C2",
+            "bug_type": "C2: Incorrect input parsing",
+            "impact": "Wrong Output"
+        }
+    ],
+    "tests": ["atcoder_ABC126_D_0.in", "atcoder_ABC126_D_0.out"],
+    "bug_lines": {
+        "source": [],
+        "translation": []
+    },
+    "latent": {
+        "source": [],
+        "translation": []
+    },
+    "notes": "No translation bug. Java output equals Python on the test and on 300 random inputs, and is a valid colouring (rule checker). The test expects another valid answer (exact-match oracle). Both versions crash on a 100k-deep chain (a weakness in the source, kept by the translation). Excluded from scoring."
 }
