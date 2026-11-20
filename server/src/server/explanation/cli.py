@@ -3,7 +3,7 @@
 import sys
 from pathlib import Path
 
-from ..claude import ClaudeError
+from ..gemini import GeminiError
 from .explainer import explain
 
 
@@ -21,7 +21,7 @@ def main() -> None:
 
     try:
         result = explain(source, translation)
-    except (ClaudeError, ValueError) as error:
+    except (GeminiError, ValueError) as error:
         sys.exit(f"explain: {error}")
 
     print(result.model_dump_json(indent=2))

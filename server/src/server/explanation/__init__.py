@@ -1,4 +1,4 @@
-"""Claude explanations of detector sites, checked before they become flags."""
+"""Gemini explanations of detector sites, checked before they become flags."""
 
 from .explainer import explain
 

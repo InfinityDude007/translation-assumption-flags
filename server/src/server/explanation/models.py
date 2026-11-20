@@ -1,4 +1,4 @@
-"""Schemas for Claude's answer and for the checked flags built from it."""
+"""Schemas for Gemini's answer and for the checked flags built from it."""
 
 from typing import Literal
 
@@ -11,7 +11,7 @@ Verdict = Literal["mismatch", "handled", "unclear"]
 
 
 class SiteAnswer(BaseModel):
-    """Claude's answer for one site: a proposal, checked before it becomes a flag.
+    """Gemini's answer for one site: a proposal, checked before it becomes a flag.
 
     Attributes:
         site_id: The id the prompt gave the site.
@@ -19,7 +19,7 @@ class SiteAnswer(BaseModel):
         translation_lines: Java lines that implement the site; empty if not found.
         assumption: What the translation assumed at this site.
         suggestion: The Java change that would match the Python, for a mismatch.
-        reasoning: Claude's working, kept for logs and not shown to reviewers.
+        reasoning: Gemini's working, kept for logs and not shown to reviewers.
     """
 
     site_id: int = Field(description="The id of the site, exactly as given.")
@@ -45,8 +45,8 @@ class SiteAnswer(BaseModel):
     )
 
 
-class ClaudeAnswer(BaseModel):
-    """Claude's full reply: one answer per site.
+class GeminiAnswer(BaseModel):
+    """Gemini's full reply: one answer per site.
 
     Attributes:
         answers: The answers, in any order.
@@ -56,10 +56,10 @@ class ClaudeAnswer(BaseModel):
 
 
 class Flag(BaseModel):
-    """A checked flag: the detector's site with Claude's explanation attached.
+    """A checked flag: the detector's site with Gemini's explanation attached.
 
-    The site, its category and its reason come from the rule booklet; the
-    other fields are Claude's claims, kept only after the server-side checks.
+    The site, its category and its reason come from the rule booklet. The
+    other fields are Gemini's claims, kept only after the server-side checks.
 
     Attributes:
         site: The mismatch site found by the detector.
@@ -67,7 +67,7 @@ class Flag(BaseModel):
         translation_lines: Java lines that implement the site, all in range.
         assumption: What the translation assumed at this site.
         suggestion: The Java change that would match the Python, mismatch only.
-        reasoning: Claude's working, kept for logs and not shown to reviewers.
+        reasoning: Gemini's working, kept for logs and not shown to reviewers.
     """
 
     model_config = ConfigDict(frozen=True)

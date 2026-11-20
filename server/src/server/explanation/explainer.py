@@ -1,14 +1,14 @@
-"""Explain detector sites with Claude, then check its answer before keeping any flag."""
+"""Explain detector sites with Gemini, then check its answer before keeping any flag."""
 
-from ..claude import ClaudeClient, get_client
 from ..detection import detect
 from ..detection.models import Site
-from .models import ClaudeAnswer, DroppedSite, Explanation, Flag, SiteAnswer
+from ..gemini import GeminiClient, get_client
+from .models import DroppedSite, Explanation, Flag, GeminiAnswer, SiteAnswer
 from .prompts import PROMPT_VERSION, SYSTEM_PROMPT, build_prompt
 
 
 def explain(
-    source: str, translation: str, client: ClaudeClient | None = None
+    source: str, translation: str, client: GeminiClient | None = None
 ) -> Explanation:
     """Find the mismatch sites in a program and explain each against its translation.
 
@@ -17,14 +17,14 @@ def explain(
     Args:
         source: The Python program.
         translation: Its Java translation.
-        client: Claude client to use; the shared client if omitted.
+        client: Gemini client to use, the shared client if omitted.
 
     Returns:
         Checked flags, and the sites that produced none.
 
     Raises:
         ValueError: If the source is not valid Python, or no credential is set.
-        ClaudeError: If the Claude call fails.
+        GeminiError: If the Gemini call fails.
     """
     sites = detect(source)
     if not sites:
@@ -32,21 +32,21 @@ def explain(
 
     client = client or get_client()
     answer = client.complete(
-        SYSTEM_PROMPT, build_prompt(source, translation, sites), ClaudeAnswer
+        SYSTEM_PROMPT, build_prompt(source, translation, sites), GeminiAnswer
     )
 
     return check(answer, sites, len(translation.splitlines()))
 
 
-def check(answer: ClaudeAnswer, sites: list[Site], java_lines: int) -> Explanation:
-    """Keep only what the program can verify in Claude's answer.
+def check(answer: GeminiAnswer, sites: list[Site], java_lines: int) -> Explanation:
+    """Keep only what the program can verify in Gemini's answer.
 
     Answers for unknown or repeated site ids are ignored, line numbers outside
     the Java file are removed, and a suggestion is kept only for a mismatch.
     A site with no answer, or no valid Java line left, is dropped with a reason.
 
     Args:
-        answer: Claude's structured reply.
+        answer: Gemini's structured reply.
         sites: The sites the prompt listed, indexed by site id.
         java_lines: Number of lines in the Java translation.
 

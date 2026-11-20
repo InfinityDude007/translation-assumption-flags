@@ -1,16 +1,17 @@
-"""Tests for the explainer's prompt and its checks on Claude's answer."""
+"""Tests for the explainer's prompt and its checks on Gemini's answer."""
 
 import json
 
-import anthropic
 import httpx2
+from google import genai
+from google.genai import types
 from pydantic import BaseModel
-from server.explanation import explain
-from server.explanation.models import ClaudeAnswer, Explanation, SiteAnswer
-from server.explanation.prompts import PROMPT_VERSION, SYSTEM_PROMPT, build_prompt
 
-from server.claude import ClaudeClient
 from server.detection import detect
+from server.explanation import explain
+from server.explanation.models import Explanation, GeminiAnswer, SiteAnswer
+from server.explanation.prompts import PROMPT_VERSION, SYSTEM_PROMPT, build_prompt
+from server.gemini import GeminiClient
 
 SOURCE = "n = int(input())\nprint(n // 2)\n"
 """Three sites: line_input (id 0) and int_parse (id 1) on line 1, floor_division (id 2) on line 2."""
@@ -28,10 +29,10 @@ TRANSLATION = "\n".join(
 )
 
 
-class FakeClient(ClaudeClient):
-    """A Claude client that returns a fixed answer and records each call."""
+class FakeClient(GeminiClient):
+    """A Gemini client that returns a fixed answer and records each call."""
 
-    def __init__(self, answer: ClaudeAnswer) -> None:
+    def __init__(self, answer: GeminiAnswer) -> None:
         """Store the answer to return; no SDK client is created."""
         self.answer = answer
         self.calls: list[tuple[str, str]] = []
@@ -58,13 +59,13 @@ def answer(site_id: int, lines: list[int], verdict: str = "mismatch") -> SiteAns
 
 def run(*answers: SiteAnswer) -> tuple[Explanation, FakeClient]:
     """Explain the sample program with a fake client giving these answers."""
-    client = FakeClient(ClaudeAnswer(answers=list(answers)))
+    client = FakeClient(GeminiAnswer(answers=list(answers)))
     return explain(SOURCE, TRANSLATION, client), client
 
 
 def test_no_sites_means_no_call() -> None:
-    """A program without mismatch sites is not sent to Claude."""
-    client = FakeClient(ClaudeAnswer(answers=[]))
+    """A program without mismatch sites is not sent to Gemini."""
+    client = FakeClient(GeminiAnswer(answers=[]))
     result = explain("x = 5\n", TRANSLATION, client)
     assert result.flags == [] and result.dropped == [] and client.calls == []
 
@@ -118,7 +119,7 @@ def test_suggestion_is_kept_only_for_a_mismatch() -> None:
 
 
 def test_schema_is_accepted_by_the_sdk() -> None:
-    """The Anthropic SDK turns the answer schema into a structured-output request."""
+    """The Google SDK turns the answer schema into a structured-output request."""
     seen: list[httpx2.Request] = []
 
     def handle(request: httpx2.Request) -> httpx2.Response:
@@ -127,27 +128,29 @@ def test_schema_is_accepted_by_the_sdk() -> None:
         return httpx2.Response(
             200,
             json={
-                "id": "msg_1",
-                "type": "message",
-                "role": "assistant",
-                "model": "claude-opus-5-5",
-                "content": [{"type": "text", "text": '{"answers": []}'}],
-                "stop_reason": "end_turn",
-                "stop_sequence": None,
-                "usage": {"input_tokens": 1, "output_tokens": 1},
+                "candidates": [
+                    {
+                        "content": {
+                            "role": "model",
+                            "parts": [{"text": '{"answers": []}'}],
+                        },
+                        "finishReason": "STOP",
+                    }
+                ]
             },
         )
 
-    client = ClaudeClient("claude-opus-5-5", 100, api_key="key")
-    client._sdk = anthropic.Anthropic(
+    client = GeminiClient("gemini-test", 100, "key")
+    client._sdk = genai.Client(
         api_key="key",
-        http_client=httpx2.Client(transport=httpx2.MockTransport(handle)),
-        max_retries=0,
+        http_options=types.HttpOptions(
+            httpx_client=httpx2.Client(transport=httpx2.MockTransport(handle))
+        ),
     )
     sites = detect(SOURCE)
     result = client.complete(
-        SYSTEM_PROMPT, build_prompt(SOURCE, TRANSLATION, sites), ClaudeAnswer
+        SYSTEM_PROMPT, build_prompt(SOURCE, TRANSLATION, sites), GeminiAnswer
     )
-    assert result == ClaudeAnswer(answers=[])
-    body = json.loads(seen[0].content)
-    assert "answers" in json.dumps(body["output_config"]["format"]["schema"])
+    assert result == GeminiAnswer(answers=[])
+    config = json.dumps(json.loads(seen[0].content)["generationConfig"])
+    assert "translation_lines" in config and "mismatch" in config
