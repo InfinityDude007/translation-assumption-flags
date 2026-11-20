@@ -22,7 +22,7 @@ class GeminiSettings(EnvSettings):
     model_config = SettingsConfigDict(env_prefix="GEMINI_")
 
     model: str = "gemini-4-hydrogen"
-    max_output_tokens: int = 16000
+    max_output_tokens: int = 24000
     api_key: SecretStr | None = None
 
     def key(self) -> str:
