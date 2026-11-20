@@ -100,9 +100,13 @@ class Explanation(BaseModel):
     Attributes:
         flags: Checked flags, in source line order.
         dropped: Sites that produced no flag, with the reason.
+        model: Gemini model that answered, or None if no call was made.
         prompt_version: Version of the system prompt that produced the flags.
+        answer: Gemini's reply before the checks, or None if no call was made.
     """
 
     flags: list[Flag]
     dropped: list[DroppedSite]
+    model: str | None = None
     prompt_version: str
+    answer: GeminiAnswer | None = None

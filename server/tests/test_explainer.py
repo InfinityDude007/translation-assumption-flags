@@ -35,6 +35,7 @@ class FakeClient(GeminiClient):
     def __init__(self, answer: GeminiAnswer) -> None:
         """Store the answer to return; no SDK client is created."""
         self.answer = answer
+        self._model = "gemini-test"
         self.calls: list[tuple[str, str]] = []
 
     def complete[T: BaseModel](self, system: str, prompt: str, schema: type[T]) -> T:
@@ -68,6 +69,7 @@ def test_no_sites_means_no_call() -> None:
     client = FakeClient(GeminiAnswer(answers=[]))
     result = explain("x = 5\n", TRANSLATION, client)
     assert result.flags == [] and result.dropped == [] and client.calls == []
+    assert result.model is None and result.answer is None
 
 
 def test_prompt_numbers_both_files_and_lists_every_site() -> None:
@@ -87,7 +89,7 @@ def test_answers_become_flags_with_the_detector_facts() -> None:
     result, _ = run(answer(0, [4]), answer(1, [4]), answer(2, [5]))
     assert [flag.translation_lines for flag in result.flags] == [(4,), (4,), (5,)]
     assert result.flags[2].site == detect(SOURCE)[2]
-    assert result.prompt_version == PROMPT_VERSION
+    assert (result.prompt_version, result.model) == (PROMPT_VERSION, "gemini_test")
 
 
 def test_out_of_range_lines_are_removed_and_sorted() -> None:

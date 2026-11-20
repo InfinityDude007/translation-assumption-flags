@@ -35,10 +35,12 @@ def explain(
         SYSTEM_PROMPT, build_prompt(source, translation, sites), GeminiAnswer
     )
 
-    return check(answer, sites, len(translation.splitlines()))
+    return check(answer, client.model, sites, len(translation.splitlines()))
 
 
-def check(answer: GeminiAnswer, sites: list[Site], java_lines: int) -> Explanation:
+def check(
+    answer: GeminiAnswer, model: str, sites: list[Site], java_lines: int
+) -> Explanation:
     """Keep only what the program can verify in Gemini's answer.
 
     Answers for unknown or repeated site ids are ignored, line numbers outside
@@ -47,11 +49,12 @@ def check(answer: GeminiAnswer, sites: list[Site], java_lines: int) -> Explanati
 
     Args:
         answer: Gemini's structured reply.
+        model: Gemini model that gave the answer, recorded with the flags.
         sites: The sites the prompt listed, indexed by site id.
         java_lines: Number of lines in the Java translation.
 
     Returns:
-        Flags in source line order, and the dropped sites.
+        Flags in source line order, the dropped sites, the model, and the unchecked answer.
     """
     by_id: dict[int, SiteAnswer] = {}
     for candidate in answer.answers:
@@ -88,4 +91,10 @@ def check(answer: GeminiAnswer, sites: list[Site], java_lines: int) -> Explanati
             )
         )
 
-    return Explanation(flags=flags, dropped=dropped, prompt_version=PROMPT_VERSION)
+    return Explanation(
+        flags=flags,
+        dropped=dropped,
+        model=model,
+        prompt_version=PROMPT_VERSION,
+        answer=answer,
+    )

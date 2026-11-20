@@ -28,6 +28,11 @@ class GeminiClient:
         self._model = model
         self._max_output_tokens = max_output_tokens
 
+    @property
+    def model(self) -> str:
+        """The Gemini model ID this client calls."""
+        return self._model
+
     def complete[T: BaseModel](self, system: str, prompt: str, schema: type[T]) -> T:
         """Send one request and return the response parsed into `schema`.
 
