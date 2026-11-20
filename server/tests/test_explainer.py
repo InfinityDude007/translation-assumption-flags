@@ -89,7 +89,7 @@ def test_answers_become_flags_with_the_detector_facts() -> None:
     result, _ = run(answer(0, [4]), answer(1, [4]), answer(2, [5]))
     assert [flag.translation_lines for flag in result.flags] == [(4,), (4,), (5,)]
     assert result.flags[2].site == detect(SOURCE)[2]
-    assert (result.prompt_version, result.model) == (PROMPT_VERSION, "gemini_test")
+    assert (result.prompt_version, result.model) == (PROMPT_VERSION, "gemini-test")
 
 
 def test_out_of_range_lines_are_removed_and_sorted() -> None:
