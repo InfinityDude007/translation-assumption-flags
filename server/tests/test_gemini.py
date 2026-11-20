@@ -11,10 +11,11 @@ from google.genai import types
 from pydantic import BaseModel
 from pydantic_settings import SettingsConfigDict
 
-from server.gemini import GeminiClient, GeminiError, get_client
+from server.gemini import RETRY, GeminiClient, GeminiError, get_client
 from server.settings import GeminiSettings
 
 ANSWER = {"category": "division", "line": 3}
+UNAVAILABLE = {"error": {"code": 503, "message": "x", "status": "UNAVAILABLE"}}
 
 
 class Answer(BaseModel):
@@ -58,32 +59,42 @@ def reply(finish_reason: str = "STOP") -> dict[str, Any]:
 
 
 def fake_client(
-    status: int, body: dict[str, Any], seen: list[httpx2.Request] | None = None
+    status: int,
+    body: dict[str, Any],
+    seen: list[httpx2.Request] | None = None,
+    failures: int = 0,
 ) -> GeminiClient:
-    """Build a Gemini client whose requests get one fixed JSON response.
+    """Build a Gemini client whose requests get fixed JSON responses.
+
+    The client retries like the real one, but without waiting.
 
     Args:
         status: HTTP status to answer with.
         body: JSON body to answer with.
         seen: If given, every request sent is appended to it.
+        failures: How many requests get a 503 before the fixed response.
 
     Returns:
         A client that never touches the network.
     """
+    sent: list[httpx2.Request] = [] if seen is None else seen
 
     def handle(request: httpx2.Request) -> httpx2.Response:
-        """Record the request and reply with the fixed response."""
-        if seen is not None:
-            seen.append(request)
+        """Record the request; reply 503 for the first failures, then as fixed."""
+        sent.append(request)
+        if len(sent) <= failures:
+            return httpx2.Response(503, json=UNAVAILABLE)
         return httpx2.Response(status, json=body)
 
     client = GeminiClient("gemini-test", 100, "key")
     client._sdk = genai.Client(
         api_key="key",
         http_options=types.HttpOptions(
-            httpx_client=httpx2.Client(transport=httpx2.MockTransport(handle))
+            retry_options=RETRY.model_copy(update={"initial_delay": 0, "max_delay": 0}),
+            httpx_client=httpx2.Client(transport=httpx2.MockTransport(handle)),
         ),
     )
+
     return client
 
 
@@ -142,3 +153,28 @@ def test_early_stop_is_an_error(finish_reason: str) -> None:
     client = fake_client(200, reply(finish_reason))
     with pytest.raises(GeminiError, match=finish_reason):
         client.complete("sys", "prompt", Answer)
+
+
+def test_unavailable_model_is_retried() -> None:
+    """A 503 is resent, and a later success is returned as normal."""
+    seen: list[httpx2.Request] = []
+    client = fake_client(200, reply(), seen, failures=2)
+    assert client.complete("sys", "prompt", Answer) == Answer(**ANSWER)
+    assert len(seen) == 3
+
+
+def test_rate_limits_are_not_retried() -> None:
+    """A 429 fails at once, so the run stops instead of waiting."""
+    seen: list[httpx2.Request] = []
+    error = {"error": {"code": 429, "message": "x", "status": "RESOURCE_EXHAUSTED"}}
+    with pytest.raises(GeminiError, match="429"):
+        fake_client(429, error, seen).complete("sys", "prompt", Answer)
+    assert len(seen) == 1
+
+
+def test_retries_give_up_with_a_gemini_error() -> None:
+    """A model that stays unavailable fails after the retry limit."""
+    seen: list[httpx2.Request] = []
+    with pytest.raises(GeminiError, match="503"):
+        fake_client(503, UNAVAILABLE, seen).complete("sys", "prompt", Answer)
+    assert len(seen) == 11

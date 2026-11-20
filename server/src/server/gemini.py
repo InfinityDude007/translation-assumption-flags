@@ -8,6 +8,19 @@ from pydantic import BaseModel
 
 from .settings import get_gemini_settings
 
+RETRY = types.HttpRetryOptions(
+    attempts=11,
+    initial_delay=30,
+    max_delay=30,
+    exp_base=1,
+    jitter=0,
+    http_status_codes=[503],
+)
+"""Resend up to 10 times (+1st try), 30 s apart, while the model is unavailable (503).
+
+Rate limits (429) are not retried, so a run stops and can be resumed later.
+"""
+
 
 class GeminiError(RuntimeError):
     """A Gemini call failed or returned no usable structured output."""
@@ -24,7 +37,9 @@ class GeminiClient:
 
     def __init__(self, model: str, max_output_tokens: int, api_key: str) -> None:
         """Create the SDK client."""
-        self._sdk = genai.Client(api_key=api_key)
+        self._sdk = genai.Client(
+            api_key=api_key, http_options=types.HttpOptions(retry_options=RETRY)
+        )
         self._model = model
         self._max_output_tokens = max_output_tokens
 
