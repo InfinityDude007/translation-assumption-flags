@@ -34,7 +34,7 @@ def _run(command: list[str]) -> int:
 def run_tests() -> None:
     """Run the test suite, passing through any extra pytest arguments."""
     print(flush=True)
-    code = _run(["pytest", *sys.argv[1:]])
+    code = _run(["pytest", "-v", *sys.argv[1:]])
     print()
     sys.exit(code)
 
