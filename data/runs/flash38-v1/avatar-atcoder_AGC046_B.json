@@ -1,0 +1,130 @@
+{
+  "sample_id": "avatar-atcoder_AGC046_B",
+  "finished_at": "2026-11-21T20:47:55.716178Z",
+  "seconds": 105.16,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "assumption": "Assumes `Scanner.nextInt()` on lines 7–10 adequately parses whitespace-separated integers matching `map(int, input().split())`.",
+        "suggestion": null,
+        "reasoning": "Scanner.nextInt() automatically skips arbitrary whitespace between tokens, matching the behavior of input().split()."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "[ 0 ] * ( D + 1 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "Assumes `D + 1` and `C + 1` do not exceed `Integer.MAX_VALUE` when allocating the 2D array on line 14.",
+        "suggestion": null,
+        "reasoning": "Array dimension allocation in Java uses 32-bit signed integers, which is sufficient for standard problem bounds."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "( d [ i ] [ j - 1 ] * i + d [ i - 1 ] [ j ] * j - d [ i - 1 ",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "Assumes the expression before `% m` on line 19 is never negative, or that Java's `%` behaves like Python's `%` for negative dividends.",
+        "suggestion": "d[i][j] += (int)Math.floorMod((long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1), m);",
+        "reasoning": "Because d[i-1][j-1] is reduced modulo m at previous iterations, the subtracted term can exceed the preceding terms, resulting in a negative dividend. Java's `%` retains the negative sign, whereas Python's `%` returns a positive result modulo m."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "d [ i ] [ j - 1 ] * i",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "Assumes casting operands to `long` on line 19 prevents 32-bit integer overflow during multiplication.",
+        "suggestion": null,
+        "reasoning": "The code explicitly casts intermediate values to `long`, which is large enough (~9e18) to avoid overflow for products up to ~9e15."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "assumption": "Assumes `Scanner.nextInt()` on lines 7–10 adequately parses whitespace-separated integers matching `map(int, input().split())`.",
+          "suggestion": null,
+          "reasoning": "Scanner.nextInt() automatically skips arbitrary whitespace between tokens, matching the behavior of input().split()."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "Assumes `D + 1` and `C + 1` do not exceed `Integer.MAX_VALUE` when allocating the 2D array on line 14.",
+          "suggestion": null,
+          "reasoning": "Array dimension allocation in Java uses 32-bit signed integers, which is sufficient for standard problem bounds."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "Assumes the expression before `% m` on line 19 is never negative, or that Java's `%` behaves like Python's `%` for negative dividends.",
+          "suggestion": "d[i][j] += (int)Math.floorMod((long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1), m);",
+          "reasoning": "Because d[i-1][j-1] is reduced modulo m at previous iterations, the subtracted term can exceed the preceding terms, resulting in a negative dividend. Java's `%` retains the negative sign, whereas Python's `%` returns a positive result modulo m."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "Assumes casting operands to `long` on line 19 prevents 32-bit integer overflow during multiplication.",
+          "suggestion": null,
+          "reasoning": "The code explicitly casts intermediate values to `long`, which is large enough (~9e18) to avoid overflow for products up to ~9e15."
+        }
+      ]
+    }
+  }
+}

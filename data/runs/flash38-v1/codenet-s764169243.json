@@ -1,0 +1,381 @@
+{
+  "sample_id": "codenet-s764169243",
+  "finished_at": "2026-11-21T22:14:19.596193Z",
+  "seconds": 263.95,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "2**(size-1).bit_length()",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "The translation assumes `size` is small enough that `1 << Integer.toBinaryString(size - 1).length()` fits within a positive 32-bit signed `int`.",
+        "suggestion": null,
+        "reasoning": "In Java, array lengths are bounded by positive `int` limits, so the power-of-two size will not overflow signed 32-bit integer range."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "[default]*(2*self.size-1)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "The translation assumes `2 * this.size - 1` fits within positive 32-bit signed `int` range to allocate the array.",
+        "suggestion": null,
+        "reasoning": "Segment tree size for any valid array input fits in standard Java array dimensions."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 24,
+          "end_line": 24,
+          "snippet": "(k-1)//2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          23
+        ],
+        "assumption": "The translation assumes `k >= 1` inside the loop, so `(k - 1) / 2` does not encounter negative division rounding differences.",
+        "suggestion": null,
+        "reasoning": "Since the loop condition is `while (k > 0)`, `k - 1 >= 0`, where Java `/` and Python `//` behave identically."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 25,
+          "end_line": 25,
+          "snippet": "2*k",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          24
+        ],
+        "assumption": "The translation assumes `2 * k + 2` does not overflow a 32-bit signed `int`.",
+        "suggestion": null,
+        "reasoning": "`k` is bounded by `size`, so `2 * k + 2` fits safely within integer limits."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 39,
+          "end_line": 39,
+          "snippet": "p//2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          43
+        ],
+        "assumption": "The translation assumes `p >= 0`, so `p / 2` truncates towards zero identically to Python floor division.",
+        "suggestion": null,
+        "reasoning": "`p` is initialized to non-negative indices and only divided by 2, remaining non-negative."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 40,
+          "end_line": 40,
+          "snippet": "(q-1)//2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          44
+        ],
+        "assumption": "The translation assumes `q >= 1` in each loop step, ensuring `(q - 1) / 2` never divides a negative numerator.",
+        "suggestion": null,
+        "reasoning": "Because `p >= 0` and the loop condition is `q - p > 1`, `q >= 2` holds at the start of each iteration, meaning `q - 1 >= 1` is always positive."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 48,
+          "end_line": 48,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          53
+        ],
+        "assumption": "The translation assumes `Scanner.nextInt()` properly consumes the integer token for `N`.",
+        "suggestion": null,
+        "reasoning": "Token-based reading via `nextInt()` correctly reads `N` from standard input."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 48,
+          "end_line": 48,
+          "snippet": "int(input())",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          53
+        ],
+        "assumption": "The translation assumes `N` fits within a 32-bit signed `int`.",
+        "suggestion": null,
+        "reasoning": "`N` represents array length and problem size, which fits within Java 32-bit `int`."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 49,
+          "end_line": 49,
+          "snippet": "input().split()",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          55,
+          56,
+          57
+        ],
+        "assumption": "The translation assumes the elements in the line are whitespace-delimited integers readable via repeated `nextInt()` calls.",
+        "suggestion": null,
+        "reasoning": "Using a loop with `Scanner.nextInt()` reads whitespace-delimited integer tokens equivalent to Python's `input().split()`."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 53,
+          "end_line": 53,
+          "snippet": "ans[num-1] *= i + 1 - left_seg.query(0,num)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          65
+        ],
+        "assumption": "The translation assumes `ans[num - 1] * (i + 1 - left_seg.query(0, num))` fits within a 32-bit signed `int` without overflowing.",
+        "suggestion": "Declare ans as long[] and update with: ans[num - 1] *= (long) (i + 1 - left_seg.query(0, num));",
+        "reasoning": "For large N (e.g. N = 10^5), `ans[num - 1]` can reach `N * N = 10^10`, which overflows 32-bit signed integer limits."
+      },
+      {
+        "site": {
+          "rule": "slicing",
+          "category": "api",
+          "line": 56,
+          "end_line": 56,
+          "snippet": "a[::-1]",
+          "reason": "Python slicing clamps out-of-range bounds ([1, 2][5:9] is []); Java subList and substring throw, and Arrays.copyOfRange pads with zeros."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          69,
+          70
+        ],
+        "assumption": "The translation assumes accessing `a[N - 1 - i]` for `i` from `0` to `N - 1` faithfully mimics iterating over `a[::-1]`.",
+        "suggestion": null,
+        "reasoning": "Indexing backwards from `N - 1 - i` visits elements in exact reverse order."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 57,
+          "end_line": 57,
+          "snippet": "ans[num-1] *= i + 1 - right_seg.query(0,num)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          71
+        ],
+        "assumption": "The translation assumes `ans[num - 1] * (i + 1 - right_seg.query(0, num))` fits within a 32-bit signed `int` without overflowing.",
+        "suggestion": "Declare ans as long[] and update with: ans[num - 1] *= (long) (i + 1 - right_seg.query(0, num));",
+        "reasoning": "Multiplying `ans[num - 1]` again by `right_len` can make the value up to `O(N^3)`, which easily exceeds 32-bit signed integer capacity."
+      },
+      {
+        "site": {
+          "rule": "sum_overflow",
+          "category": "numeric",
+          "line": 60,
+          "end_line": 60,
+          "snippet": "sum(ans)",
+          "reason": "A Python sum() of ints never overflows; a Java int accumulator wraps silently."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          75,
+          76,
+          77,
+          78,
+          79
+        ],
+        "assumption": "The translation assumes the accumulator `int sum` will not overflow a 32-bit signed integer when summing `ans`.",
+        "suggestion": "Change the accumulator to long: long sum = 0L; for (int i = 0; i < N; i++) { sum += ans[i]; }",
+        "reasoning": "The sum of all elements in `ans` can exceed `2^31 - 1` for moderate to large N (e.g. N > 1500), causing silent overflow in an `int` variable."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "The translation assumes `size` is small enough that `1 << Integer.toBinaryString(size - 1).length()` fits within a positive 32-bit signed `int`.",
+          "suggestion": null,
+          "reasoning": "In Java, array lengths are bounded by positive `int` limits, so the power-of-two size will not overflow signed 32-bit integer range."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "The translation assumes `2 * this.size - 1` fits within positive 32-bit signed `int` range to allocate the array.",
+          "suggestion": null,
+          "reasoning": "Segment tree size for any valid array input fits in standard Java array dimensions."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            23
+          ],
+          "assumption": "The translation assumes `k >= 1` inside the loop, so `(k - 1) / 2` does not encounter negative division rounding differences.",
+          "suggestion": null,
+          "reasoning": "Since the loop condition is `while (k > 0)`, `k - 1 >= 0`, where Java `/` and Python `//` behave identically."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            24
+          ],
+          "assumption": "The translation assumes `2 * k + 2` does not overflow a 32-bit signed `int`.",
+          "suggestion": null,
+          "reasoning": "`k` is bounded by `size`, so `2 * k + 2` fits safely within integer limits."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            43
+          ],
+          "assumption": "The translation assumes `p >= 0`, so `p / 2` truncates towards zero identically to Python floor division.",
+          "suggestion": null,
+          "reasoning": "`p` is initialized to non-negative indices and only divided by 2, remaining non-negative."
+        },
+        {
+          "site_id": 5,
+          "verdict": "handled",
+          "translation_lines": [
+            44
+          ],
+          "assumption": "The translation assumes `q >= 1` in each loop step, ensuring `(q - 1) / 2` never divides a negative numerator.",
+          "suggestion": null,
+          "reasoning": "Because `p >= 0` and the loop condition is `q - p > 1`, `q >= 2` holds at the start of each iteration, meaning `q - 1 >= 1` is always positive."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            53
+          ],
+          "assumption": "The translation assumes `Scanner.nextInt()` properly consumes the integer token for `N`.",
+          "suggestion": null,
+          "reasoning": "Token-based reading via `nextInt()` correctly reads `N` from standard input."
+        },
+        {
+          "site_id": 7,
+          "verdict": "handled",
+          "translation_lines": [
+            53
+          ],
+          "assumption": "The translation assumes `N` fits within a 32-bit signed `int`.",
+          "suggestion": null,
+          "reasoning": "`N` represents array length and problem size, which fits within Java 32-bit `int`."
+        },
+        {
+          "site_id": 8,
+          "verdict": "handled",
+          "translation_lines": [
+            55,
+            56,
+            57
+          ],
+          "assumption": "The translation assumes the elements in the line are whitespace-delimited integers readable via repeated `nextInt()` calls.",
+          "suggestion": null,
+          "reasoning": "Using a loop with `Scanner.nextInt()` reads whitespace-delimited integer tokens equivalent to Python's `input().split()`."
+        },
+        {
+          "site_id": 9,
+          "verdict": "mismatch",
+          "translation_lines": [
+            65
+          ],
+          "assumption": "The translation assumes `ans[num - 1] * (i + 1 - left_seg.query(0, num))` fits within a 32-bit signed `int` without overflowing.",
+          "suggestion": "Declare ans as long[] and update with: ans[num - 1] *= (long) (i + 1 - left_seg.query(0, num));",
+          "reasoning": "For large N (e.g. N = 10^5), `ans[num - 1]` can reach `N * N = 10^10`, which overflows 32-bit signed integer limits."
+        },
+        {
+          "site_id": 10,
+          "verdict": "handled",
+          "translation_lines": [
+            69,
+            70
+          ],
+          "assumption": "The translation assumes accessing `a[N - 1 - i]` for `i` from `0` to `N - 1` faithfully mimics iterating over `a[::-1]`.",
+          "suggestion": null,
+          "reasoning": "Indexing backwards from `N - 1 - i` visits elements in exact reverse order."
+        },
+        {
+          "site_id": 11,
+          "verdict": "mismatch",
+          "translation_lines": [
+            71
+          ],
+          "assumption": "The translation assumes `ans[num - 1] * (i + 1 - right_seg.query(0, num))` fits within a 32-bit signed `int` without overflowing.",
+          "suggestion": "Declare ans as long[] and update with: ans[num - 1] *= (long) (i + 1 - right_seg.query(0, num));",
+          "reasoning": "Multiplying `ans[num - 1]` again by `right_len` can make the value up to `O(N^3)`, which easily exceeds 32-bit signed integer capacity."
+        },
+        {
+          "site_id": 12,
+          "verdict": "mismatch",
+          "translation_lines": [
+            75,
+            76,
+            77,
+            78,
+            79
+          ],
+          "assumption": "The translation assumes the accumulator `int sum` will not overflow a 32-bit signed integer when summing `ans`.",
+          "suggestion": "Change the accumulator to long: long sum = 0L; for (int i = 0; i < N; i++) { sum += ans[i]; }",
+          "reasoning": "The sum of all elements in `ans` can exceed `2^31 - 1` for moderate to large N (e.g. N > 1500), causing silent overflow in an `int` variable."
+        }
+      ]
+    }
+  }
+}

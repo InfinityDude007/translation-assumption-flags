@@ -1,0 +1,472 @@
+{
+  "sample_id": "avatar-atcoder_AGC019_A",
+  "finished_at": "2026-11-21T20:45:23.823462Z",
+  "seconds": 67.38,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 28,
+          "end_line": 28,
+          "snippet": "q * 4",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "The Java code assumes q * 4 does not overflow a 32-bit signed integer, which holds because q <= 10^8.",
+        "suggestion": null,
+        "reasoning": "q is at most 10^8, so q * 4 <= 4 * 10^8, which comfortably fits in a 32-bit int."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 29,
+          "end_line": 29,
+          "snippet": "best1L * 2",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          13
+        ],
+        "assumption": "The Java code assumes best1L * 2 does not overflow a 32-bit signed integer, which holds because best1L <= 4 * 10^8.",
+        "suggestion": null,
+        "reasoning": "best1L is at most 4 * 10^8, so best1L * 2 <= 8 * 10^8, which fits in a 32-bit signed int."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 30,
+          "end_line": 30,
+          "snippet": "n % 2",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "The Java code assumes n is non-negative in n % 2, so Java % matches Python %.",
+        "suggestion": null,
+        "reasoning": "n is a positive integer (n >= 1), so % behaves identically in both languages."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 31,
+          "end_line": 31,
+          "snippet": "n // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "The Java code assumes n is non-negative in n / 2, so integer division truncates towards zero matching floor division.",
+        "suggestion": null,
+        "reasoning": "n >= 0, so integer division / in Java matches floor division // in Python."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 31,
+          "end_line": 31,
+          "snippet": "best2L * ( n // 2 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "The Java code assumes the expression best2L * (n / 2) fits in a 32-bit signed integer.",
+        "suggestion": "System.out.println((long) best2L * (n / 2));",
+        "reasoning": "When n = 10^9 and d = 10^8, best2L * (n / 2) = 5 * 10^16, overflowing a 32-bit int."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "n // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          17
+        ],
+        "assumption": "The Java code assumes n is non-negative in n / 2, so integer division truncates towards zero matching floor division.",
+        "suggestion": null,
+        "reasoning": "n >= 0, so integer division / in Java matches floor division // in Python."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "best2L * ( n // 2 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          17
+        ],
+        "assumption": "The Java code assumes the expression best2L * (n / 2) fits in a 32-bit signed integer.",
+        "suggestion": "System.out.println((long) best2L * (n / 2) + best1L);",
+        "reasoning": "When n is odd and up to 10^9 and d = 10^8, best2L * (n / 2) can reach ~5 * 10^16, causing an integer overflow."
+      }
+    ],
+    "dropped": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "sys.stdin.readline ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "- a // b",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "int ( - ( - a // b ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "( x * 2 + 1 ) // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "int ( ( x * 2 + 1 ) // 2 )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 17,
+          "end_line": 17,
+          "snippet": "x * pow ( y , MOD - 2 , MOD ) % MOD",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 17,
+          "end_line": 17,
+          "snippet": "x * pow ( y , MOD - 2 , MOD )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 18,
+          "end_line": 18,
+          "snippet": "( x * y ) // gcd ( x , y )",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 18,
+          "end_line": 18,
+          "snippet": "x * y",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 20,
+          "end_line": 20,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 20,
+          "end_line": 20,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 21,
+          "end_line": 21,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 22,
+          "end_line": 22,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "float_precision",
+          "category": "numeric",
+          "line": 24,
+          "end_line": 24,
+          "snippet": "float ( 'inf' )",
+          "reason": "Python floats are usually 64-bit doubles; Java float is 32-bit, so the translation should use double."
+        },
+        "reason": "no valid Java line"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function input() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "The function definition at line 14 is omitted in the Java implementation."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function ceil() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function ceil() is omitted in Java."
+        },
+        {
+          "site_id": 2,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function ceil() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function ceil() is omitted in Java."
+        },
+        {
+          "site_id": 3,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function round() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function round() is omitted in Java."
+        },
+        {
+          "site_id": 4,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function round() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function round() is omitted in Java."
+        },
+        {
+          "site_id": 5,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function fermat() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function fermat() is omitted in Java."
+        },
+        {
+          "site_id": 6,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function fermat() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function fermat() is omitted in Java."
+        },
+        {
+          "site_id": 7,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function lcm() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function lcm() is omitted in Java."
+        },
+        {
+          "site_id": 8,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function lcm() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function lcm() is omitted in Java."
+        },
+        {
+          "site_id": 9,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function INT() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "The function definition at line 20 is not directly defined in Java."
+        },
+        {
+          "site_id": 10,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function INT() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "The function definition at line 20 is not directly defined in Java."
+        },
+        {
+          "site_id": 11,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function MAP() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "The function definition at line 21 is not directly defined in Java."
+        },
+        {
+          "site_id": 12,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function LIST() was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused helper function LIST() is omitted in Java."
+        },
+        {
+          "site_id": 13,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The constant INF was not translated into Java.",
+          "suggestion": null,
+          "reasoning": "Unused global constant INF is omitted in Java."
+        },
+        {
+          "site_id": 14,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "The Java code assumes q * 4 does not overflow a 32-bit signed integer, which holds because q <= 10^8.",
+          "suggestion": null,
+          "reasoning": "q is at most 10^8, so q * 4 <= 4 * 10^8, which comfortably fits in a 32-bit int."
+        },
+        {
+          "site_id": 15,
+          "verdict": "handled",
+          "translation_lines": [
+            13
+          ],
+          "assumption": "The Java code assumes best1L * 2 does not overflow a 32-bit signed integer, which holds because best1L <= 4 * 10^8.",
+          "suggestion": null,
+          "reasoning": "best1L is at most 4 * 10^8, so best1L * 2 <= 8 * 10^8, which fits in a 32-bit signed int."
+        },
+        {
+          "site_id": 16,
+          "verdict": "handled",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "The Java code assumes n is non-negative in n % 2, so Java % matches Python %.",
+          "suggestion": null,
+          "reasoning": "n is a positive integer (n >= 1), so % behaves identically in both languages."
+        },
+        {
+          "site_id": 17,
+          "verdict": "handled",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "The Java code assumes n is non-negative in n / 2, so integer division truncates towards zero matching floor division.",
+          "suggestion": null,
+          "reasoning": "n >= 0, so integer division / in Java matches floor division // in Python."
+        },
+        {
+          "site_id": 18,
+          "verdict": "mismatch",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "The Java code assumes the expression best2L * (n / 2) fits in a 32-bit signed integer.",
+          "suggestion": "System.out.println((long) best2L * (n / 2));",
+          "reasoning": "When n = 10^9 and d = 10^8, best2L * (n / 2) = 5 * 10^16, overflowing a 32-bit int."
+        },
+        {
+          "site_id": 19,
+          "verdict": "handled",
+          "translation_lines": [
+            17
+          ],
+          "assumption": "The Java code assumes n is non-negative in n / 2, so integer division truncates towards zero matching floor division.",
+          "suggestion": null,
+          "reasoning": "n >= 0, so integer division / in Java matches floor division // in Python."
+        },
+        {
+          "site_id": 20,
+          "verdict": "mismatch",
+          "translation_lines": [
+            17
+          ],
+          "assumption": "The Java code assumes the expression best2L * (n / 2) fits in a 32-bit signed integer.",
+          "suggestion": "System.out.println((long) best2L * (n / 2) + best1L);",
+          "reasoning": "When n is odd and up to 10^9 and d = 10^8, best2L * (n / 2) can reach ~5 * 10^16, causing an integer overflow."
+        }
+      ]
+    }
+  }
+}
