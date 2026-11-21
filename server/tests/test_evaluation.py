@@ -163,7 +163,7 @@ def test_a_run_name_cannot_mix_models(samples: Path, tmp_path: Path) -> None:
 def test_scoring_counts_mismatch_flags_against_the_tags(
     samples: Path, tmp_path: Path
 ) -> None:
-    """Hits, latent hits, false alarms, exclusions and gaps are counted correctly."""
+    """Hits, latent hits, false alarms and gaps are counted correctly."""
     runs = tmp_path / "runs"
     run(FakeClient(), samples, runs, ["a", "b", "c"])
     score = score_run(runs / "test", samples)
@@ -171,12 +171,12 @@ def test_scoring_counts_mismatch_flags_against_the_tags(
     by_id = {s.sample_id: s for s in score.samples}
     assert (by_id["a"].bug_caught, by_id["a"].false_alarms) == (True, 1)
     assert (by_id["b"].latent_caught, by_id["b"].false_alarms) == (True, 1)
-    assert by_id["b"].bug_caught is None and by_id["c"].excluded
+    assert by_id["b"].bug_caught is None and by_id["c"].no_bug
     assert by_id["a"].handled == 1 and by_id["a"].dropped == 0
 
     assert (score.bugs, score.bugs_caught) == (1, 1)
     assert (score.latent, score.latent_caught) == (1, 1)
-    assert (score.mismatch_flags, score.false_alarms) == (4, 2)
+    assert (score.mismatch_flags, score.false_alarms) == (6, 4)
     assert score.missing == ["d"]
 
 

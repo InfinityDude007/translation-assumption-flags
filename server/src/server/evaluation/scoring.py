@@ -27,7 +27,7 @@ def score_sample(meta: SampleMeta, run: SampleRun) -> SampleScore:
     return SampleScore(
         sample_id=meta.id,
         group=meta.group,
-        excluded=meta.group == "buggy" and not bug,
+        no_bug=meta.group == "buggy" and not bug,
         bug_lines=sorted(bug),
         latent_lines=sorted(latent),
         mismatch_flags=len(mismatch),
@@ -41,7 +41,7 @@ def score_sample(meta: SampleMeta, run: SampleRun) -> SampleScore:
 
 
 def score_run(run_dir: Path, samples_dir: Path) -> RunScore:
-    """Score every archived sample in a run and total the included ones.
+    """Score every archived sample in a run and total them.
 
     Args:
         run_dir: The run's folder.
@@ -63,17 +63,15 @@ def score_run(run_dir: Path, samples_dir: Path) -> RunScore:
             score_sample(meta, SampleRun.model_validate_json(path.read_text()))
         )
 
-    counted = [score for score in scores if not score.excluded]
-
     return RunScore(
         config=config,
         samples=scores,
-        bugs=sum(1 for s in counted if s.bug_caught is not None),
-        bugs_caught=sum(1 for s in counted if s.bug_caught),
-        latent=sum(1 for s in counted if s.latent_caught is not None),
-        latent_caught=sum(1 for s in counted if s.latent_caught),
-        mismatch_flags=sum(s.mismatch_flags for s in counted),
-        false_alarms=sum(s.false_alarms for s in counted),
+        bugs=sum(1 for score in scores if score.bug_caught is not None),
+        bugs_caught=sum(1 for score in scores if score.bug_caught),
+        latent=sum(1 for score in scores if score.latent_caught is not None),
+        latent_caught=sum(1 for score in scores if score.latent_caught),
+        mismatch_flags=sum(score.mismatch_flags for score in scores),
+        false_alarms=sum(score.false_alarms for score in scores),
         missing=missing,
     )
 
@@ -105,7 +103,7 @@ def format_score(score: RunScore) -> str:
             f"{s.sample_id:32} {s.group:8} {mark(s.bug_caught):4} "
             f"{mark(s.latent_caught):6} {s.mismatch_flags:5} {s.false_alarms:5} "
             f"{s.handled:7} {s.unclear:7} {s.dropped:7}"
-            + ("  (excluded: no translation bug)" if s.excluded else "")
+            + ("  (no translation bug)" if s.no_bug else "")
         )
 
     rows += [

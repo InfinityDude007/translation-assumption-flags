@@ -49,8 +49,7 @@ class SampleScore(BaseModel):
     Attributes:
         sample_id: Sample folder name.
         group: "buggy" or "control".
-        excluded: True for buggy samples with no translation bug, which are
-            left out of every total.
+        no_bug: True for buggy samples whose failure is not a translation bug.
         bug_lines: Tagged Java lines of the test-exposed bug.
         latent_lines: Tagged Java lines of latent bugs.
         mismatch_flags: Number of mismatch flags.
@@ -64,7 +63,7 @@ class SampleScore(BaseModel):
 
     sample_id: str
     group: Group
-    excluded: bool
+    no_bug: bool
     bug_lines: list[int]
     latent_lines: list[int]
     mismatch_flags: int
@@ -77,11 +76,11 @@ class SampleScore(BaseModel):
 
 
 class RunScore(BaseModel):
-    """Totals for a run, over the samples that are not excluded.
+    """Totals for a run, over every sample archived so far.
 
     Attributes:
         config: The run's model and prompt version.
-        samples: Per-sample scores, including excluded samples.
+        samples: Per-sample scores.
         bugs: Samples with a test-exposed bug.
         bugs_caught: Of those, how many a mismatch flag hit.
         latent: Samples with a latent bug.
