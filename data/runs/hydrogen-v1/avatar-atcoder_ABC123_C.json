@@ -1,0 +1,153 @@
+{
+  "sample_id": "avatar-atcoder_ABC123_C",
+  "finished_at": "2026-11-20T08:27:51.263661Z",
+  "seconds": 80.92,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 9,
+          "end_line": 9,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "Line 7 uses scanner.nextInt() without any subsequent nextLine() call, assuming the input provides one integer token per line just as int(input()) expects (for example, it would behave differently only on invalid multi-token lines such as \"1 2\").",
+        "suggestion": null,
+        "reasoning": "Python line 9 calls input() inside int(input()), expecting a single integer on the first line. Java line 7 uses scanner.nextInt(), which reads the next whitespace-delimited integer token. Because all inputs in the program are read via nextInt() and nextLine() is never called, the nextLine()-after-nextInt() pitfall does not occur."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 9,
+          "end_line": 9,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "Line 7 stores N in a 32-bit int using scanner.nextInt(), which assumes N is within [-2147483648, 2147483647]—an input range the code does not state and that fails for larger integers (such as 1000000000000000) that Python int() accepts.",
+        "suggestion": "Change int N = scanner.nextInt(); to BigInteger N = scanner.nextBigInteger(); (importing java.math.BigInteger and updating line 14 to use BigInteger ceiling division and addition).",
+        "reasoning": "Python int() has arbitrary precision, whereas Java int and scanner.nextInt() only support 32-bit signed integers and throw InputMismatchException for values outside [-2^31, 2^31 - 1] (and notably in this AtCoder ABC123_C problem, N can be up to 10^15). Changing N to BigInteger matches Python arbitrary-precision int."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Line 10 uses scanner.nextInt() inside the loop without any nextLine() calls, assuming each of the five inputs is a single whitespace-separated integer token on its own line as Python int(input()) expects.",
+        "suggestion": null,
+        "reasoning": "Python line 10 calls input() five times inside a list comprehension to parse five integers. Java line 10 calls scanner.nextInt() five times. Since nextLine() is never used, there is no leftover newline issue, and for valid single-integer-per-line inputs it matches Python."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          8,
+          10
+        ],
+        "assumption": "Lines 8 and 10 store the five inputs in an int[] array using scanner.nextInt(), assuming every value fits in a 32-bit signed int—an unstated input range that throws InputMismatchException for larger integers (such as 1000000000000000) accepted by Python int().",
+        "suggestion": "Change int[] A = new int[5]; and A[i] = scanner.nextInt(); to use BigInteger[] A = new BigInteger[5]; and A[i] = scanner.nextBigInteger(); (importing java.math.BigInteger and updating minA and line 14 to use BigInteger).",
+        "reasoning": "Python int() handles integers of arbitrary size, while Java int[] and scanner.nextInt() throw InputMismatchException for integers outside [-2^31, 2^31 - 1]. Using BigInteger avoids 32-bit overflow and matches Python int()."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "N / min ( A )",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "Line 14 casts N to double in (double) N / minA before dividing, avoiding Java integer division truncation; this assumes minA is non-zero (since double division by zero yields Infinity or NaN instead of Python's ZeroDivisionError) and that N fits in int (so double represents the quotient accurately enough for Math.ceil).",
+        "suggestion": null,
+        "reasoning": "Python N / min(A) performs floating-point division. Java line 14 explicitly writes (double) N / minA, performing floating-point division rather than truncating int / int division. For all non-zero 32-bit int inputs, double has 53 bits of precision so (double) N / minA does not round across an integer boundary."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "Line 7 uses scanner.nextInt() without any subsequent nextLine() call, assuming the input provides one integer token per line just as int(input()) expects (for example, it would behave differently only on invalid multi-token lines such as \"1 2\").",
+          "suggestion": null,
+          "reasoning": "Python line 9 calls input() inside int(input()), expecting a single integer on the first line. Java line 7 uses scanner.nextInt(), which reads the next whitespace-delimited integer token. Because all inputs in the program are read via nextInt() and nextLine() is never called, the nextLine()-after-nextInt() pitfall does not occur."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "Line 7 stores N in a 32-bit int using scanner.nextInt(), which assumes N is within [-2147483648, 2147483647]—an input range the code does not state and that fails for larger integers (such as 1000000000000000) that Python int() accepts.",
+          "suggestion": "Change int N = scanner.nextInt(); to BigInteger N = scanner.nextBigInteger(); (importing java.math.BigInteger and updating line 14 to use BigInteger ceiling division and addition).",
+          "reasoning": "Python int() has arbitrary precision, whereas Java int and scanner.nextInt() only support 32-bit signed integers and throw InputMismatchException for values outside [-2^31, 2^31 - 1] (and notably in this AtCoder ABC123_C problem, N can be up to 10^15). Changing N to BigInteger matches Python arbitrary-precision int."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Line 10 uses scanner.nextInt() inside the loop without any nextLine() calls, assuming each of the five inputs is a single whitespace-separated integer token on its own line as Python int(input()) expects.",
+          "suggestion": null,
+          "reasoning": "Python line 10 calls input() five times inside a list comprehension to parse five integers. Java line 10 calls scanner.nextInt() five times. Since nextLine() is never used, there is no leftover newline issue, and for valid single-integer-per-line inputs it matches Python."
+        },
+        {
+          "site_id": 3,
+          "verdict": "mismatch",
+          "translation_lines": [
+            8,
+            10
+          ],
+          "assumption": "Lines 8 and 10 store the five inputs in an int[] array using scanner.nextInt(), assuming every value fits in a 32-bit signed int—an unstated input range that throws InputMismatchException for larger integers (such as 1000000000000000) accepted by Python int().",
+          "suggestion": "Change int[] A = new int[5]; and A[i] = scanner.nextInt(); to use BigInteger[] A = new BigInteger[5]; and A[i] = scanner.nextBigInteger(); (importing java.math.BigInteger and updating minA and line 14 to use BigInteger).",
+          "reasoning": "Python int() handles integers of arbitrary size, while Java int[] and scanner.nextInt() throw InputMismatchException for integers outside [-2^31, 2^31 - 1]. Using BigInteger avoids 32-bit overflow and matches Python int()."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "Line 14 casts N to double in (double) N / minA before dividing, avoiding Java integer division truncation; this assumes minA is non-zero (since double division by zero yields Infinity or NaN instead of Python's ZeroDivisionError) and that N fits in int (so double represents the quotient accurately enough for Math.ceil).",
+          "suggestion": null,
+          "reasoning": "Python N / min(A) performs floating-point division. Java line 14 explicitly writes (double) N / minA, performing floating-point division rather than truncating int / int division. For all non-zero 32-bit int inputs, double has 53 bits of precision so (double) N / minA does not round across an integer boundary."
+        }
+      ]
+    }
+  }
+}

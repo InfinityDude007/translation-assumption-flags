@@ -1,0 +1,126 @@
+{
+  "sample_id": "avatar-codeforces_579_A",
+  "finished_at": "2026-11-20T13:38:01.439115Z",
+  "seconds": 780.65,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8
+        ],
+        "assumption": "Java uses Scanner.nextInt() on lines 7-8 with no subsequent nextLine() call, assuming the input provides a single integer token with no leading blank lines or extra tokens on the line.",
+        "suggestion": null,
+        "reasoning": "Python's input() reads a whole line, whereas Java's Scanner.nextInt() reads the next whitespace-delimited token. Because only one integer is read and no nextLine() follows nextInt(), there is no leftover-newline bug, and for valid single-integer inputs both programs behave the same."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Java uses int n = input.nextInt() on line 8, assuming the input fits within signed 32-bit int range (-2^31 to 2^31 - 1), which the code does not state; for inputs such as 3000000000, Java throws InputMismatchException while Python succeeds.",
+        "suggestion": "Change line 8 to long n = input.nextLong(); (or use BigInteger with input.nextBigInteger() and BigInteger arithmetic if inputs beyond 64-bit signed range must be supported).",
+        "reasoning": "Python's int() parses arbitrarily large integers, whereas Java's Scanner.nextInt() throws InputMismatchException for values outside the 32-bit signed int range."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "math.log2 ( n ) % 1",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Java uses Math.log(n) / Math.log(2) % 1 != 0 on line 10, assuming floating-point division of natural logs yields an exact integer for powers of 2 and that n >= 1; for n = 536870912 (2^29), Math.log(n) / Math.log(2) evaluates to 29.000000000000004, making % 1 != 0 true and causing an infinite loop instead of printing 1 as Python does.",
+        "suggestion": "Replace Math.log(n) / Math.log(2) % 1 != 0 on line 10 with (n & (n - 1)) != 0 (and throw an exception if n <= 0 to match Python's ValueError on non-positive inputs).",
+        "reasoning": "For n >= 1, the dividend is non-negative so the sign difference of % does not trigger, and for n <= 0 Python throws ValueError while Java produces -Infinity/NaN and loops infinitely. Even for valid positive powers of 2 such as n = 536870912 (2^29), Math.log(536870912) / Math.log(2) produces 29.000000000000004 in IEEE 754 double, so % 1 != 0 evaluates to true, n becomes 0, and subsequent iterations loop forever on NaN != 0."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 6,
+          "end_line": 6,
+          "snippet": "2 ** ( int ( math.log2 ( n ) ) )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Java computes n -= Math.pow(2, (int) (Math.log(n) / Math.log(2))) on line 12 using double and narrowing back to int, assuming n fits in 32-bit signed int (already constrained at line 8) so the subtracted power of 2 is at most 2^30 and does not overflow int.",
+        "suggestion": null,
+        "reasoning": "Because n is read as a 32-bit signed int on line 8 and line 12 is only reached when n >= 1 (in valid execution), the exponent is at most 30, and 2^30 = 1073741824 fits exactly in double and within 32-bit int without overflow."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8
+          ],
+          "assumption": "Java uses Scanner.nextInt() on lines 7-8 with no subsequent nextLine() call, assuming the input provides a single integer token with no leading blank lines or extra tokens on the line.",
+          "suggestion": null,
+          "reasoning": "Python's input() reads a whole line, whereas Java's Scanner.nextInt() reads the next whitespace-delimited token. Because only one integer is read and no nextLine() follows nextInt(), there is no leftover-newline bug, and for valid single-integer inputs both programs behave the same."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Java uses int n = input.nextInt() on line 8, assuming the input fits within signed 32-bit int range (-2^31 to 2^31 - 1), which the code does not state; for inputs such as 3000000000, Java throws InputMismatchException while Python succeeds.",
+          "suggestion": "Change line 8 to long n = input.nextLong(); (or use BigInteger with input.nextBigInteger() and BigInteger arithmetic if inputs beyond 64-bit signed range must be supported).",
+          "reasoning": "Python's int() parses arbitrarily large integers, whereas Java's Scanner.nextInt() throws InputMismatchException for values outside the 32-bit signed int range."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Java uses Math.log(n) / Math.log(2) % 1 != 0 on line 10, assuming floating-point division of natural logs yields an exact integer for powers of 2 and that n >= 1; for n = 536870912 (2^29), Math.log(n) / Math.log(2) evaluates to 29.000000000000004, making % 1 != 0 true and causing an infinite loop instead of printing 1 as Python does.",
+          "suggestion": "Replace Math.log(n) / Math.log(2) % 1 != 0 on line 10 with (n & (n - 1)) != 0 (and throw an exception if n <= 0 to match Python's ValueError on non-positive inputs).",
+          "reasoning": "For n >= 1, the dividend is non-negative so the sign difference of % does not trigger, and for n <= 0 Python throws ValueError while Java produces -Infinity/NaN and loops infinitely. Even for valid positive powers of 2 such as n = 536870912 (2^29), Math.log(536870912) / Math.log(2) produces 29.000000000000004 in IEEE 754 double, so % 1 != 0 evaluates to true, n becomes 0, and subsequent iterations loop forever on NaN != 0."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Java computes n -= Math.pow(2, (int) (Math.log(n) / Math.log(2))) on line 12 using double and narrowing back to int, assuming n fits in 32-bit signed int (already constrained at line 8) so the subtracted power of 2 is at most 2^30 and does not overflow int.",
+          "suggestion": null,
+          "reasoning": "Because n is read as a 32-bit signed int on line 8 and line 12 is only reached when n >= 1 (in valid execution), the exponent is at most 30, and 2^30 = 1073741824 fits exactly in double and within 32-bit int without overflow."
+        }
+      ]
+    }
+  }
+}

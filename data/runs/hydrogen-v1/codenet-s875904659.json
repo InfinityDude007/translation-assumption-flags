@@ -1,0 +1,167 @@
+{
+  "sample_id": "codenet-s875904659",
+  "finished_at": "2026-11-20T17:34:38.093560Z",
+  "seconds": 308.32,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "int( cards[j][1] )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10,
+          46,
+          47,
+          63
+        ],
+        "assumption": "Storing the parsed value in Card's int value field via Character.getNumericValue(input[i].charAt(1)) and comparing with getValue() assumes the character at index 1 is a single digit (0-9), which always fits in a 32-bit int.",
+        "suggestion": null,
+        "reasoning": "Python int(cards[j][1]) converts a single character at index 1 of the card string to an integer. Java parses input[i].charAt(1) once during initialization with Character.getNumericValue on lines 46-47 into Card's int value field (line 63) and compares via getValue() on line 10. Since it is a single character digit, its value is 0-9 and cannot overflow int."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "int( cards[j][1] )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          25,
+          46,
+          47,
+          63
+        ],
+        "assumption": "Storing the parsed value in Card's int value field via Character.getNumericValue(input[i].charAt(1)) and comparing with getValue() on line 25 assumes the character at index 1 is a single digit (0-9), which always fits in a 32-bit int.",
+        "suggestion": null,
+        "reasoning": "Just like site 0, Python int(cards[j][1]) in selectionSort parses a single character at index 1. Java computes Character.getNumericValue(input[i].charAt(1)) on lines 46-47, stores it in Card.value (line 63), and compares getValue() on line 25. A single digit fits safely in int."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 23,
+          "end_line": 23,
+          "snippet": "input( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          40,
+          41
+        ],
+        "assumption": "Using sc.nextInt() followed by sc.nextLine() consumes the remainder of the first line so subsequent line reads do not receive an empty string, assuming the first line contains only the integer n with no leading blank lines or extra tokens.",
+        "suggestion": null,
+        "reasoning": "Python reads the first line with input() on line 23. Java uses sc.nextInt() on line 40 and explicitly adds sc.nextLine() on line 41 to consume the trailing newline before line 42 calls sc.nextLine(), avoiding the common nextLine()-after-nextInt() empty-string bug."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 23,
+          "end_line": 23,
+          "snippet": "int( input( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          40
+        ],
+        "assumption": "Using int n = sc.nextInt() assumes the input integer fits within the signed 32-bit int range (-2^31 to 2^31 - 1), an input range the code does not state, whereas Python int() accepts arbitrarily large integers.",
+        "suggestion": "Read the first line as a BigInteger with java.math.BigInteger n = new java.math.BigInteger(sc.nextLine().trim()); and use input.length instead of n when sizing and iterating over cards and cards2 (matching Python, which does not use n after reading it).",
+        "reasoning": "Python n = int(input()) on line 23 accepts integers of arbitrary size and never uses n afterward. Java int n = sc.nextInt() on line 40 throws InputMismatchException for values outside the 32-bit int range such as 2147483648."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 24,
+          "end_line": 24,
+          "snippet": "input( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          41,
+          42
+        ],
+        "assumption": "Calling sc.nextLine() on line 42 after line 41's sc.nextLine() clears the previous line reads the full second line as a string, assuming the first line contained only n.",
+        "suggestion": null,
+        "reasoning": "Python input() on line 24 reads the second line in full. Because Java consumes the rest of the first line on line 41 with sc.nextLine(), line 42's sc.nextLine() reads the entire second line as intended."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            10,
+            46,
+            47,
+            63
+          ],
+          "assumption": "Storing the parsed value in Card's int value field via Character.getNumericValue(input[i].charAt(1)) and comparing with getValue() assumes the character at index 1 is a single digit (0-9), which always fits in a 32-bit int.",
+          "suggestion": null,
+          "reasoning": "Python int(cards[j][1]) converts a single character at index 1 of the card string to an integer. Java parses input[i].charAt(1) once during initialization with Character.getNumericValue on lines 46-47 into Card's int value field (line 63) and compares via getValue() on line 10. Since it is a single character digit, its value is 0-9 and cannot overflow int."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            25,
+            46,
+            47,
+            63
+          ],
+          "assumption": "Storing the parsed value in Card's int value field via Character.getNumericValue(input[i].charAt(1)) and comparing with getValue() on line 25 assumes the character at index 1 is a single digit (0-9), which always fits in a 32-bit int.",
+          "suggestion": null,
+          "reasoning": "Just like site 0, Python int(cards[j][1]) in selectionSort parses a single character at index 1. Java computes Character.getNumericValue(input[i].charAt(1)) on lines 46-47, stores it in Card.value (line 63), and compares getValue() on line 25. A single digit fits safely in int."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            40,
+            41
+          ],
+          "assumption": "Using sc.nextInt() followed by sc.nextLine() consumes the remainder of the first line so subsequent line reads do not receive an empty string, assuming the first line contains only the integer n with no leading blank lines or extra tokens.",
+          "suggestion": null,
+          "reasoning": "Python reads the first line with input() on line 23. Java uses sc.nextInt() on line 40 and explicitly adds sc.nextLine() on line 41 to consume the trailing newline before line 42 calls sc.nextLine(), avoiding the common nextLine()-after-nextInt() empty-string bug."
+        },
+        {
+          "site_id": 3,
+          "verdict": "mismatch",
+          "translation_lines": [
+            40
+          ],
+          "assumption": "Using int n = sc.nextInt() assumes the input integer fits within the signed 32-bit int range (-2^31 to 2^31 - 1), an input range the code does not state, whereas Python int() accepts arbitrarily large integers.",
+          "suggestion": "Read the first line as a BigInteger with java.math.BigInteger n = new java.math.BigInteger(sc.nextLine().trim()); and use input.length instead of n when sizing and iterating over cards and cards2 (matching Python, which does not use n after reading it).",
+          "reasoning": "Python n = int(input()) on line 23 accepts integers of arbitrary size and never uses n afterward. Java int n = sc.nextInt() on line 40 throws InputMismatchException for values outside the 32-bit int range such as 2147483648."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            41,
+            42
+          ],
+          "assumption": "Calling sc.nextLine() on line 42 after line 41's sc.nextLine() clears the previous line reads the full second line as a string, assuming the first line contained only n.",
+          "suggestion": null,
+          "reasoning": "Python input() on line 24 reads the second line in full. Because Java consumes the rest of the first line on line 41 with sc.nextLine(), line 42's sc.nextLine() reads the entire second line as intended."
+        }
+      ]
+    }
+  }
+}

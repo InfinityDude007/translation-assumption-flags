@@ -1,0 +1,188 @@
+{
+  "sample_id": "avatar-codeforces_459_A",
+  "finished_at": "2026-11-20T11:15:34.040747Z",
+  "seconds": 74.16,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( \"\" )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8
+        ],
+        "assumption": "Using scanner.nextLine() on a fresh Scanner(System.in) reads the entire input line just like Python input(\"\"), assuming stdin provides at least one line and no token-reading call like nextInt() precedes it.",
+        "suggestion": null,
+        "reasoning": "Python line 2 calls input(\"\") which reads a full line from stdin. Java lines 7-8 create a Scanner and call scanner.nextLine() directly with no prior nextInt() call, so it does not suffer from a leftover newline and matches Python's line reading."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "given.split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          9
+        ],
+        "assumption": "given.split(\" \") assumes the input has no leading or trailing spaces, no tabs, and exactly one space between numbers, which the code does not enforce.",
+        "suggestion": "Replace line 9 with: String[] l1 = given.trim().isEmpty() ? new String[0] : given.trim().split(\"\\\\s+\");",
+        "reasoning": "Python given.split() splits on any run of whitespace and strips leading/trailing whitespace. Java given.split(\" \") splits on every single space, producing empty elements for leading or consecutive spaces (which then throw NumberFormatException in Integer.parseInt) and failing to split on tabs."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "int ( x )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "assumption": "Using int[] coords and Integer.parseInt(l1[i]) assumes every input number fits in a 32-bit signed int, an input range the code does not state.",
+        "suggestion": "Parse into BigInteger[] using new BigInteger(l1[i]) and update the coordinate and arithmetic variables (x1, y1, x2, y2, x3, y3, x4, y4, numerator, denominator) to BigInteger.",
+        "reasoning": "Python int() accepts arbitrarily large integers. Java Integer.parseInt throws NumberFormatException for inputs outside [-2147483648, 2147483647], such as \"3000000000 0 0 0\"."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "numerator / denominator",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          20,
+          22
+        ],
+        "assumption": "Declaring double quotient and casting (double) numerator / denominator performs floating-point division matching Python's / operator, assuming numerator and denominator fit in int.",
+        "suggestion": null,
+        "reasoning": "Python / on ints produces a 64-bit IEEE 754 float. Java casts numerator to double before dividing by denominator and stores the result in double quotient, avoiding int truncation."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "int ( math.sqrt ( ( x2 - x1 ) ** 2 + ( y2 - y1 ) ** 2 ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          26
+        ],
+        "assumption": "int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) assumes x2 - x1, y2 - y1, and d all fit in a 32-bit signed int, an input range the code does not state.",
+        "suggestion": "Cast operands to double before subtracting and store d (and output coordinates) in long or BigInteger, e.g.: long d = (long) Math.sqrt(Math.pow((double) x2 - x1, 2) + Math.pow((double) y2 - y1, 2)); (or use BigInteger arithmetic and BigInteger.sqrt() for arbitrary-size inputs).",
+        "reasoning": "Even when all four inputs fit in 32-bit int, such as \"-2000000000 0 2000000000 0\", x2 - x1 overflows int before Math.pow and the resulting distance exceeds Integer.MAX_VALUE, whereas Python computes exact arbitrary-precision ints."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 23,
+          "end_line": 23,
+          "snippet": "int ( math.sqrt ( ( x2 - x1 ) ** 2 + ( y2 - y1 ) ** 2 ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          35
+        ],
+        "assumption": "int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) assumes x2 - x1, y2 - y1, and d all fit in a 32-bit signed int, an input range the code does not state.",
+        "suggestion": "Cast operands to double before subtracting and store d (and output coordinates) in long or BigInteger, e.g.: long d = (long) Math.sqrt(Math.pow((double) x2 - x1, 2) + Math.pow((double) y2 - y1, 2)); (or use BigInteger arithmetic and BigInteger.sqrt() for arbitrary-size inputs).",
+        "reasoning": "Even when all four inputs fit in 32-bit int, such as \"0 -2000000000 0 2000000000\", y2 - y1 overflows int before Math.pow and the resulting distance exceeds Integer.MAX_VALUE, whereas Python computes exact arbitrary-precision ints."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8
+          ],
+          "assumption": "Using scanner.nextLine() on a fresh Scanner(System.in) reads the entire input line just like Python input(\"\"), assuming stdin provides at least one line and no token-reading call like nextInt() precedes it.",
+          "suggestion": null,
+          "reasoning": "Python line 2 calls input(\"\") which reads a full line from stdin. Java lines 7-8 create a Scanner and call scanner.nextLine() directly with no prior nextInt() call, so it does not suffer from a leftover newline and matches Python's line reading."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            9
+          ],
+          "assumption": "given.split(\" \") assumes the input has no leading or trailing spaces, no tabs, and exactly one space between numbers, which the code does not enforce.",
+          "suggestion": "Replace line 9 with: String[] l1 = given.trim().isEmpty() ? new String[0] : given.trim().split(\"\\\\s+\");",
+          "reasoning": "Python given.split() splits on any run of whitespace and strips leading/trailing whitespace. Java given.split(\" \") splits on every single space, producing empty elements for leading or consecutive spaces (which then throw NumberFormatException in Integer.parseInt) and failing to split on tabs."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            10,
+            11,
+            12,
+            13
+          ],
+          "assumption": "Using int[] coords and Integer.parseInt(l1[i]) assumes every input number fits in a 32-bit signed int, an input range the code does not state.",
+          "suggestion": "Parse into BigInteger[] using new BigInteger(l1[i]) and update the coordinate and arithmetic variables (x1, y1, x2, y2, x3, y3, x4, y4, numerator, denominator) to BigInteger.",
+          "reasoning": "Python int() accepts arbitrarily large integers. Java Integer.parseInt throws NumberFormatException for inputs outside [-2147483648, 2147483647], such as \"3000000000 0 0 0\"."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            20,
+            22
+          ],
+          "assumption": "Declaring double quotient and casting (double) numerator / denominator performs floating-point division matching Python's / operator, assuming numerator and denominator fit in int.",
+          "suggestion": null,
+          "reasoning": "Python / on ints produces a 64-bit IEEE 754 float. Java casts numerator to double before dividing by denominator and stores the result in double quotient, avoiding int truncation."
+        },
+        {
+          "site_id": 4,
+          "verdict": "mismatch",
+          "translation_lines": [
+            26
+          ],
+          "assumption": "int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) assumes x2 - x1, y2 - y1, and d all fit in a 32-bit signed int, an input range the code does not state.",
+          "suggestion": "Cast operands to double before subtracting and store d (and output coordinates) in long or BigInteger, e.g.: long d = (long) Math.sqrt(Math.pow((double) x2 - x1, 2) + Math.pow((double) y2 - y1, 2)); (or use BigInteger arithmetic and BigInteger.sqrt() for arbitrary-size inputs).",
+          "reasoning": "Even when all four inputs fit in 32-bit int, such as \"-2000000000 0 2000000000 0\", x2 - x1 overflows int before Math.pow and the resulting distance exceeds Integer.MAX_VALUE, whereas Python computes exact arbitrary-precision ints."
+        },
+        {
+          "site_id": 5,
+          "verdict": "mismatch",
+          "translation_lines": [
+            35
+          ],
+          "assumption": "int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) assumes x2 - x1, y2 - y1, and d all fit in a 32-bit signed int, an input range the code does not state.",
+          "suggestion": "Cast operands to double before subtracting and store d (and output coordinates) in long or BigInteger, e.g.: long d = (long) Math.sqrt(Math.pow((double) x2 - x1, 2) + Math.pow((double) y2 - y1, 2)); (or use BigInteger arithmetic and BigInteger.sqrt() for arbitrary-size inputs).",
+          "reasoning": "Even when all four inputs fit in 32-bit int, such as \"0 -2000000000 0 2000000000\", y2 - y1 overflows int before Math.pow and the resulting distance exceeds Integer.MAX_VALUE, whereas Python computes exact arbitrary-precision ints."
+        }
+      ]
+    }
+  }
+}

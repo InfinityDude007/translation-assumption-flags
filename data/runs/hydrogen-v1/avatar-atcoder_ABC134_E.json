@@ -1,0 +1,178 @@
+{
+  "sample_id": "avatar-atcoder_ABC134_E",
+  "finished_at": "2026-11-20T08:32:23.741700Z",
+  "seconds": 111.97,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "( bad + good ) // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Java uses int mid = (bad + good) / 2, which matches Python floor division because the loop invariant (bad >= -1 and good - bad > 1) keeps bad + good non-negative, assuming bad + good does not overflow 32-bit int.",
+        "suggestion": null,
+        "reasoning": "In binarySearch, bad starts at -1 and good starts at ans.size(). Inside while (good - bad > 1), good >= bad + 2 >= 1, so bad + good >= 0. Since the dividend is non-negative and the divisor is positive, Java / and Python // produce the same result."
+      },
+      {
+        "site": {
+          "rule": "negative_index",
+          "category": "api",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "ans [ mid ] [ - 1 ]",
+          "reason": "Negative indices count from the end in Python (xs[-1] is the last item); Java throws ArrayIndexOutOfBoundsException."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "Java avoids Python negative indexing by computing ans.get(mid).size() - 1 inside ans.get(mid).get(...), assuming each inner list in ans is non-empty.",
+        "suggestion": null,
+        "reasoning": "Python ans[mid][-1] accesses the last element of ans[mid]. Java explicitly computes ans.get(mid).get(ans.get(mid).size() - 1), which accesses the last element without negative indices."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          22
+        ],
+        "assumption": "Java uses scanner.nextInt() rather than nextLine(), avoiding nextInt()/nextLine() leftover-newline issues and matching Python on well-formed single-integer lines, though it assumes no blank lines or multiple tokens appear on one line.",
+        "suggestion": null,
+        "reasoning": "Python N = int(input()) reads a line containing one integer. Java uses Scanner.nextInt() and never calls nextLine(), so on any input accepted by Python's int(input()) (one integer per line), Java reads the same token."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          22
+        ],
+        "assumption": "Java stores N in a 32-bit int via scanner.nextInt(), assuming N fits within [-2^31, 2^31 - 1], an input range the code does not state, whereas Python int() accepts arbitrary-size integers.",
+        "suggestion": "Import java.math.BigInteger, read N with BigInteger N = scanner.nextBigInteger(), and loop with for (BigInteger i = BigInteger.ZERO; i.compareTo(N) < 0; i = i.add(BigInteger.ONE)).",
+        "reasoning": "For an input outside 32-bit signed int range (such as 2147483648), Python int(input()) parses N without failing immediately, whereas Java scanner.nextInt() throws InputMismatchException."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          25
+        ],
+        "assumption": "Java uses scanner.nextInt() rather than nextLine(), avoiding leftover-newline issues and matching Python when each integer is on its own line, assuming no blank lines or multiple tokens per line.",
+        "suggestion": null,
+        "reasoning": "Python A = int(input()) reads one integer per line. Java uses Scanner.nextInt() consistently without mixing nextLine(), so it reads the same integer on any valid single-integer-per-line input."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          25
+        ],
+        "assumption": "Java stores A in a 32-bit int via scanner.nextInt(), assuming every value of A fits within [-2^31, 2^31 - 1], an input range the code does not state, whereas Python int() supports arbitrary-size integers.",
+        "suggestion": "Import java.math.BigInteger, change ans to ArrayList<ArrayList<BigInteger>>, read BigInteger A = scanner.nextBigInteger(), and update binarySearch to accept BigInteger key and compare via .compareTo(key) < 0.",
+        "reasoning": "For an input such as N = 1 and A = 3000000000, Python computes and prints 1 while Java scanner.nextInt() throws InputMismatchException because 3000000000 exceeds Integer.MAX_VALUE."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Java uses int mid = (bad + good) / 2, which matches Python floor division because the loop invariant (bad >= -1 and good - bad > 1) keeps bad + good non-negative, assuming bad + good does not overflow 32-bit int.",
+          "suggestion": null,
+          "reasoning": "In binarySearch, bad starts at -1 and good starts at ans.size(). Inside while (good - bad > 1), good >= bad + 2 >= 1, so bad + good >= 0. Since the dividend is non-negative and the divisor is positive, Java / and Python // produce the same result."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "Java avoids Python negative indexing by computing ans.get(mid).size() - 1 inside ans.get(mid).get(...), assuming each inner list in ans is non-empty.",
+          "suggestion": null,
+          "reasoning": "Python ans[mid][-1] accesses the last element of ans[mid]. Java explicitly computes ans.get(mid).get(ans.get(mid).size() - 1), which accesses the last element without negative indices."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            22
+          ],
+          "assumption": "Java uses scanner.nextInt() rather than nextLine(), avoiding nextInt()/nextLine() leftover-newline issues and matching Python on well-formed single-integer lines, though it assumes no blank lines or multiple tokens appear on one line.",
+          "suggestion": null,
+          "reasoning": "Python N = int(input()) reads a line containing one integer. Java uses Scanner.nextInt() and never calls nextLine(), so on any input accepted by Python's int(input()) (one integer per line), Java reads the same token."
+        },
+        {
+          "site_id": 3,
+          "verdict": "mismatch",
+          "translation_lines": [
+            22
+          ],
+          "assumption": "Java stores N in a 32-bit int via scanner.nextInt(), assuming N fits within [-2^31, 2^31 - 1], an input range the code does not state, whereas Python int() accepts arbitrary-size integers.",
+          "suggestion": "Import java.math.BigInteger, read N with BigInteger N = scanner.nextBigInteger(), and loop with for (BigInteger i = BigInteger.ZERO; i.compareTo(N) < 0; i = i.add(BigInteger.ONE)).",
+          "reasoning": "For an input outside 32-bit signed int range (such as 2147483648), Python int(input()) parses N without failing immediately, whereas Java scanner.nextInt() throws InputMismatchException."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            25
+          ],
+          "assumption": "Java uses scanner.nextInt() rather than nextLine(), avoiding leftover-newline issues and matching Python when each integer is on its own line, assuming no blank lines or multiple tokens per line.",
+          "suggestion": null,
+          "reasoning": "Python A = int(input()) reads one integer per line. Java uses Scanner.nextInt() consistently without mixing nextLine(), so it reads the same integer on any valid single-integer-per-line input."
+        },
+        {
+          "site_id": 5,
+          "verdict": "mismatch",
+          "translation_lines": [
+            25
+          ],
+          "assumption": "Java stores A in a 32-bit int via scanner.nextInt(), assuming every value of A fits within [-2^31, 2^31 - 1], an input range the code does not state, whereas Python int() supports arbitrary-size integers.",
+          "suggestion": "Import java.math.BigInteger, change ans to ArrayList<ArrayList<BigInteger>>, read BigInteger A = scanner.nextBigInteger(), and update binarySearch to accept BigInteger key and compare via .compareTo(key) < 0.",
+          "reasoning": "For an input such as N = 1 and A = 3000000000, Python computes and prints 1 while Java scanner.nextInt() throws InputMismatchException because 3000000000 exceeds Integer.MAX_VALUE."
+        }
+      ]
+    }
+  }
+}

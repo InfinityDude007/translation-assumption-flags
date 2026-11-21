@@ -1,0 +1,130 @@
+{
+  "sample_id": "avatar-atcoder_AGC033_B",
+  "finished_at": "2026-11-20T10:59:11.372492Z",
+  "seconds": 69.72,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7,
+          8
+        ],
+        "assumption": "Lines 6 to 8 use sc.nextInt(), which skips runs of whitespace and leading or trailing spaces like Python's split(), while assuming the first input line provides three valid 32-bit integers.",
+        "suggestion": null,
+        "reasoning": "Python line 1 uses input().split() to split on arbitrary whitespace runs and ignore leading or trailing whitespace. Java lines 6-8 use Scanner.nextInt(), whose default delimiter is any whitespace run, so it handles multiple spaces and leading/trailing whitespace identically for valid 3-integer lines."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          9,
+          10
+        ],
+        "assumption": "Lines 9 and 10 use sc.nextInt(), which skips runs of whitespace and leading or trailing spaces like Python's split(), while assuming the second input line provides two valid 32-bit integers.",
+        "suggestion": null,
+        "reasoning": "Python line 2 uses input().split() to read two integers separated by arbitrary whitespace. Java lines 9-10 use Scanner.nextInt(), which handles whitespace runs and leading/trailing spaces in the same way rather than using split(\" \")."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "Line 11 uses sc.next() instead of reading an entire line, assuming S is a non-empty single token containing no spaces (which is not enforced in the code, e.g. if N is 0 or S contains spaces).",
+        "suggestion": "Call sc.nextLine(); to consume the rest of the previous line, then use String S = sc.nextLine();",
+        "reasoning": "Python line 3 calls input(), which reads an entire line including spaces or an empty line (such as when N = 0). Java line 11 calls sc.next(), which reads a single whitespace-delimited token: if N = 0 and line 3 is empty, sc.next() throws NoSuchElementException (or consumes T); if S contains a space, sc.next() only reads the part before the space."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Line 12 uses sc.next() instead of reading an entire line, assuming T is a non-empty single token containing no spaces (which is not enforced in the code, e.g. if N is 0 or T contains spaces).",
+        "suggestion": "Replace String T = sc.next(); with String T = sc.nextLine(); (once S is also read with sc.nextLine() after consuming the prior newline).",
+        "reasoning": "Python line 4 calls input(), which reads an entire line including spaces or an empty line (such as when N = 0). Java line 12 calls sc.next(), which reads only a whitespace-delimited token and throws NoSuchElementException on an empty line or truncates T at any space."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7,
+            8
+          ],
+          "assumption": "Lines 6 to 8 use sc.nextInt(), which skips runs of whitespace and leading or trailing spaces like Python's split(), while assuming the first input line provides three valid 32-bit integers.",
+          "suggestion": null,
+          "reasoning": "Python line 1 uses input().split() to split on arbitrary whitespace runs and ignore leading or trailing whitespace. Java lines 6-8 use Scanner.nextInt(), whose default delimiter is any whitespace run, so it handles multiple spaces and leading/trailing whitespace identically for valid 3-integer lines."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            9,
+            10
+          ],
+          "assumption": "Lines 9 and 10 use sc.nextInt(), which skips runs of whitespace and leading or trailing spaces like Python's split(), while assuming the second input line provides two valid 32-bit integers.",
+          "suggestion": null,
+          "reasoning": "Python line 2 uses input().split() to read two integers separated by arbitrary whitespace. Java lines 9-10 use Scanner.nextInt(), which handles whitespace runs and leading/trailing spaces in the same way rather than using split(\" \")."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "Line 11 uses sc.next() instead of reading an entire line, assuming S is a non-empty single token containing no spaces (which is not enforced in the code, e.g. if N is 0 or S contains spaces).",
+          "suggestion": "Call sc.nextLine(); to consume the rest of the previous line, then use String S = sc.nextLine();",
+          "reasoning": "Python line 3 calls input(), which reads an entire line including spaces or an empty line (such as when N = 0). Java line 11 calls sc.next(), which reads a single whitespace-delimited token: if N = 0 and line 3 is empty, sc.next() throws NoSuchElementException (or consumes T); if S contains a space, sc.next() only reads the part before the space."
+        },
+        {
+          "site_id": 3,
+          "verdict": "mismatch",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Line 12 uses sc.next() instead of reading an entire line, assuming T is a non-empty single token containing no spaces (which is not enforced in the code, e.g. if N is 0 or T contains spaces).",
+          "suggestion": "Replace String T = sc.next(); with String T = sc.nextLine(); (once S is also read with sc.nextLine() after consuming the prior newline).",
+          "reasoning": "Python line 4 calls input(), which reads an entire line including spaces or an empty line (such as when N = 0). Java line 12 calls sc.next(), which reads only a whitespace-delimited token and throws NoSuchElementException on an empty line or truncates T at any space."
+        }
+      ]
+    }
+  }
+}
