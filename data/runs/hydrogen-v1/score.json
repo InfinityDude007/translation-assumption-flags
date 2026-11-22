@@ -9,7 +9,7 @@
     {
       "sample_id": "avatar-atcoder_ABC123_C",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         7,
         8,
@@ -28,7 +28,7 @@
     {
       "sample_id": "avatar-atcoder_ABC126_D",
       "group": "buggy",
-      "excluded": true,
+      "no_bug": true,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 0,
@@ -42,7 +42,7 @@
     {
       "sample_id": "avatar-atcoder_ABC134_E",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 2,
@@ -56,7 +56,7 @@
     {
       "sample_id": "avatar-atcoder_ABC143_D",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         15,
         20,
@@ -74,7 +74,7 @@
     {
       "sample_id": "avatar-atcoder_ABC150_C",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         32,
         34
@@ -94,7 +94,7 @@
     {
       "sample_id": "avatar-atcoder_ABC158_B",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         7,
         8,
@@ -113,7 +113,7 @@
     {
       "sample_id": "avatar-atcoder_ABC167_D",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         7
       ],
@@ -129,7 +129,7 @@
     {
       "sample_id": "avatar-atcoder_ABC178_A",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 1,
@@ -143,7 +143,7 @@
     {
       "sample_id": "avatar-atcoder_ABC178_B",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         13
       ],
@@ -159,7 +159,7 @@
     {
       "sample_id": "avatar-atcoder_AGC010_B",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         18,
         21
@@ -179,7 +179,7 @@
     {
       "sample_id": "avatar-atcoder_AGC019_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         11
       ],
@@ -195,7 +195,7 @@
     {
       "sample_id": "avatar-atcoder_AGC033_B",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 2,
@@ -209,7 +209,7 @@
     {
       "sample_id": "avatar-atcoder_AGC046_B",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         19
       ],
@@ -225,7 +225,7 @@
     {
       "sample_id": "avatar-atcoder_ARC086_B",
       "group": "buggy",
-      "excluded": true,
+      "no_bug": true,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 2,
@@ -239,7 +239,7 @@
     {
       "sample_id": "avatar-codeforces_108_B",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [
         14
@@ -255,7 +255,7 @@
     {
       "sample_id": "avatar-codeforces_148_B",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 1,
@@ -269,7 +269,7 @@
     {
       "sample_id": "avatar-codeforces_306_A",
       "group": "buggy",
-      "excluded": true,
+      "no_bug": true,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 2,
@@ -283,7 +283,7 @@
     {
       "sample_id": "avatar-codeforces_30_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         3,
         4,
@@ -301,7 +301,7 @@
     {
       "sample_id": "avatar-codeforces_387_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         18
       ],
@@ -317,7 +317,7 @@
     {
       "sample_id": "avatar-codeforces_400_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         33
       ],
@@ -333,7 +333,7 @@
     {
       "sample_id": "avatar-codeforces_459_A",
       "group": "buggy",
-      "excluded": true,
+      "no_bug": true,
       "bug_lines": [],
       "latent_lines": [
         9
@@ -349,7 +349,7 @@
     {
       "sample_id": "avatar-codeforces_569_A",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 1,
@@ -363,7 +363,7 @@
     {
       "sample_id": "avatar-codeforces_579_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         10
       ],
@@ -379,7 +379,7 @@
     {
       "sample_id": "avatar-codeforces_621_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         24
       ],
@@ -395,7 +395,7 @@
     {
       "sample_id": "avatar-codeforces_637_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         22,
         24
@@ -415,7 +415,7 @@
     {
       "sample_id": "avatar-codeforces_651_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         8,
         10,
@@ -436,7 +436,7 @@
     {
       "sample_id": "avatar-codeforces_665_A",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         12,
         13
@@ -453,7 +453,7 @@
     {
       "sample_id": "codenet-s259116349",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         15,
         16
@@ -470,7 +470,7 @@
     {
       "sample_id": "codenet-s491954463",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 0,
@@ -484,7 +484,7 @@
     {
       "sample_id": "codenet-s622795537",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [],
       "mismatch_flags": 0,
@@ -498,7 +498,7 @@
     {
       "sample_id": "codenet-s662673721",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [
         7,
@@ -515,7 +515,7 @@
     {
       "sample_id": "codenet-s764169243",
       "group": "control",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [],
       "latent_lines": [
         58,
@@ -532,7 +532,7 @@
     {
       "sample_id": "codenet-s813548165",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         7
       ],
@@ -548,7 +548,7 @@
     {
       "sample_id": "codenet-s826716211",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         47
       ],
@@ -564,7 +564,7 @@
     {
       "sample_id": "codenet-s875904659",
       "group": "buggy",
-      "excluded": false,
+      "no_bug": false,
       "bug_lines": [
         17,
         35
@@ -583,9 +583,9 @@
   ],
   "bugs": 21,
   "bugs_caught": 14,
-  "latent": 7,
-  "latent_caught": 6,
-  "mismatch_flags": 54,
-  "false_alarms": 21,
+  "latent": 8,
+  "latent_caught": 7,
+  "mismatch_flags": 62,
+  "false_alarms": 28,
   "missing": []
 }
