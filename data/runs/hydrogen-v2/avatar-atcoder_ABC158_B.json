@@ -1,0 +1,192 @@
+{
+  "sample_id": "avatar-atcoder_ABC158_B",
+  "finished_at": "2026-11-22T06:18:10.862479Z",
+  "seconds": 87.91,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          8,
+          9,
+          10
+        ],
+        "assumption": "Java uses Scanner with sc.nextInt() on lines 6 and 8-10 instead of split(\" \"), which skips leading/trailing whitespace and treats runs of whitespace as one separator, matching Python's split().",
+        "suggestion": null,
+        "reasoning": "Python line 4 defines MI() using input().split(), which is called at line 8 (N, A, B = MI()). Java inlines this using Scanner sc = new Scanner(System.in) at line 6 and three sc.nextInt() calls at lines 8-10. Scanner's default delimiter is whitespace runs, so it handles arbitrary whitespace runs and leading/trailing spaces just like Python str.split()."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "N // ( A + B )",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          13
+        ],
+        "assumption": "Java line 13 uses integer division N / (A + B) instead of Math.floorDiv, which assumes N and A + B are non-negative (or have the same sign), an input range the code does not state.",
+        "suggestion": null,
+        "reasoning": "Python line 10 computes N // (A + B), while Java line 13 computes N / (A + B). Integer / rounds toward zero rather than negative infinity, differing from // when operands have opposite signs and do not divide evenly. However, the program contains no negative constants or evidence of negative inputs, and whether N, A, B can be negative is an unstated input range."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "rep * A",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          7,
+          14
+        ],
+        "assumption": "Java declares N, A, B, ans, rep, and res as 32-bit int on line 7 and computes rep * A on line 14, assuming inputs and intermediate products fit in 32-bit signed int without wrapping.",
+        "suggestion": "Change N, A, B, ans, rep, and res on line 7 from int to long (and use sc.nextLong() on lines 8-10), or use BigInteger if inputs can exceed 64-bit long.",
+        "reasoning": "Python line 7 has the large constant 10 ** 9 + 7 (mod = 1000000007 in Java) and performs addition and multiplication on input-derived values (A + B, rep * A). Even for inputs within int range such as N = 2000000000, A = 2000000000, B = 2000000000, A + B overflows int to -294967296, making rep = -6 and rep * A overflow int to a wrong wrapped value; larger inputs like 10^12 also overflow int directly."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "rep * ( A + B )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          7,
+          15
+        ],
+        "assumption": "Java declares N, A, B, rep, and res as 32-bit int on line 7 and computes rep * (A + B) on line 15, assuming A + B and rep * (A + B) never overflow 32-bit int.",
+        "suggestion": "Change N, A, B, ans, rep, and res on line 7 from int to long (and use sc.nextLong() on lines 8-10), or use BigInteger if inputs can exceed 64-bit long.",
+        "reasoning": "With the large constant mod = 1000000007 and arithmetic summing and multiplying input values, Java 32-bit int arithmetic wraps on overflow. For example, for N = 2000000000, A = 2000000000, B = 2000000000, Python gives rep = 0 and res = 2000000000, whereas Java overflows A + B to -294967296, giving rep = -6 and a wrong res; inputs above 2^31 - 1 also overflow."
+      }
+    ],
+    "dropped": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      }
+    ],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "Python's def I() on line 3 is an unused helper function that was omitted from the Java translation, so no matching Java code exists.",
+          "suggestion": null,
+          "reasoning": "Python line 3 defines I(), which is never called in main(). The Java program omits this unused helper and only reads N, A, B via sc.nextInt() (corresponding to MI() on line 8). Because there are no matching Java lines for def I(), return empty translation_lines and verdict unclear."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "Python's def I() on line 3 is an unused helper function that was omitted from the Java translation, so no matching Java code exists for int(input()) there.",
+          "suggestion": null,
+          "reasoning": "Python line 3 defines I() which calls int(input()), but I() is never called anywhere in the Python program and is not translated in Java. Thus no Java lines implement this site."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            8,
+            9,
+            10
+          ],
+          "assumption": "Java uses Scanner with sc.nextInt() on lines 6 and 8-10 instead of split(\" \"), which skips leading/trailing whitespace and treats runs of whitespace as one separator, matching Python's split().",
+          "suggestion": null,
+          "reasoning": "Python line 4 defines MI() using input().split(), which is called at line 8 (N, A, B = MI()). Java inlines this using Scanner sc = new Scanner(System.in) at line 6 and three sc.nextInt() calls at lines 8-10. Scanner's default delimiter is whitespace runs, so it handles arbitrary whitespace runs and leading/trailing spaces just like Python str.split()."
+        },
+        {
+          "site_id": 3,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "Python's def LI() on line 5 is an unused helper function that was omitted from the Java translation, so no matching Java code exists.",
+          "suggestion": null,
+          "reasoning": "Python line 5 defines LI(), which is never called anywhere in the program and has no corresponding code in the Java translation."
+        },
+        {
+          "site_id": 4,
+          "verdict": "unclear",
+          "translation_lines": [
+            13
+          ],
+          "assumption": "Java line 13 uses integer division N / (A + B) instead of Math.floorDiv, which assumes N and A + B are non-negative (or have the same sign), an input range the code does not state.",
+          "suggestion": null,
+          "reasoning": "Python line 10 computes N // (A + B), while Java line 13 computes N / (A + B). Integer / rounds toward zero rather than negative infinity, differing from // when operands have opposite signs and do not divide evenly. However, the program contains no negative constants or evidence of negative inputs, and whether N, A, B can be negative is an unstated input range."
+        },
+        {
+          "site_id": 5,
+          "verdict": "mismatch",
+          "translation_lines": [
+            7,
+            14
+          ],
+          "assumption": "Java declares N, A, B, ans, rep, and res as 32-bit int on line 7 and computes rep * A on line 14, assuming inputs and intermediate products fit in 32-bit signed int without wrapping.",
+          "suggestion": "Change N, A, B, ans, rep, and res on line 7 from int to long (and use sc.nextLong() on lines 8-10), or use BigInteger if inputs can exceed 64-bit long.",
+          "reasoning": "Python line 7 has the large constant 10 ** 9 + 7 (mod = 1000000007 in Java) and performs addition and multiplication on input-derived values (A + B, rep * A). Even for inputs within int range such as N = 2000000000, A = 2000000000, B = 2000000000, A + B overflows int to -294967296, making rep = -6 and rep * A overflow int to a wrong wrapped value; larger inputs like 10^12 also overflow int directly."
+        },
+        {
+          "site_id": 6,
+          "verdict": "mismatch",
+          "translation_lines": [
+            7,
+            15
+          ],
+          "assumption": "Java declares N, A, B, rep, and res as 32-bit int on line 7 and computes rep * (A + B) on line 15, assuming A + B and rep * (A + B) never overflow 32-bit int.",
+          "suggestion": "Change N, A, B, ans, rep, and res on line 7 from int to long (and use sc.nextLong() on lines 8-10), or use BigInteger if inputs can exceed 64-bit long.",
+          "reasoning": "With the large constant mod = 1000000007 and arithmetic summing and multiplying input values, Java 32-bit int arithmetic wraps on overflow. For example, for N = 2000000000, A = 2000000000, B = 2000000000, Python gives rep = 0 and res = 2000000000, whereas Java overflows A + B to -294967296, giving rep = -6 and a wrong res; inputs above 2^31 - 1 also overflow."
+        }
+      ]
+    }
+  }
+}

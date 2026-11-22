@@ -1,0 +1,297 @@
+{
+  "sample_id": "avatar-atcoder_AGC010_B",
+  "finished_at": "2026-11-22T06:21:23.739872Z",
+  "seconds": 127.5,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          9
+        ],
+        "assumption": "Using scanner.nextInt() at lines 6 and 9 avoids mixing nextInt() with nextLine() and assumes the input provides n followed by exactly n whitespace-separated integers.",
+        "suggestion": null,
+        "reasoning": "Python reads two lines via input(), expecting n on line 1 and n ints on line 2. Java reads all values using Scanner.nextInt() on lines 6 and 9, so there is no nextLine() after nextInt() bug."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          6
+        ],
+        "assumption": "Calling scanner.nextInt() into int n at line 6 assumes n fits in a 32-bit signed int (-2147483648 to 2147483647), a range the code does not state.",
+        "suggestion": null,
+        "reasoning": "Line 6 parses n with scanner.nextInt(). Since n is used as the array length in new int[n] and there are no large constants in the code, the input range for n itself is unstated."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "sum ( a ) % ( n * ( n + 1 ) / 2 )",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          18
+        ],
+        "assumption": "At line 18, sum % (n * (n + 1) / 2) != 0 handles the % sign difference by testing only for non-zero remainder, but it computes n * (n + 1) as a 32-bit int and assumes n <= 46340 so it will not overflow.",
+        "suggestion": "Change if (sum % (n * (n + 1) / 2) != 0) { to if (sum % ((long) n * (n + 1) / 2) != 0) { on line 18.",
+        "reasoning": "Comparing the remainder to 0 makes the sign of % irrelevant. However, n * (n + 1) multiplies input n as an int and overflows for n >= 46341 (for example, n = 50000 and a = [1, 2, ..., 50000] gives sum = 1250025000, where Python takes the else branch and prints YES while Java overflows n * (n + 1) / 2 to -897458648 and prints NO)."
+      },
+      {
+        "site": {
+          "rule": "sum_overflow",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "sum ( a )",
+          "reason": "A Python sum() of ints never overflows; a Java int accumulator wraps silently."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "assumption": "Lines 13 to 16 accumulate the elements of a into a 64-bit long sum variable rather than an int, assuming the total sum of the int array fits in a signed 64-bit long.",
+        "suggestion": null,
+        "reasoning": "Java uses long sum = 0 and accumulates a[i] into sum in lines 13-16, preventing 32-bit int overflow."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "sum ( a ) / ( n * ( n + 1 ) / 2 )",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          21
+        ],
+        "assumption": "Line 21 evaluates long k = sum / (n * (n + 1) / 2) only when sum is divisible by the denominator so integer division matches Python float division, but n * (n + 1) uses 32-bit int arithmetic and overflows for n >= 46341.",
+        "suggestion": "Change long k = sum / (n * (n + 1) / 2); to long k = sum / ((long) n * (n + 1) / 2); on line 21.",
+        "reasoning": "Because line 21 is inside the else branch where the remainder is 0, truncating division produces the same mathematical value as Python / for values in range. However, n * (n + 1) overflows int for n >= 46341 (e.g., n = 50000 gives -897458648 as the divisor instead of 1250025000), yielding the wrong quotient k."
+      },
+      {
+        "site": {
+          "rule": "sum_overflow",
+          "category": "numeric",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "sum ( a )",
+          "reason": "A Python sum() of ints never overflows; a Java int accumulator wraps silently."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "assumption": "Lines 13 to 16 compute sum(a) using a 64-bit long accumulator long sum, assuming the sum of the array elements fits in a 64-bit long.",
+        "suggestion": null,
+        "reasoning": "The same long sum accumulated at lines 13-16 is reused at line 21, avoiding 32-bit int overflow."
+      },
+      {
+        "site": {
+          "rule": "slicing",
+          "category": "api",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "a [ 1 : ]",
+          "reason": "Python slicing clamps out-of-range bounds ([1, 2][5:9] is []); Java subList and substring throw, and Arrays.copyOfRange pads with zeros."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          23,
+          24,
+          25,
+          26,
+          34,
+          35,
+          36,
+          37,
+          38
+        ],
+        "assumption": "Lines 23 to 26 and 34 to 38 replace Python slicing a[1:] and zip(a[1:], a) with direct index arithmetic a[i + 1], a[0], and a[(i + 1) % n], assuming n >= 1.",
+        "suggestion": null,
+        "reasoning": "Instead of slicing, Java loops from 0 to n - 2 using a[i + 1] and a[i] and handles the wrap-around pair (a[0], a[n - 1]) explicitly on line 26, and uses (i + 1) % n on line 35. For n = 0 both languages fail before or at accessing a[0]."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "( k - i + j ) % n",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          24,
+          26
+        ],
+        "assumption": "Lines 24 and 26 use Java's % operator on k - a[i + 1] + a[i] and k - a[0] + a[n - 1], assuming those dividends are non-negative so Java % matches Python %.",
+        "suggestion": "Replace (k - a[i + 1] + a[i]) % n with Math.floorMod(k - a[i + 1] + a[i], n) on line 24 and (k - a[0] + a[n - 1]) % n with Math.floorMod(k - a[0] + a[n - 1], n) on line 26.",
+        "reasoning": "When k - a[i + 1] + a[i] is negative and not divisible by n, Java % yields a negative remainder while Python % yields a positive remainder in [1, n - 1]. For n = 3 and a = [1, 4, 1], k = 1 and the dividends are -2, 4, 1; Python gives remainders [1, 1, 1] summing to 3 (printing NO), whereas Java gives [-2, 1, 1] summing to 0 in sumDiff (and line 35 also treats -2 / 3 == 0 as >= 0, printing YES)."
+      },
+      {
+        "site": {
+          "rule": "sum_overflow",
+          "category": "numeric",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "sum ( [ ( k - i + j ) % n for i , j in zip ( a [ 1 : ] , a )",
+          "reason": "A Python sum() of ints never overflows; a Java int accumulator wraps silently."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          28,
+          29,
+          30,
+          31
+        ],
+        "assumption": "Lines 28 to 31 sum the remainders into a 64-bit long accumulator long sumDiff, which safely holds up to n * (n - 1) for any int array length n.",
+        "suggestion": null,
+        "reasoning": "Each entry of diff has magnitude less than n, and n is an int, so the sum of n remainders cannot exceed n * (n - 1) < 2^62 and fits in long sumDiff without overflowing."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            9
+          ],
+          "assumption": "Using scanner.nextInt() at lines 6 and 9 avoids mixing nextInt() with nextLine() and assumes the input provides n followed by exactly n whitespace-separated integers.",
+          "suggestion": null,
+          "reasoning": "Python reads two lines via input(), expecting n on line 1 and n ints on line 2. Java reads all values using Scanner.nextInt() on lines 6 and 9, so there is no nextLine() after nextInt() bug."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            6
+          ],
+          "assumption": "Calling scanner.nextInt() into int n at line 6 assumes n fits in a 32-bit signed int (-2147483648 to 2147483647), a range the code does not state.",
+          "suggestion": null,
+          "reasoning": "Line 6 parses n with scanner.nextInt(). Since n is used as the array length in new int[n] and there are no large constants in the code, the input range for n itself is unstated."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            18
+          ],
+          "assumption": "At line 18, sum % (n * (n + 1) / 2) != 0 handles the % sign difference by testing only for non-zero remainder, but it computes n * (n + 1) as a 32-bit int and assumes n <= 46340 so it will not overflow.",
+          "suggestion": "Change if (sum % (n * (n + 1) / 2) != 0) { to if (sum % ((long) n * (n + 1) / 2) != 0) { on line 18.",
+          "reasoning": "Comparing the remainder to 0 makes the sign of % irrelevant. However, n * (n + 1) multiplies input n as an int and overflows for n >= 46341 (for example, n = 50000 and a = [1, 2, ..., 50000] gives sum = 1250025000, where Python takes the else branch and prints YES while Java overflows n * (n + 1) / 2 to -897458648 and prints NO)."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            13,
+            14,
+            15,
+            16
+          ],
+          "assumption": "Lines 13 to 16 accumulate the elements of a into a 64-bit long sum variable rather than an int, assuming the total sum of the int array fits in a signed 64-bit long.",
+          "suggestion": null,
+          "reasoning": "Java uses long sum = 0 and accumulates a[i] into sum in lines 13-16, preventing 32-bit int overflow."
+        },
+        {
+          "site_id": 4,
+          "verdict": "mismatch",
+          "translation_lines": [
+            21
+          ],
+          "assumption": "Line 21 evaluates long k = sum / (n * (n + 1) / 2) only when sum is divisible by the denominator so integer division matches Python float division, but n * (n + 1) uses 32-bit int arithmetic and overflows for n >= 46341.",
+          "suggestion": "Change long k = sum / (n * (n + 1) / 2); to long k = sum / ((long) n * (n + 1) / 2); on line 21.",
+          "reasoning": "Because line 21 is inside the else branch where the remainder is 0, truncating division produces the same mathematical value as Python / for values in range. However, n * (n + 1) overflows int for n >= 46341 (e.g., n = 50000 gives -897458648 as the divisor instead of 1250025000), yielding the wrong quotient k."
+        },
+        {
+          "site_id": 5,
+          "verdict": "handled",
+          "translation_lines": [
+            13,
+            14,
+            15,
+            16
+          ],
+          "assumption": "Lines 13 to 16 compute sum(a) using a 64-bit long accumulator long sum, assuming the sum of the array elements fits in a 64-bit long.",
+          "suggestion": null,
+          "reasoning": "The same long sum accumulated at lines 13-16 is reused at line 21, avoiding 32-bit int overflow."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            23,
+            24,
+            25,
+            26,
+            34,
+            35,
+            36,
+            37,
+            38
+          ],
+          "assumption": "Lines 23 to 26 and 34 to 38 replace Python slicing a[1:] and zip(a[1:], a) with direct index arithmetic a[i + 1], a[0], and a[(i + 1) % n], assuming n >= 1.",
+          "suggestion": null,
+          "reasoning": "Instead of slicing, Java loops from 0 to n - 2 using a[i + 1] and a[i] and handles the wrap-around pair (a[0], a[n - 1]) explicitly on line 26, and uses (i + 1) % n on line 35. For n = 0 both languages fail before or at accessing a[0]."
+        },
+        {
+          "site_id": 7,
+          "verdict": "mismatch",
+          "translation_lines": [
+            24,
+            26
+          ],
+          "assumption": "Lines 24 and 26 use Java's % operator on k - a[i + 1] + a[i] and k - a[0] + a[n - 1], assuming those dividends are non-negative so Java % matches Python %.",
+          "suggestion": "Replace (k - a[i + 1] + a[i]) % n with Math.floorMod(k - a[i + 1] + a[i], n) on line 24 and (k - a[0] + a[n - 1]) % n with Math.floorMod(k - a[0] + a[n - 1], n) on line 26.",
+          "reasoning": "When k - a[i + 1] + a[i] is negative and not divisible by n, Java % yields a negative remainder while Python % yields a positive remainder in [1, n - 1]. For n = 3 and a = [1, 4, 1], k = 1 and the dividends are -2, 4, 1; Python gives remainders [1, 1, 1] summing to 3 (printing NO), whereas Java gives [-2, 1, 1] summing to 0 in sumDiff (and line 35 also treats -2 / 3 == 0 as >= 0, printing YES)."
+        },
+        {
+          "site_id": 8,
+          "verdict": "handled",
+          "translation_lines": [
+            28,
+            29,
+            30,
+            31
+          ],
+          "assumption": "Lines 28 to 31 sum the remainders into a 64-bit long accumulator long sumDiff, which safely holds up to n * (n - 1) for any int array length n.",
+          "suggestion": null,
+          "reasoning": "Each entry of diff has magnitude less than n, and n is an int, so the sum of n remainders cannot exceed n * (n - 1) < 2^62 and fits in long sumDiff without overflowing."
+        }
+      ]
+    }
+  }
+}

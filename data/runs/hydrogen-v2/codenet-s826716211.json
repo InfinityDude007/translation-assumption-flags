@@ -1,0 +1,82 @@
+{
+  "sample_id": "codenet-s826716211",
+  "finished_at": "2026-11-22T07:40:29.067957Z",
+  "seconds": 99.8,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          9,
+          46,
+          47,
+          48
+        ],
+        "assumption": "The call to input() on line 9 delegates to System.console().readLine() on line 47, which assumes the program is attached to an interactive console and stdin/stdout are not redirected.",
+        "suggestion": "Replace System.console().readLine() in input() with a static BufferedReader wrapping InputStreamReader(System.in) (or a static Scanner calling nextLine()), so reading whole lines works for both console and redirected input.",
+        "reasoning": "Python's input() reads a line from sys.stdin whether stdin is an interactive terminal, a pipe, or a redirected file. In Java, System.console() returns null whenever standard input or output is redirected (such as in automated judges, IDEs, or file redirection), causing System.console().readLine() on line 47 to throw a NullPointerException."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          10,
+          46,
+          47,
+          48
+        ],
+        "assumption": "The call to input() on line 10 delegates to System.console().readLine() on line 47, which assumes an interactive console is available and stdin/stdout are not redirected.",
+        "suggestion": "Replace System.console().readLine() in input() with a static BufferedReader wrapping InputStreamReader(System.in) (or a static Scanner calling nextLine()), so reading whole lines works for both console and redirected input.",
+        "reasoning": "Python's input() reads a line from sys.stdin regardless of whether input is piped or interactive. Java's System.console() returns null when stdin or stdout is redirected, throwing a NullPointerException at line 47."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "mismatch",
+          "translation_lines": [
+            9,
+            46,
+            47,
+            48
+          ],
+          "assumption": "The call to input() on line 9 delegates to System.console().readLine() on line 47, which assumes the program is attached to an interactive console and stdin/stdout are not redirected.",
+          "suggestion": "Replace System.console().readLine() in input() with a static BufferedReader wrapping InputStreamReader(System.in) (or a static Scanner calling nextLine()), so reading whole lines works for both console and redirected input.",
+          "reasoning": "Python's input() reads a line from sys.stdin whether stdin is an interactive terminal, a pipe, or a redirected file. In Java, System.console() returns null whenever standard input or output is redirected (such as in automated judges, IDEs, or file redirection), causing System.console().readLine() on line 47 to throw a NullPointerException."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            10,
+            46,
+            47,
+            48
+          ],
+          "assumption": "The call to input() on line 10 delegates to System.console().readLine() on line 47, which assumes an interactive console is available and stdin/stdout are not redirected.",
+          "suggestion": "Replace System.console().readLine() in input() with a static BufferedReader wrapping InputStreamReader(System.in) (or a static Scanner calling nextLine()), so reading whole lines works for both console and redirected input.",
+          "reasoning": "Python's input() reads a line from sys.stdin regardless of whether input is piped or interactive. Java's System.console() returns null when stdin or stdout is redirected, throwing a NullPointerException at line 47."
+        }
+      ]
+    }
+  }
+}

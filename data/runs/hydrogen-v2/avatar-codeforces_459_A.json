@@ -1,0 +1,188 @@
+{
+  "sample_id": "avatar-codeforces_459_A",
+  "finished_at": "2026-11-22T06:36:22.468665Z",
+  "seconds": 92.95,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( \"\" )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8
+        ],
+        "assumption": "The Java code uses Scanner.nextLine() as its first input call on line 8, which reads an entire line just like Python's input(\"\") without being affected by leftover newlines from token-based methods like nextInt().",
+        "suggestion": null,
+        "reasoning": "Python line 2 reads a whole line via input(\"\"). Java lines 7-8 create a Scanner and immediately call scanner.nextLine(), which reads the whole line cleanly."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "given.split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          9
+        ],
+        "assumption": "Java's given.split(\" \") on line 9 assumes the input line contains only single spaces between tokens and no leading or trailing spaces, unlike Python's given.split() which splits on arbitrary whitespace runs and strips leading/trailing whitespace.",
+        "suggestion": "Change given.split(\" \") to given.trim().split(\"\\\\s+\").",
+        "reasoning": "If the input is \" 0 0 0 1\" or \"0  0 0 1\", Python split() produces [\"0\", \"0\", \"0\", \"1\"], whereas Java given.split(\" \") produces empty string elements \"\" that cause Integer.parseInt to throw NumberFormatException."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "int ( x )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "assumption": "The int[] coords array and Integer.parseInt(l1[i]) on lines 10-13 assume all input coordinates fit within the 32-bit signed int range (-2^31 to 2^31 - 1), whereas the input range is not stated in the program.",
+        "suggestion": null,
+        "reasoning": "Python int(x) accepts arbitrary-size integers. The Python source does not state an input bound or contain large constants like 10**9 or 10**18 that prove inputs themselves exceed int, so per the rules this unstated input range is unclear."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "numerator / denominator",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          20,
+          22
+        ],
+        "assumption": "Line 22 computes (double) numerator / denominator into double quotient (line 20), which avoids integer truncation and matches Python's floating-point division on int operands.",
+        "suggestion": null,
+        "reasoning": "Python line 12 performs true division returning a 64-bit float. Java line 22 casts numerator to double before dividing by denominator, yielding the same 64-bit IEEE 754 floating-point behavior for 32-bit int operands."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "int ( math.sqrt ( ( x2 - x1 ) ** 2 + ( y2 - y1 ) ** 2 ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          26
+        ],
+        "assumption": "Java's int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) on line 26 assumes both the subtraction x2 - x1 and the resulting distance d fit in a 32-bit signed int, which fails for valid int inputs like x1 = -2000000000, y1 = 0, x2 = 2000000000, y2 = 0.",
+        "suggestion": "Declare x3, y3, x4, y4 as long (line 24) and change line 26 to: long d = (long) Math.sqrt(Math.pow((long) x2 - x1, 2) + Math.pow((long) y2 - y1, 2));",
+        "reasoning": "Even when x1 and x2 are valid 32-bit ints (e.g., -2000000000 and 2000000000), x2 - x1 overflows 32-bit int in Java before Math.pow is called, and the true distance 4000000000 exceeds int d (and y1 + d / y2 + d also exceed int). Python computes (x2 - x1) ** 2 + (y2 - y1) ** 2 and int(...) without 32-bit overflow."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 23,
+          "end_line": 23,
+          "snippet": "int ( math.sqrt ( ( x2 - x1 ) ** 2 + ( y2 - y1 ) ** 2 ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          35
+        ],
+        "assumption": "Java's int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) on line 35 assumes both the subtraction y2 - y1 and the resulting distance d fit in a 32-bit signed int, which fails for valid int inputs like x1 = 0, y1 = -2000000000, x2 = 0, y2 = 2000000000.",
+        "suggestion": "Declare x3, y3, x4, y4 as long (line 24) and change line 35 to: long d = (long) Math.sqrt(Math.pow((long) x2 - x1, 2) + Math.pow((long) y2 - y1, 2));",
+        "reasoning": "Even when y1 and y2 are valid 32-bit ints (e.g., -2000000000 and 2000000000), y2 - y1 overflows 32-bit int in Java before Math.pow is called, and the true distance 4000000000 exceeds int d (and x1 + d / x2 + d also exceed int). Python computes (x2 - x1) ** 2 + (y2 - y1) ** 2 and int(...) without 32-bit overflow."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8
+          ],
+          "assumption": "The Java code uses Scanner.nextLine() as its first input call on line 8, which reads an entire line just like Python's input(\"\") without being affected by leftover newlines from token-based methods like nextInt().",
+          "suggestion": null,
+          "reasoning": "Python line 2 reads a whole line via input(\"\"). Java lines 7-8 create a Scanner and immediately call scanner.nextLine(), which reads the whole line cleanly."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            9
+          ],
+          "assumption": "Java's given.split(\" \") on line 9 assumes the input line contains only single spaces between tokens and no leading or trailing spaces, unlike Python's given.split() which splits on arbitrary whitespace runs and strips leading/trailing whitespace.",
+          "suggestion": "Change given.split(\" \") to given.trim().split(\"\\\\s+\").",
+          "reasoning": "If the input is \" 0 0 0 1\" or \"0  0 0 1\", Python split() produces [\"0\", \"0\", \"0\", \"1\"], whereas Java given.split(\" \") produces empty string elements \"\" that cause Integer.parseInt to throw NumberFormatException."
+        },
+        {
+          "site_id": 2,
+          "verdict": "unclear",
+          "translation_lines": [
+            10,
+            11,
+            12,
+            13
+          ],
+          "assumption": "The int[] coords array and Integer.parseInt(l1[i]) on lines 10-13 assume all input coordinates fit within the 32-bit signed int range (-2^31 to 2^31 - 1), whereas the input range is not stated in the program.",
+          "suggestion": null,
+          "reasoning": "Python int(x) accepts arbitrary-size integers. The Python source does not state an input bound or contain large constants like 10**9 or 10**18 that prove inputs themselves exceed int, so per the rules this unstated input range is unclear."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            20,
+            22
+          ],
+          "assumption": "Line 22 computes (double) numerator / denominator into double quotient (line 20), which avoids integer truncation and matches Python's floating-point division on int operands.",
+          "suggestion": null,
+          "reasoning": "Python line 12 performs true division returning a 64-bit float. Java line 22 casts numerator to double before dividing by denominator, yielding the same 64-bit IEEE 754 floating-point behavior for 32-bit int operands."
+        },
+        {
+          "site_id": 4,
+          "verdict": "mismatch",
+          "translation_lines": [
+            26
+          ],
+          "assumption": "Java's int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) on line 26 assumes both the subtraction x2 - x1 and the resulting distance d fit in a 32-bit signed int, which fails for valid int inputs like x1 = -2000000000, y1 = 0, x2 = 2000000000, y2 = 0.",
+          "suggestion": "Declare x3, y3, x4, y4 as long (line 24) and change line 26 to: long d = (long) Math.sqrt(Math.pow((long) x2 - x1, 2) + Math.pow((long) y2 - y1, 2));",
+          "reasoning": "Even when x1 and x2 are valid 32-bit ints (e.g., -2000000000 and 2000000000), x2 - x1 overflows 32-bit int in Java before Math.pow is called, and the true distance 4000000000 exceeds int d (and y1 + d / y2 + d also exceed int). Python computes (x2 - x1) ** 2 + (y2 - y1) ** 2 and int(...) without 32-bit overflow."
+        },
+        {
+          "site_id": 5,
+          "verdict": "mismatch",
+          "translation_lines": [
+            35
+          ],
+          "assumption": "Java's int d = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) on line 35 assumes both the subtraction y2 - y1 and the resulting distance d fit in a 32-bit signed int, which fails for valid int inputs like x1 = 0, y1 = -2000000000, x2 = 0, y2 = 2000000000.",
+          "suggestion": "Declare x3, y3, x4, y4 as long (line 24) and change line 35 to: long d = (long) Math.sqrt(Math.pow((long) x2 - x1, 2) + Math.pow((long) y2 - y1, 2));",
+          "reasoning": "Even when y1 and y2 are valid 32-bit ints (e.g., -2000000000 and 2000000000), y2 - y1 overflows 32-bit int in Java before Math.pow is called, and the true distance 4000000000 exceeds int d (and x1 + d / x2 + d also exceed int). Python computes (x2 - x1) ** 2 + (y2 - y1) ** 2 and int(...) without 32-bit overflow."
+        }
+      ]
+    }
+  }
+}

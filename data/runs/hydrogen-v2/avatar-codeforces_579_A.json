@@ -1,0 +1,126 @@
+{
+  "sample_id": "avatar-codeforces_579_A",
+  "finished_at": "2026-11-22T07:10:10.157722Z",
+  "seconds": 109.23,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8
+        ],
+        "assumption": "Lines 7 and 8 use Scanner.nextInt() to read a single integer token, assuming the input provides one integer and there are no subsequent nextLine() calls affected by leftover newline characters.",
+        "suggestion": null,
+        "reasoning": "Python line 2 calls input() once to read a single integer line. Java lines 7-8 initialize Scanner and call input.nextInt(). Since only a single integer token is read, Scanner whitespace tokenization behaves identically for valid single-integer inputs."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Line 8 declares int n = input.nextInt(), assuming the input value fits in a 32-bit signed int (-2147483648 to 2147483647), whereas Python int() accepts arbitrary-precision integers and the source gives no explicit input bound.",
+        "suggestion": null,
+        "reasoning": "Python int(input()) has unlimited precision, while Java Scanner.nextInt() throws InputMismatchException outside 32-bit int range. The Python code has no large constants or big-integer arithmetic indicating n exceeds int, so the input range is unstated and the verdict is unclear."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "math.log2 ( n ) % 1",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Line 10 uses Math.log(n) / Math.log(2) % 1 != 0, assuming n is positive (so the % dividend is non-negative) and that floating-point division of natural logarithms produces exact integers for all powers of 2.",
+        "suggestion": "Replace Math.log(n) / Math.log(2) % 1 != 0 with Integer.bitCount(n) != 1 (and add if (n <= 0) throw new IllegalArgumentException(); before the loop if non-positive inputs must error as in Python).",
+        "reasoning": "For n >= 1, Math.log(n) / Math.log(2) is non-negative so the % sign difference does not occur, though n <= 0 produces NaN % 1 != 0 (infinite loop) instead of Python's ValueError. More importantly, for positive powers of 2 such as n = 134217728 (2^27), Math.log(n) / Math.log(2) suffers floating-point rounding error (evaluating slightly below 27.0), causing % 1 != 0 to be true in Java while Python's math.log2(n) % 1 is 0.0 (false)."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 6,
+          "end_line": 6,
+          "snippet": "2 ** ( int ( math.log2 ( n ) ) )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Line 12 computes Math.pow(2, (int) (Math.log(n) / Math.log(2))) and subtracts it from int n, assuming n fits in int so that the power of 2 (which is at most n) fits in both double and int without overflow.",
+        "suggestion": null,
+        "reasoning": "2 ** int(math.log2(n)) is always <= n for positive n. Assuming n fits in int (covered at site 1), the power of 2 is at most 2^30, which is exact in double from Math.pow and does not overflow int when subtracted via n -= ... ."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8
+          ],
+          "assumption": "Lines 7 and 8 use Scanner.nextInt() to read a single integer token, assuming the input provides one integer and there are no subsequent nextLine() calls affected by leftover newline characters.",
+          "suggestion": null,
+          "reasoning": "Python line 2 calls input() once to read a single integer line. Java lines 7-8 initialize Scanner and call input.nextInt(). Since only a single integer token is read, Scanner whitespace tokenization behaves identically for valid single-integer inputs."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Line 8 declares int n = input.nextInt(), assuming the input value fits in a 32-bit signed int (-2147483648 to 2147483647), whereas Python int() accepts arbitrary-precision integers and the source gives no explicit input bound.",
+          "suggestion": null,
+          "reasoning": "Python int(input()) has unlimited precision, while Java Scanner.nextInt() throws InputMismatchException outside 32-bit int range. The Python code has no large constants or big-integer arithmetic indicating n exceeds int, so the input range is unstated and the verdict is unclear."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Line 10 uses Math.log(n) / Math.log(2) % 1 != 0, assuming n is positive (so the % dividend is non-negative) and that floating-point division of natural logarithms produces exact integers for all powers of 2.",
+          "suggestion": "Replace Math.log(n) / Math.log(2) % 1 != 0 with Integer.bitCount(n) != 1 (and add if (n <= 0) throw new IllegalArgumentException(); before the loop if non-positive inputs must error as in Python).",
+          "reasoning": "For n >= 1, Math.log(n) / Math.log(2) is non-negative so the % sign difference does not occur, though n <= 0 produces NaN % 1 != 0 (infinite loop) instead of Python's ValueError. More importantly, for positive powers of 2 such as n = 134217728 (2^27), Math.log(n) / Math.log(2) suffers floating-point rounding error (evaluating slightly below 27.0), causing % 1 != 0 to be true in Java while Python's math.log2(n) % 1 is 0.0 (false)."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Line 12 computes Math.pow(2, (int) (Math.log(n) / Math.log(2))) and subtracts it from int n, assuming n fits in int so that the power of 2 (which is at most n) fits in both double and int without overflow.",
+          "suggestion": null,
+          "reasoning": "2 ** int(math.log2(n)) is always <= n for positive n. Assuming n fits in int (covered at site 1), the power of 2 is at most 2^30, which is exact in double from Math.pow and does not overflow int when subtracted via n -= ... ."
+        }
+      ]
+    }
+  }
+}

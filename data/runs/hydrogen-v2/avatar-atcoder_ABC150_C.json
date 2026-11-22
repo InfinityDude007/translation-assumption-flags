@@ -1,0 +1,126 @@
+{
+  "sample_id": "avatar-atcoder_ABC150_C",
+  "finished_at": "2026-11-22T06:16:36.953322Z",
+  "seconds": 24.86,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10,
+          11
+        ],
+        "assumption": "Lines 10 and 11 use scanner.nextInt() followed by scanner.nextLine() to consume the remainder of the first line, assuming the first line contains only the integer n and there are no leading blank lines.",
+        "suggestion": null,
+        "reasoning": "Python input() reads the entire first line. Java uses scanner.nextInt() on line 10 and immediately calls scanner.nextLine() on line 11 to discard the trailing newline so that lines 12 and 13 read the following lines properly."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Line 10 declares int n and calls scanner.nextInt(), assuming n fits within a signed 32-bit int (-2^31 to 2^31 - 1), a range that the code does not explicitly state.",
+        "suggestion": null,
+        "reasoning": "Python int() accepts arbitrarily large integers while Java scanner.nextInt() only accepts 32-bit ints. There is no evidence in the program that n exceeds int range (especially since all permutations of 1..n are generated), so by rule this is unclear rather than a mismatch."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Line 12 uses scanner.nextLine().split(\" \") before Integer::parseInt, assuming values are separated by single ASCII spaces with no leading spaces, repeated spaces, or tabs.",
+        "suggestion": "Replace scanner.nextLine().split(\" \") on line 12 with scanner.nextLine().trim().split(\"\\\\s+\").",
+        "reasoning": "Python input().split() splits on any run of whitespace and strips leading and trailing whitespace. On line 12, split(\" \") keeps leading empty strings, produces empty strings for consecutive spaces, and does not split on tabs, causing Integer::parseInt to throw NumberFormatException."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          13
+        ],
+        "assumption": "Line 13 uses scanner.nextLine().split(\" \") before Integer::parseInt, assuming values are separated by single ASCII spaces with no leading spaces, repeated spaces, or tabs.",
+        "suggestion": "Replace scanner.nextLine().split(\" \") on line 13 with scanner.nextLine().trim().split(\"\\\\s+\").",
+        "reasoning": "Python input().split() splits on any run of whitespace and strips leading and trailing whitespace. On line 13, split(\" \") keeps leading empty strings, produces empty strings for consecutive spaces, and does not split on tabs, causing Integer::parseInt to throw NumberFormatException."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            10,
+            11
+          ],
+          "assumption": "Lines 10 and 11 use scanner.nextInt() followed by scanner.nextLine() to consume the remainder of the first line, assuming the first line contains only the integer n and there are no leading blank lines.",
+          "suggestion": null,
+          "reasoning": "Python input() reads the entire first line. Java uses scanner.nextInt() on line 10 and immediately calls scanner.nextLine() on line 11 to discard the trailing newline so that lines 12 and 13 read the following lines properly."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Line 10 declares int n and calls scanner.nextInt(), assuming n fits within a signed 32-bit int (-2^31 to 2^31 - 1), a range that the code does not explicitly state.",
+          "suggestion": null,
+          "reasoning": "Python int() accepts arbitrarily large integers while Java scanner.nextInt() only accepts 32-bit ints. There is no evidence in the program that n exceeds int range (especially since all permutations of 1..n are generated), so by rule this is unclear rather than a mismatch."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Line 12 uses scanner.nextLine().split(\" \") before Integer::parseInt, assuming values are separated by single ASCII spaces with no leading spaces, repeated spaces, or tabs.",
+          "suggestion": "Replace scanner.nextLine().split(\" \") on line 12 with scanner.nextLine().trim().split(\"\\\\s+\").",
+          "reasoning": "Python input().split() splits on any run of whitespace and strips leading and trailing whitespace. On line 12, split(\" \") keeps leading empty strings, produces empty strings for consecutive spaces, and does not split on tabs, causing Integer::parseInt to throw NumberFormatException."
+        },
+        {
+          "site_id": 3,
+          "verdict": "mismatch",
+          "translation_lines": [
+            13
+          ],
+          "assumption": "Line 13 uses scanner.nextLine().split(\" \") before Integer::parseInt, assuming values are separated by single ASCII spaces with no leading spaces, repeated spaces, or tabs.",
+          "suggestion": "Replace scanner.nextLine().split(\" \") on line 13 with scanner.nextLine().trim().split(\"\\\\s+\").",
+          "reasoning": "Python input().split() splits on any run of whitespace and strips leading and trailing whitespace. On line 13, split(\" \") keeps leading empty strings, produces empty strings for consecutive spaces, and does not split on tabs, causing Integer::parseInt to throw NumberFormatException."
+        }
+      ]
+    }
+  }
+}

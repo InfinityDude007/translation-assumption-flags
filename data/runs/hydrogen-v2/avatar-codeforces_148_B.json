@@ -1,0 +1,502 @@
+{
+  "sample_id": "avatar-codeforces_148_B",
+  "finished_at": "2026-11-22T06:31:14.889836Z",
+  "seconds": 36.26,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "Line 7 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+        "suggestion": null,
+        "reasoning": "Python line 1 calls input() to read a line for int(). Java line 7 uses scanner.nextInt(), and there are no nextLine() calls in the Java program, so the nextLine()-after-nextInt() pitfall does not occur."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "Line 7 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+        "suggestion": null,
+        "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. The program gives no evidence that input values themselves exceed int."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Line 8 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+        "suggestion": null,
+        "reasoning": "Python line 2 calls input() to read a line for int(). Java line 8 uses scanner.nextInt() with no nextLine() calls following it."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Line 8 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+        "suggestion": null,
+        "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          9
+        ],
+        "assumption": "Line 9 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+        "suggestion": null,
+        "reasoning": "Python line 3 calls input() to read a line for int(). Java line 9 uses scanner.nextInt() with no nextLine() calls following it."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          9
+        ],
+        "assumption": "Line 9 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+        "suggestion": null,
+        "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Line 10 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+        "suggestion": null,
+        "reasoning": "Python line 4 calls input() to read a line for int(). Java line 10 uses scanner.nextInt() with no nextLine() calls following it."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Line 10 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+        "suggestion": null,
+        "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "Line 11 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+        "suggestion": null,
+        "reasoning": "Python line 5 calls input() to read a line for int(). Java line 11 uses scanner.nextInt() with no nextLine() calls following it."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "Line 11 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+        "suggestion": null,
+        "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "t * princess",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "Line 19 casts princess to double in t * (double) princess to prevent 32-bit int overflow, assuming double's 53-bit integer precision is sufficient.",
+        "suggestion": null,
+        "reasoning": "Java line 19 avoids int multiplication overflow by casting princess to double, so t * (double) princess is computed in double arithmetic rather than wrapping as 32-bit int."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "princess * position / ( dragon - princess )",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          20
+        ],
+        "assumption": "Line 20 computes princess * position / (dragon - princess) with position typed as double, so the division is floating-point rather than truncating integer division.",
+        "suggestion": null,
+        "reasoning": "Because position is double, Java performs 64-bit floating-point division just like Python's / operator."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "princess * position",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          20
+        ],
+        "assumption": "Line 20 multiplies int princess by double position, performing 64-bit floating-point multiplication so int overflow does not occur.",
+        "suggestion": null,
+        "reasoning": "In Java line 20, position is double, so princess * position promotes princess to double and avoids integer wrapping."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "princess * position / dragon",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          24
+        ],
+        "assumption": "Line 24 computes princess * position / dragon with position typed as double, so the division is floating-point rather than truncating integer division.",
+        "suggestion": null,
+        "reasoning": "Because position is double, Java performs 64-bit floating-point division matching Python's / operator."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "princess * position",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          24
+        ],
+        "assumption": "Line 24 multiplies int princess by double position, performing 64-bit floating-point multiplication so int overflow does not occur.",
+        "suggestion": null,
+        "reasoning": "In Java line 24, position is double, so princess * position is evaluated as double arithmetic and does not wrap on int overflow; in Python position is already a float at this point too."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "princess * f",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          25
+        ],
+        "assumption": "Line 25 computes princess * f as 32-bit int multiplication before adding to double position, assuming the product of these two int inputs does not exceed 2^31 - 1.",
+        "suggestion": "position += (double) princess * f;",
+        "reasoning": "Both princess and f are int on Java line 25, so princess * f overflows 32-bit int before widening to double for += (for example, princess = 50000 and f = 50000 wraps to -1794967296 instead of 2500000000). Casting princess to double matches line 19 and Python's exact product."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "princess * position / ( dragon - princess )",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          26
+        ],
+        "assumption": "Line 26 computes princess * position / (dragon - princess) with position typed as double, so the division is floating-point rather than truncating integer division.",
+        "suggestion": null,
+        "reasoning": "Because position is double, Java performs 64-bit floating-point division matching Python's / operator."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "princess * position",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          26
+        ],
+        "assumption": "Line 26 multiplies int princess by double position, performing 64-bit floating-point multiplication so int overflow does not occur.",
+        "suggestion": null,
+        "reasoning": "In Java line 26, position is double, so princess * position is evaluated in double arithmetic and does not wrap on int overflow; in Python position is already a float at this point too."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "Line 7 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+          "suggestion": null,
+          "reasoning": "Python line 1 calls input() to read a line for int(). Java line 7 uses scanner.nextInt(), and there are no nextLine() calls in the Java program, so the nextLine()-after-nextInt() pitfall does not occur."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "Line 7 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+          "suggestion": null,
+          "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. The program gives no evidence that input values themselves exceed int."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Line 8 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+          "suggestion": null,
+          "reasoning": "Python line 2 calls input() to read a line for int(). Java line 8 uses scanner.nextInt() with no nextLine() calls following it."
+        },
+        {
+          "site_id": 3,
+          "verdict": "unclear",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Line 8 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+          "suggestion": null,
+          "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            9
+          ],
+          "assumption": "Line 9 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+          "suggestion": null,
+          "reasoning": "Python line 3 calls input() to read a line for int(). Java line 9 uses scanner.nextInt() with no nextLine() calls following it."
+        },
+        {
+          "site_id": 5,
+          "verdict": "unclear",
+          "translation_lines": [
+            9
+          ],
+          "assumption": "Line 9 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+          "suggestion": null,
+          "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Line 10 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+          "suggestion": null,
+          "reasoning": "Python line 4 calls input() to read a line for int(). Java line 10 uses scanner.nextInt() with no nextLine() calls following it."
+        },
+        {
+          "site_id": 7,
+          "verdict": "unclear",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Line 10 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+          "suggestion": null,
+          "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+        },
+        {
+          "site_id": 8,
+          "verdict": "handled",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "Line 11 uses scanner.nextInt() without any subsequent nextLine() calls, assuming each input line contains a single integer token.",
+          "suggestion": null,
+          "reasoning": "Python line 5 calls input() to read a line for int(). Java line 11 uses scanner.nextInt() with no nextLine() calls following it."
+        },
+        {
+          "site_id": 9,
+          "verdict": "unclear",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "Line 11 stores the input in an int using scanner.nextInt(), assuming the input value fits in the 32-bit signed int range (-2^31 to 2^31 - 1).",
+          "suggestion": null,
+          "reasoning": "Python int() accepts arbitrary-size integers whereas scanner.nextInt() throws if the input exceeds 32-bit int range. No large constants or big-int inputs are evidenced."
+        },
+        {
+          "site_id": 10,
+          "verdict": "handled",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "Line 19 casts princess to double in t * (double) princess to prevent 32-bit int overflow, assuming double's 53-bit integer precision is sufficient.",
+          "suggestion": null,
+          "reasoning": "Java line 19 avoids int multiplication overflow by casting princess to double, so t * (double) princess is computed in double arithmetic rather than wrapping as 32-bit int."
+        },
+        {
+          "site_id": 11,
+          "verdict": "handled",
+          "translation_lines": [
+            20
+          ],
+          "assumption": "Line 20 computes princess * position / (dragon - princess) with position typed as double, so the division is floating-point rather than truncating integer division.",
+          "suggestion": null,
+          "reasoning": "Because position is double, Java performs 64-bit floating-point division just like Python's / operator."
+        },
+        {
+          "site_id": 12,
+          "verdict": "handled",
+          "translation_lines": [
+            20
+          ],
+          "assumption": "Line 20 multiplies int princess by double position, performing 64-bit floating-point multiplication so int overflow does not occur.",
+          "suggestion": null,
+          "reasoning": "In Java line 20, position is double, so princess * position promotes princess to double and avoids integer wrapping."
+        },
+        {
+          "site_id": 13,
+          "verdict": "handled",
+          "translation_lines": [
+            24
+          ],
+          "assumption": "Line 24 computes princess * position / dragon with position typed as double, so the division is floating-point rather than truncating integer division.",
+          "suggestion": null,
+          "reasoning": "Because position is double, Java performs 64-bit floating-point division matching Python's / operator."
+        },
+        {
+          "site_id": 14,
+          "verdict": "handled",
+          "translation_lines": [
+            24
+          ],
+          "assumption": "Line 24 multiplies int princess by double position, performing 64-bit floating-point multiplication so int overflow does not occur.",
+          "suggestion": null,
+          "reasoning": "In Java line 24, position is double, so princess * position is evaluated as double arithmetic and does not wrap on int overflow; in Python position is already a float at this point too."
+        },
+        {
+          "site_id": 15,
+          "verdict": "mismatch",
+          "translation_lines": [
+            25
+          ],
+          "assumption": "Line 25 computes princess * f as 32-bit int multiplication before adding to double position, assuming the product of these two int inputs does not exceed 2^31 - 1.",
+          "suggestion": "position += (double) princess * f;",
+          "reasoning": "Both princess and f are int on Java line 25, so princess * f overflows 32-bit int before widening to double for += (for example, princess = 50000 and f = 50000 wraps to -1794967296 instead of 2500000000). Casting princess to double matches line 19 and Python's exact product."
+        },
+        {
+          "site_id": 16,
+          "verdict": "handled",
+          "translation_lines": [
+            26
+          ],
+          "assumption": "Line 26 computes princess * position / (dragon - princess) with position typed as double, so the division is floating-point rather than truncating integer division.",
+          "suggestion": null,
+          "reasoning": "Because position is double, Java performs 64-bit floating-point division matching Python's / operator."
+        },
+        {
+          "site_id": 17,
+          "verdict": "handled",
+          "translation_lines": [
+            26
+          ],
+          "assumption": "Line 26 multiplies int princess by double position, performing 64-bit floating-point multiplication so int overflow does not occur.",
+          "suggestion": null,
+          "reasoning": "In Java line 26, position is double, so princess * position is evaluated in double arithmetic and does not wrap on int overflow; in Python position is already a float at this point too."
+        }
+      ]
+    }
+  }
+}

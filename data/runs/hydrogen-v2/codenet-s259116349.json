@@ -1,0 +1,263 @@
+{
+  "sample_id": "codenet-s259116349",
+  "finished_at": "2026-11-22T07:21:39.496641Z",
+  "seconds": 231.12,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          5,
+          6
+        ],
+        "assumption": "Using Scanner.nextInt() in lines 5-6 assumes standard input starts with a single integer token N, and because there are no subsequent nextLine() calls, it avoids the newline-consumption mismatch.",
+        "suggestion": null,
+        "reasoning": "Python reads a full line with input() and parses it as an int. Java uses Scanner.nextInt() to read the sole integer input N, with no further input calls that could hit a leftover newline."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "int(input())",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6
+        ],
+        "assumption": "Declaring int N = scanner.nextInt() on line 6 assumes N fits in a 32-bit signed int, which holds because divs on line 9 has length 100 and indexing divs[i - 1] up to N requires N <= 100.",
+        "suggestion": null,
+        "reasoning": "Both Python and Java allocate/populate divs for 1..100 and index up to N-1, bounding valid inputs to N <= 100, well within Java int range."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "i//p",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "Replacing Python's i//p==i/p divisibility check with i % p == 0 on line 15 relies on i and p being positive integers (i >= 1, p >= 2), where modulo and floor-division equality behave identically.",
+        "suggestion": null,
+        "reasoning": "In Python i // p == i / p tests whether p divides i. In Java line 15 uses i % p == 0. Since i starts in 1..100 and is only divided by p >= 2 when divisible, i >= 1 and p >= 2 always hold."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "i//p",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          16
+        ],
+        "assumption": "Using Java integer division i /= p on line 16 assumes i and p are non-negative (i >= 1, p >= 2), so truncation toward zero matches Python's floor division //.",
+        "suggestion": null,
+        "reasoning": "Both operands i and p are strictly positive, so Java's truncating integer division / gives the exact same quotient as Python's floor division //."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "num(15)*(num(5)-1)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          36
+        ],
+        "assumption": "Computing num(15, divsum) * (num(5, divsum) - 1) as a 32-bit int on line 36 assumes no overflow, which is guaranteed because divsum has length 15 and num() returns at most 15.",
+        "suggestion": null,
+        "reasoning": "divsum has length 15 (matching primes), so num() is in [0, 15]. The product is at most 15 * 14 = 210, which cannot overflow Java int."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 36,
+          "end_line": 36,
+          "snippet": "num(25)*(num(3)-1)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          39
+        ],
+        "assumption": "Computing num(25, divsum) * (num(3, divsum) - 1) as a 32-bit int on line 39 assumes no overflow, which holds because num() is bounded by the 15-element divsum array.",
+        "suggestion": null,
+        "reasoning": "With divsum of length 15, num() is at most 15, so the product is at most 15 * 14 = 210 and fits easily in Java int."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 39,
+          "end_line": 39,
+          "snippet": "num(5) * (num(5)-1) * (num(3)-2) // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          42
+        ],
+        "assumption": "Using Java's / 2 on line 42 matches Python's // 2 because num(5, divsum) <= num(3, divsum) always holds, making the numerator non-negative (and even) for every input.",
+        "suggestion": null,
+        "reasoning": "Let a = num(5) and b = num(3). Since count(x >= 4) <= count(x >= 2), 0 <= a <= b. If b < 2 then a <= 1 so a*(a-1) = 0; if b >= 2 then a*(a-1)*(b-2) >= 0. Thus the numerator is always >= 0, so truncating / 2 equals floor // 2."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 39,
+          "end_line": 39,
+          "snippet": "num(5) * (num(5)-1) * (num(3)-2)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          42
+        ],
+        "assumption": "Multiplying num(5, divsum) * (num(5, divsum) - 1) * (num(3, divsum) - 2) in int arithmetic on line 42 assumes the product fits in 32-bit int, which holds since num() is at most 15.",
+        "suggestion": null,
+        "reasoning": "Since divsum has length 15, each num() call returns at most 15, so the product is at most 15 * 14 * 13 = 2730, well within Java int range."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 40,
+          "end_line": 40,
+          "snippet": "int(ans)",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          30,
+          44
+        ],
+        "assumption": "Storing ans in an int (line 30) and printing it on line 44 assumes the total fits in a 32-bit signed int, which holds because all four summed terms are bounded above by 15 + 210 + 210 + 1365 = 1800.",
+        "suggestion": null,
+        "reasoning": "ans is a sum of four small terms derived from num() <= 15, totaling at most 1800, so int ans in Java matches Python's int(ans) without overflow."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            5,
+            6
+          ],
+          "assumption": "Using Scanner.nextInt() in lines 5-6 assumes standard input starts with a single integer token N, and because there are no subsequent nextLine() calls, it avoids the newline-consumption mismatch.",
+          "suggestion": null,
+          "reasoning": "Python reads a full line with input() and parses it as an int. Java uses Scanner.nextInt() to read the sole integer input N, with no further input calls that could hit a leftover newline."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            6
+          ],
+          "assumption": "Declaring int N = scanner.nextInt() on line 6 assumes N fits in a 32-bit signed int, which holds because divs on line 9 has length 100 and indexing divs[i - 1] up to N requires N <= 100.",
+          "suggestion": null,
+          "reasoning": "Both Python and Java allocate/populate divs for 1..100 and index up to N-1, bounding valid inputs to N <= 100, well within Java int range."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "Replacing Python's i//p==i/p divisibility check with i % p == 0 on line 15 relies on i and p being positive integers (i >= 1, p >= 2), where modulo and floor-division equality behave identically.",
+          "suggestion": null,
+          "reasoning": "In Python i // p == i / p tests whether p divides i. In Java line 15 uses i % p == 0. Since i starts in 1..100 and is only divided by p >= 2 when divisible, i >= 1 and p >= 2 always hold."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            16
+          ],
+          "assumption": "Using Java integer division i /= p on line 16 assumes i and p are non-negative (i >= 1, p >= 2), so truncation toward zero matches Python's floor division //.",
+          "suggestion": null,
+          "reasoning": "Both operands i and p are strictly positive, so Java's truncating integer division / gives the exact same quotient as Python's floor division //."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            36
+          ],
+          "assumption": "Computing num(15, divsum) * (num(5, divsum) - 1) as a 32-bit int on line 36 assumes no overflow, which is guaranteed because divsum has length 15 and num() returns at most 15.",
+          "suggestion": null,
+          "reasoning": "divsum has length 15 (matching primes), so num() is in [0, 15]. The product is at most 15 * 14 = 210, which cannot overflow Java int."
+        },
+        {
+          "site_id": 5,
+          "verdict": "handled",
+          "translation_lines": [
+            39
+          ],
+          "assumption": "Computing num(25, divsum) * (num(3, divsum) - 1) as a 32-bit int on line 39 assumes no overflow, which holds because num() is bounded by the 15-element divsum array.",
+          "suggestion": null,
+          "reasoning": "With divsum of length 15, num() is at most 15, so the product is at most 15 * 14 = 210 and fits easily in Java int."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            42
+          ],
+          "assumption": "Using Java's / 2 on line 42 matches Python's // 2 because num(5, divsum) <= num(3, divsum) always holds, making the numerator non-negative (and even) for every input.",
+          "suggestion": null,
+          "reasoning": "Let a = num(5) and b = num(3). Since count(x >= 4) <= count(x >= 2), 0 <= a <= b. If b < 2 then a <= 1 so a*(a-1) = 0; if b >= 2 then a*(a-1)*(b-2) >= 0. Thus the numerator is always >= 0, so truncating / 2 equals floor // 2."
+        },
+        {
+          "site_id": 7,
+          "verdict": "handled",
+          "translation_lines": [
+            42
+          ],
+          "assumption": "Multiplying num(5, divsum) * (num(5, divsum) - 1) * (num(3, divsum) - 2) in int arithmetic on line 42 assumes the product fits in 32-bit int, which holds since num() is at most 15.",
+          "suggestion": null,
+          "reasoning": "Since divsum has length 15, each num() call returns at most 15, so the product is at most 15 * 14 * 13 = 2730, well within Java int range."
+        },
+        {
+          "site_id": 8,
+          "verdict": "handled",
+          "translation_lines": [
+            30,
+            44
+          ],
+          "assumption": "Storing ans in an int (line 30) and printing it on line 44 assumes the total fits in a 32-bit signed int, which holds because all four summed terms are bounded above by 15 + 210 + 210 + 1365 = 1800.",
+          "suggestion": null,
+          "reasoning": "ans is a sum of four small terms derived from num() <= 15, totaling at most 1800, so int ans in Java matches Python's int(ans) without overflow."
+        }
+      ]
+    }
+  }
+}

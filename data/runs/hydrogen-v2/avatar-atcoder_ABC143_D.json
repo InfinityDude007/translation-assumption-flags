@@ -1,0 +1,80 @@
+{
+  "sample_id": "avatar-atcoder_ABC143_D",
+  "finished_at": "2026-11-22T06:16:06.086682Z",
+  "seconds": 16.83,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "open ( 0 ).read ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "assumption": "Using Scanner.nextInt() assumes the input consists of whitespace-separated integers matching Python's split() behavior, and further assumes at least n integers follow n and all values fit in 32-bit int.",
+        "suggestion": null,
+        "reasoning": "Python uses open(0).read().split() to split on arbitrary runs of whitespace and ignore leading/trailing whitespace. Java uses Scanner.nextInt() in lines 6-11, which skips arbitrary whitespace delimiters in the same way."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 17,
+          "end_line": 17,
+          "snippet": "ans // 3",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          38
+        ],
+        "assumption": "Using ans / 3 assumes ans is non-negative so truncating division matches floor division; this holds because tmp is never negative, provided n is small enough that ans does not overflow 32-bit int.",
+        "suggestion": null,
+        "reasoning": "Python's // rounds toward negative infinity while Java's / truncates toward zero, which only differs for negative dividends. In the loop, tmp starts at max(0, right - left) and subtracts 1 only for distinct indices i and j inside [left, right), so tmp >= 0 and ans >= 0 unless ans overflows int."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "assumption": "Using Scanner.nextInt() assumes the input consists of whitespace-separated integers matching Python's split() behavior, and further assumes at least n integers follow n and all values fit in 32-bit int.",
+          "suggestion": null,
+          "reasoning": "Python uses open(0).read().split() to split on arbitrary runs of whitespace and ignore leading/trailing whitespace. Java uses Scanner.nextInt() in lines 6-11, which skips arbitrary whitespace delimiters in the same way."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            38
+          ],
+          "assumption": "Using ans / 3 assumes ans is non-negative so truncating division matches floor division; this holds because tmp is never negative, provided n is small enough that ans does not overflow 32-bit int.",
+          "suggestion": null,
+          "reasoning": "Python's // rounds toward negative infinity while Java's / truncates toward zero, which only differs for negative dividends. In the loop, tmp starts at max(0, right - left) and subtracts 1 only for distinct indices i and j inside [left, right), so tmp >= 0 and ans >= 0 unless ans overflows int."
+        }
+      ]
+    }
+  }
+}
