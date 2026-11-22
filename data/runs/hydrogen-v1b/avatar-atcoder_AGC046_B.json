@@ -1,0 +1,132 @@
+{
+  "sample_id": "avatar-atcoder_AGC046_B",
+  "finished_at": "2026-11-22T08:37:20.872981Z",
+  "seconds": 248.77,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "assumption": "Scanner.nextInt() skips arbitrary runs of leading, intermediate, and trailing whitespace just like Python's input().split(), though it assumes four 32-bit int tokens exist in standard input (even across newlines) and ignores any extra tokens on the line.",
+        "suggestion": null,
+        "reasoning": "Python line 1 uses input().split() to parse four whitespace-separated integers. Java lines 6-10 use Scanner.nextInt(), which handles arbitrary whitespace runs and leading/trailing whitespace identically to split(), assuming the inputs fit in 32-bit int."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "[ 0 ] * ( D + 1 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "new int[C + 1][D + 1] assumes C and D are non-negative and that C + 1, D + 1, and all elements stored in d fit in 32-bit int (which holds for d since values are reduced modulo m = 998244353).",
+        "suggestion": null,
+        "reasoning": "Python line 3 allocates a (C+1)x(D+1) 2D list of zeros using [0] * (D + 1), which is list repetition rather than numeric multiplication. Java line 14 allocates new int[C + 1][D + 1], assuming C+1 and D+1 fit in int and that d values fit in int (bounded by m < 2^31)."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "( d [ i ] [ j - 1 ] * i + d [ i - 1 ] [ j ] * j - d [ i - 1 ",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "Using Java's % m in line 19 assumes the dividend (long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1) is non-negative, which fails once d wraps modulo m and the subtracted (i - 1) * (j - 1) term exceeds the sum of the first two terms (producing negative values in Java where Python produces values in 0..m-1).",
+        "suggestion": "Replace line 19 with: d[i][j] += (int) Math.floorMod((long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1), (long) m);",
+        "reasoning": "In Python line 7, % m always yields a result in [0, m - 1]. In Java line 19, once d[i-1][j-1] wraps modulo m, the quadratic factor (i-1)*(j-1) easily outweighs the linear factors i and j, making the dividend negative. Java's % yields a negative remainder in [-(m-1), -1], changing subsequent d values and the final output."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "d [ i ] [ j - 1 ] * i",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "Line 19 casts d[i][j - 1], d[i - 1][j], and d[i - 1][j - 1] to long before multiplying so intermediate products do not overflow 32-bit int, assuming C and D are small enough that m * C * D fits in 64-bit long (roughly C * D <= 9e9, which is not stated in the code).",
+        "suggestion": null,
+        "reasoning": "Java line 19 promotes the multiplications to 64-bit long via (long)d[...], preventing 32-bit int overflow when d[i][j-1] * i exceeds Integer.MAX_VALUE. The final % m result has magnitude < m < Integer.MAX_VALUE so casting back to int does not overflow, assuming C and D are small enough not to overflow long (already bounded by memory for the 2D array)."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "assumption": "Scanner.nextInt() skips arbitrary runs of leading, intermediate, and trailing whitespace just like Python's input().split(), though it assumes four 32-bit int tokens exist in standard input (even across newlines) and ignores any extra tokens on the line.",
+          "suggestion": null,
+          "reasoning": "Python line 1 uses input().split() to parse four whitespace-separated integers. Java lines 6-10 use Scanner.nextInt(), which handles arbitrary whitespace runs and leading/trailing whitespace identically to split(), assuming the inputs fit in 32-bit int."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "new int[C + 1][D + 1] assumes C and D are non-negative and that C + 1, D + 1, and all elements stored in d fit in 32-bit int (which holds for d since values are reduced modulo m = 998244353).",
+          "suggestion": null,
+          "reasoning": "Python line 3 allocates a (C+1)x(D+1) 2D list of zeros using [0] * (D + 1), which is list repetition rather than numeric multiplication. Java line 14 allocates new int[C + 1][D + 1], assuming C+1 and D+1 fit in int and that d values fit in int (bounded by m < 2^31)."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "Using Java's % m in line 19 assumes the dividend (long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1) is non-negative, which fails once d wraps modulo m and the subtracted (i - 1) * (j - 1) term exceeds the sum of the first two terms (producing negative values in Java where Python produces values in 0..m-1).",
+          "suggestion": "Replace line 19 with: d[i][j] += (int) Math.floorMod((long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1), (long) m);",
+          "reasoning": "In Python line 7, % m always yields a result in [0, m - 1]. In Java line 19, once d[i-1][j-1] wraps modulo m, the quadratic factor (i-1)*(j-1) easily outweighs the linear factors i and j, making the dividend negative. Java's % yields a negative remainder in [-(m-1), -1], changing subsequent d values and the final output."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "Line 19 casts d[i][j - 1], d[i - 1][j], and d[i - 1][j - 1] to long before multiplying so intermediate products do not overflow 32-bit int, assuming C and D are small enough that m * C * D fits in 64-bit long (roughly C * D <= 9e9, which is not stated in the code).",
+          "suggestion": null,
+          "reasoning": "Java line 19 promotes the multiplications to 64-bit long via (long)d[...], preventing 32-bit int overflow when d[i][j-1] * i exceeds Integer.MAX_VALUE. The final % m result has magnitude < m < Integer.MAX_VALUE so casting back to int does not overflow, assuming C and D are small enough not to overflow long (already bounded by memory for the 2D array)."
+        }
+      ]
+    }
+  }
+}

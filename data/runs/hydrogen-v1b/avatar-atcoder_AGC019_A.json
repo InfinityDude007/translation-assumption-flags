@@ -1,0 +1,524 @@
+{
+  "sample_id": "avatar-atcoder_AGC019_A",
+  "finished_at": "2026-11-22T08:26:31.952303Z",
+  "seconds": 384.13,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "sys.stdin.readline ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "assumption": "The Java code uses Scanner sc = new Scanner(System.in) on line 6 and sc.nextInt() on lines 7-11 instead of line-based reading; there is no nextLine() after nextInt() issue, though it assumes standard token counts across lines.",
+        "suggestion": null,
+        "reasoning": "Python line 14 defines input() via sys.stdin.readline().strip(), used by MAP() on line 26 and INT() on line 27. Java implements input reading with Scanner and five sc.nextInt() calls on lines 6-11. No nextLine() is called after nextInt()."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 20,
+          "end_line": 20,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          11
+        ],
+        "assumption": "Line 11 uses sc.nextInt() with Scanner sc from line 6 to implement INT() (called on Python line 27), reading the next whitespace-separated token rather than a full line, with no nextLine() conflict.",
+        "suggestion": null,
+        "reasoning": "Python line 20 defines INT() using input(), which is called on line 27 for n. Java implements this on line 11 via sc.nextInt()."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 20,
+          "end_line": 20,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "Line 11 uses int n = sc.nextInt() to implement INT(), which assumes the input value for n fits in a 32-bit signed int, an input range the code does not state.",
+        "suggestion": null,
+        "reasoning": "Python line 20 defines INT() using int(input()), called on line 27. Java chose int via sc.nextInt() on line 11, which works for values in [-2^31, 2^31 - 1] (such as AtCoder AGC019 A constraints where N <= 10^9)."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 21,
+          "end_line": 21,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "assumption": "Lines 7-10 use sc.nextInt() with Scanner sc from line 6 to implement MAP() (called on Python line 26), which splits on arbitrary runs of whitespace and ignores leading or trailing spaces just like Python split().",
+        "suggestion": null,
+        "reasoning": "Python line 21 defines MAP() using input().split(), called on line 26 for q, h, s, d. Java reads those four whitespace-separated integers with sc.nextInt() on lines 7-10."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 28,
+          "end_line": 28,
+          "snippet": "q * 4",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Line 12 computes q * 4 using 32-bit int arithmetic, assuming q <= 536870911 (an input range the code does not state); for example, if q = 600000000 and h = s = d = 2000000000, q * 4 overflows to -1894967296.",
+        "suggestion": "Use long arithmetic and store best1L as long: long best1L = Math.min(Math.min((long) q * 4, (long) h * 2), s);",
+        "reasoning": "Python ints have arbitrary precision, whereas Java line 12 performs int multiplication q * 4, which silently overflows for valid int inputs q >= 536870912."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 29,
+          "end_line": 29,
+          "snippet": "best1L * 2",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          13
+        ],
+        "assumption": "Line 13 computes best1L * 2 using 32-bit int arithmetic, assuming best1L <= 1073741823 (an input range the code does not state); for example, with q = 500000000, h = 1000000000, s = 1500000000, d = 2000000000, best1L * 2 overflows to -1294967296.",
+        "suggestion": "Use long arithmetic and store best2L as long: long best2L = Math.min(d, (long) best1L * 2);",
+        "reasoning": "In Java line 13, best1L is an int, so best1L * 2 overflows int whenever best1L >= 1073741824, whereas Python computes the exact product."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 30,
+          "end_line": 30,
+          "snippet": "n % 2",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "Line 14 tests n % 2 == 0, which evaluates to true for all even integers and false for all odd integers regardless of sign, matching Python's n % 2 == 0.",
+        "suggestion": null,
+        "reasoning": "Even though Java % returns -1 for negative odd n and Python % returns 1, neither equals 0, so n % 2 == 0 has identical truth value in both languages for all integers."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 31,
+          "end_line": 31,
+          "snippet": "n // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "Line 15 computes n / 2 only inside the if (n % 2 == 0) branch from line 14, so n is guaranteed to be even and Java integer division equals Python floor division for all even integers.",
+        "suggestion": null,
+        "reasoning": "Because n is even on line 15, n / 2 has zero remainder, so truncation toward zero and floor division produce the exact same result even if n is negative."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 31,
+          "end_line": 31,
+          "snippet": "best2L * ( n // 2 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "Line 15 computes best2L * (n / 2) using 32-bit int arithmetic, assuming the total cost fits in int (an input range the code does not state); for example, with q = h = s = d = 100000 and n = 100000, Java overflows to 705032704 instead of 5000000000.",
+        "suggestion": "Cast best2L to long before multiplying: System.out.println((long) best2L * (n / 2));",
+        "reasoning": "Java line 15 multiplies two ints, which silently overflows for typical inputs such as 100000 * 50000, whereas Python produces the exact arbitrary-precision integer."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "n // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          17
+        ],
+        "assumption": "Line 17 uses Java integer division n / 2 in the odd-n branch, which truncates toward zero instead of flooring and assumes n >= 0 (an input range the code does not state); for a negative odd input such as n = -3, Java yields -1 while Python yields -2.",
+        "suggestion": "Replace n / 2 with Math.floorDiv(n, 2) on line 17.",
+        "reasoning": "On line 17, n is odd, so for negative odd integers Java's n / 2 rounds toward zero whereas Python's n // 2 rounds toward negative infinity."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "best2L * ( n // 2 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          17
+        ],
+        "assumption": "Line 17 computes best2L * (n / 2) using 32-bit int arithmetic, assuming the total cost fits in int (an input range the code does not state); for example, with q = h = s = d = 100000 and n = 100001, Java overflows to 705132704 instead of 5000100000.",
+        "suggestion": "Cast best2L to long before multiplying: System.out.println((long) best2L * (n / 2) + best1L);",
+        "reasoning": "Java line 17 multiplies two ints, which silently overflows for inputs such as 100000 * 50000, whereas Python computes the exact result."
+      }
+    ],
+    "dropped": [
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "- a // b",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "int ( - ( - a // b ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "( x * 2 + 1 ) // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "int ( ( x * 2 + 1 ) // 2 )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 17,
+          "end_line": 17,
+          "snippet": "x * pow ( y , MOD - 2 , MOD ) % MOD",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 17,
+          "end_line": 17,
+          "snippet": "x * pow ( y , MOD - 2 , MOD )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 18,
+          "end_line": 18,
+          "snippet": "( x * y ) // gcd ( x , y )",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 18,
+          "end_line": 18,
+          "snippet": "x * y",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 22,
+          "end_line": 22,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "float_precision",
+          "category": "numeric",
+          "line": 24,
+          "end_line": 24,
+          "snippet": "float ( 'inf' )",
+          "reason": "Python floats are usually 64-bit doubles; Java float is 32-bit, so the translation should use double."
+        },
+        "reason": "no valid Java line"
+      }
+    ],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "assumption": "The Java code uses Scanner sc = new Scanner(System.in) on line 6 and sc.nextInt() on lines 7-11 instead of line-based reading; there is no nextLine() after nextInt() issue, though it assumes standard token counts across lines.",
+          "suggestion": null,
+          "reasoning": "Python line 14 defines input() via sys.stdin.readline().strip(), used by MAP() on line 26 and INT() on line 27. Java implements input reading with Scanner and five sc.nextInt() calls on lines 6-11. No nextLine() is called after nextInt()."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function ceil is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 15 defines ceil(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 2,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function ceil is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 15 defines ceil(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 3,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function round is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 16 defines round(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 4,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function round is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 16 defines round(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 5,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function fermat is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 17 defines fermat(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 6,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function fermat is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 17 defines fermat(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 7,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function lcm is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 18 defines lcm(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 8,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function lcm is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 18 defines lcm(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 9,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            11
+          ],
+          "assumption": "Line 11 uses sc.nextInt() with Scanner sc from line 6 to implement INT() (called on Python line 27), reading the next whitespace-separated token rather than a full line, with no nextLine() conflict.",
+          "suggestion": null,
+          "reasoning": "Python line 20 defines INT() using input(), which is called on line 27 for n. Java implements this on line 11 via sc.nextInt()."
+        },
+        {
+          "site_id": 10,
+          "verdict": "handled",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "Line 11 uses int n = sc.nextInt() to implement INT(), which assumes the input value for n fits in a 32-bit signed int, an input range the code does not state.",
+          "suggestion": null,
+          "reasoning": "Python line 20 defines INT() using int(input()), called on line 27. Java chose int via sc.nextInt() on line 11, which works for values in [-2^31, 2^31 - 1] (such as AtCoder AGC019 A constraints where N <= 10^9)."
+        },
+        {
+          "site_id": 11,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "assumption": "Lines 7-10 use sc.nextInt() with Scanner sc from line 6 to implement MAP() (called on Python line 26), which splits on arbitrary runs of whitespace and ignores leading or trailing spaces just like Python split().",
+          "suggestion": null,
+          "reasoning": "Python line 21 defines MAP() using input().split(), called on line 26 for q, h, s, d. Java reads those four whitespace-separated integers with sc.nextInt() on lines 7-10."
+        },
+        {
+          "site_id": 12,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python helper function LIST is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 22 defines LIST(), which is never called anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 13,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The Java class atcoder_AGC019_A does not contain matching code because the Python constant INF is unused and omitted in the translation.",
+          "suggestion": null,
+          "reasoning": "Python line 24 defines INF, which is never used anywhere in the Python program and has no corresponding Java lines."
+        },
+        {
+          "site_id": 14,
+          "verdict": "mismatch",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Line 12 computes q * 4 using 32-bit int arithmetic, assuming q <= 536870911 (an input range the code does not state); for example, if q = 600000000 and h = s = d = 2000000000, q * 4 overflows to -1894967296.",
+          "suggestion": "Use long arithmetic and store best1L as long: long best1L = Math.min(Math.min((long) q * 4, (long) h * 2), s);",
+          "reasoning": "Python ints have arbitrary precision, whereas Java line 12 performs int multiplication q * 4, which silently overflows for valid int inputs q >= 536870912."
+        },
+        {
+          "site_id": 15,
+          "verdict": "mismatch",
+          "translation_lines": [
+            13
+          ],
+          "assumption": "Line 13 computes best1L * 2 using 32-bit int arithmetic, assuming best1L <= 1073741823 (an input range the code does not state); for example, with q = 500000000, h = 1000000000, s = 1500000000, d = 2000000000, best1L * 2 overflows to -1294967296.",
+          "suggestion": "Use long arithmetic and store best2L as long: long best2L = Math.min(d, (long) best1L * 2);",
+          "reasoning": "In Java line 13, best1L is an int, so best1L * 2 overflows int whenever best1L >= 1073741824, whereas Python computes the exact product."
+        },
+        {
+          "site_id": 16,
+          "verdict": "handled",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "Line 14 tests n % 2 == 0, which evaluates to true for all even integers and false for all odd integers regardless of sign, matching Python's n % 2 == 0.",
+          "suggestion": null,
+          "reasoning": "Even though Java % returns -1 for negative odd n and Python % returns 1, neither equals 0, so n % 2 == 0 has identical truth value in both languages for all integers."
+        },
+        {
+          "site_id": 17,
+          "verdict": "handled",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "Line 15 computes n / 2 only inside the if (n % 2 == 0) branch from line 14, so n is guaranteed to be even and Java integer division equals Python floor division for all even integers.",
+          "suggestion": null,
+          "reasoning": "Because n is even on line 15, n / 2 has zero remainder, so truncation toward zero and floor division produce the exact same result even if n is negative."
+        },
+        {
+          "site_id": 18,
+          "verdict": "mismatch",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "Line 15 computes best2L * (n / 2) using 32-bit int arithmetic, assuming the total cost fits in int (an input range the code does not state); for example, with q = h = s = d = 100000 and n = 100000, Java overflows to 705032704 instead of 5000000000.",
+          "suggestion": "Cast best2L to long before multiplying: System.out.println((long) best2L * (n / 2));",
+          "reasoning": "Java line 15 multiplies two ints, which silently overflows for typical inputs such as 100000 * 50000, whereas Python produces the exact arbitrary-precision integer."
+        },
+        {
+          "site_id": 19,
+          "verdict": "mismatch",
+          "translation_lines": [
+            17
+          ],
+          "assumption": "Line 17 uses Java integer division n / 2 in the odd-n branch, which truncates toward zero instead of flooring and assumes n >= 0 (an input range the code does not state); for a negative odd input such as n = -3, Java yields -1 while Python yields -2.",
+          "suggestion": "Replace n / 2 with Math.floorDiv(n, 2) on line 17.",
+          "reasoning": "On line 17, n is odd, so for negative odd integers Java's n / 2 rounds toward zero whereas Python's n // 2 rounds toward negative infinity."
+        },
+        {
+          "site_id": 20,
+          "verdict": "mismatch",
+          "translation_lines": [
+            17
+          ],
+          "assumption": "Line 17 computes best2L * (n / 2) using 32-bit int arithmetic, assuming the total cost fits in int (an input range the code does not state); for example, with q = h = s = d = 100000 and n = 100001, Java overflows to 705132704 instead of 5000100000.",
+          "suggestion": "Cast best2L to long before multiplying: System.out.println((long) best2L * (n / 2) + best1L);",
+          "reasoning": "Java line 17 multiplies two ints, which silently overflows for inputs such as 100000 * 50000, whereas Python computes the exact result."
+        }
+      ]
+    }
+  }
+}

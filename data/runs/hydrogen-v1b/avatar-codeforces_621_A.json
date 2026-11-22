@@ -1,0 +1,130 @@
+{
+  "sample_id": "avatar-codeforces_621_A",
+  "finished_at": "2026-11-22T09:15:49.489037Z",
+  "seconds": 258.46,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7
+        ],
+        "assumption": "Using Scanner.nextInt() in line 7 reads a whitespace-delimited token and avoids mixing nextLine() with nextInt(), assuming the first line contains only the integer n.",
+        "suggestion": null,
+        "reasoning": "Python reads the whole first line with input() and parses it as an int. Java uses Scanner sc = new Scanner(System.in) on line 6 and int n = sc.nextInt() on line 7, and also uses sc.nextInt() on line 10 without ever calling nextLine(), so the nextLine()-after-nextInt() empty-string bug does not occur. This matches Python as long as the first line only has the single token n."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "Declaring int n = sc.nextInt() assumes the input value n fits in a signed 32-bit int, an input range the code does not state (though n is also used to allocate new int[n]).",
+        "suggestion": null,
+        "reasoning": "Python int() handles arbitrary-precision integers, while Java's sc.nextInt() only accepts 32-bit signed integers. However, n is the array length for int[] lst = new int[n], so any runnable input to this program must fit in an int anyway."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          9,
+          10,
+          11
+        ],
+        "assumption": "The loop calling sc.nextInt() skips arbitrary runs of whitespace just like Python's split() with no arguments, assuming the input provides exactly n whitespace-separated integers.",
+        "suggestion": null,
+        "reasoning": "Instead of reading a line and calling split(\" \"), the Java translation reads n whitespace-delimited integers directly with sc.nextInt() in lines 9-11. Scanner skips leading, trailing, and repeated whitespace, matching Python's split() behavior for standard n-element inputs."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "lst [ i ] % 2",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          27
+        ],
+        "assumption": "Although Java's % yields -1 rather than 1 for negative odd integers, comparing lst[i] % 2 == 0 only checks for zero remainder, which matches Python for all integers including negative ones.",
+        "suggestion": null,
+        "reasoning": "In Python, lst[i] % 2 == 0 is true for even integers and false for odd integers. In Java, lst[i] % 2 is 0 for all even integers (positive, zero, or negative) and 1 or -1 for odd integers, so lst[i] % 2 == 0 always evaluates to the exact same boolean as Python."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7
+          ],
+          "assumption": "Using Scanner.nextInt() in line 7 reads a whitespace-delimited token and avoids mixing nextLine() with nextInt(), assuming the first line contains only the integer n.",
+          "suggestion": null,
+          "reasoning": "Python reads the whole first line with input() and parses it as an int. Java uses Scanner sc = new Scanner(System.in) on line 6 and int n = sc.nextInt() on line 7, and also uses sc.nextInt() on line 10 without ever calling nextLine(), so the nextLine()-after-nextInt() empty-string bug does not occur. This matches Python as long as the first line only has the single token n."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "Declaring int n = sc.nextInt() assumes the input value n fits in a signed 32-bit int, an input range the code does not state (though n is also used to allocate new int[n]).",
+          "suggestion": null,
+          "reasoning": "Python int() handles arbitrary-precision integers, while Java's sc.nextInt() only accepts 32-bit signed integers. However, n is the array length for int[] lst = new int[n], so any runnable input to this program must fit in an int anyway."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            9,
+            10,
+            11
+          ],
+          "assumption": "The loop calling sc.nextInt() skips arbitrary runs of whitespace just like Python's split() with no arguments, assuming the input provides exactly n whitespace-separated integers.",
+          "suggestion": null,
+          "reasoning": "Instead of reading a line and calling split(\" \"), the Java translation reads n whitespace-delimited integers directly with sc.nextInt() in lines 9-11. Scanner skips leading, trailing, and repeated whitespace, matching Python's split() behavior for standard n-element inputs."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            27
+          ],
+          "assumption": "Although Java's % yields -1 rather than 1 for negative odd integers, comparing lst[i] % 2 == 0 only checks for zero remainder, which matches Python for all integers including negative ones.",
+          "suggestion": null,
+          "reasoning": "In Python, lst[i] % 2 == 0 is true for even integers and false for odd integers. In Java, lst[i] % 2 is 0 for all even integers (positive, zero, or negative) and 1 or -1 for odd integers, so lst[i] % 2 == 0 always evaluates to the exact same boolean as Python."
+        }
+      ]
+    }
+  }
+}

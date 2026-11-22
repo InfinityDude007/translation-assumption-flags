@@ -1,0 +1,82 @@
+{
+  "sample_id": "codenet-s826716211",
+  "finished_at": "2026-11-22T10:04:23.507470Z",
+  "seconds": 269.92,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          9,
+          46,
+          47,
+          48
+        ],
+        "assumption": "The call to input() on line 9 relies on System.console().readLine(), which assumes standard input is attached to an interactive terminal and is never piped or redirected.",
+        "suggestion": "Import java.util.Scanner, add a static Scanner field `static Scanner sc = new Scanner(System.in);`, and change input() to `return sc.nextLine();`.",
+        "reasoning": "Python's input() reads a line from sys.stdin whether input comes from a terminal, pipe, or file redirection. Java's System.console() returns null whenever stdin or stdout is redirected or piped, causing System.console().readLine() in input() (lines 46-48) to throw a NullPointerException."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          10,
+          46,
+          47,
+          48
+        ],
+        "assumption": "The call to input() on line 10 relies on System.console().readLine(), which assumes standard input is attached to an interactive terminal and is never piped or redirected.",
+        "suggestion": "Import java.util.Scanner, add a static Scanner field `static Scanner sc = new Scanner(System.in);`, and change input() to `return sc.nextLine();`.",
+        "reasoning": "Just like the first input() call, line 10 calls the helper input() (lines 46-48) which uses System.console().readLine(). When standard input is redirected from a file or piped, System.console() returns null and throws a NullPointerException, unlike Python's input()."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "mismatch",
+          "translation_lines": [
+            9,
+            46,
+            47,
+            48
+          ],
+          "assumption": "The call to input() on line 9 relies on System.console().readLine(), which assumes standard input is attached to an interactive terminal and is never piped or redirected.",
+          "suggestion": "Import java.util.Scanner, add a static Scanner field `static Scanner sc = new Scanner(System.in);`, and change input() to `return sc.nextLine();`.",
+          "reasoning": "Python's input() reads a line from sys.stdin whether input comes from a terminal, pipe, or file redirection. Java's System.console() returns null whenever stdin or stdout is redirected or piped, causing System.console().readLine() in input() (lines 46-48) to throw a NullPointerException."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            10,
+            46,
+            47,
+            48
+          ],
+          "assumption": "The call to input() on line 10 relies on System.console().readLine(), which assumes standard input is attached to an interactive terminal and is never piped or redirected.",
+          "suggestion": "Import java.util.Scanner, add a static Scanner field `static Scanner sc = new Scanner(System.in);`, and change input() to `return sc.nextLine();`.",
+          "reasoning": "Just like the first input() call, line 10 calls the helper input() (lines 46-48) which uses System.console().readLine(). When standard input is redirected from a file or piped, System.console() returns null and throws a NullPointerException, unlike Python's input()."
+        }
+      ]
+    }
+  }
+}

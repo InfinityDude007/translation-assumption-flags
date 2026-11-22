@@ -1,0 +1,126 @@
+{
+  "sample_id": "avatar-codeforces_579_A",
+  "finished_at": "2026-11-22T09:11:25.002731Z",
+  "seconds": 92.18,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8
+        ],
+        "assumption": "Using Scanner and input.nextInt() on lines 7-8 avoids any nextLine() newline-leftover bug because only one value is read, assuming the input contains a single integer token with no leading blank lines or extra tokens on the same line.",
+        "suggestion": null,
+        "reasoning": "Python int(input()) reads a full line and strips surrounding whitespace, while Java Scanner.nextInt() reads the next whitespace-separated token. Since n is the only input read in the program and no nextLine() call follows it, valid single-integer inputs behave identically."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Declaring int n = input.nextInt() assumes the input integer fits in a signed 32-bit int (-2^31 to 2^31 - 1), an input range the code does not state, whereas Python int() accepts arbitrary-size integers.",
+        "suggestion": "Replace int n = input.nextInt(); with BigInteger n = input.nextBigInteger(); and update the loop on lines 10-13 to use BigInteger methods (for example, printing n.bitCount()).",
+        "reasoning": "For any input outside 32-bit signed int range such as 3000000000, Python int(input()) succeeds and prints 2 while Java input.nextInt() throws InputMismatchException."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "math.log2 ( n ) % 1",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "The condition Math.log(n) / Math.log(2) % 1 != 0 is unaffected by the % sign difference when comparing against 0 for positive n, but assumes exact floating-point base-2 logarithm results and n >= 1.",
+        "suggestion": "Guard non-positive inputs with if (n <= 0) throw new IllegalArgumentException(); and replace the condition on line 10 with while ((n & (n - 1)) != 0) {.",
+        "reasoning": "For n = 536870912 (2^29), Math.log(536870912) / Math.log(2) evaluates in IEEE 754 double precision to 29.000000000000004 rather than 29.0, so % 1 != 0 is true; line 12 then sets n to 0 and line 10 loops infinitely on NaN != 0, whereas Python exits immediately and prints 1. Also, for n <= 0 Python raises ValueError while Java loops infinitely."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 6,
+          "end_line": 6,
+          "snippet": "2 ** ( int ( math.log2 ( n ) ) )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Line 12 uses n -= Math.pow(2, (int) (Math.log(n) / Math.log(2))), assuming n is within the signed 32-bit int range enforced at line 8 (an unstated input range) so the power of 2 is at most 2^30 and does not overflow.",
+        "suggestion": null,
+        "reasoning": "Because n is a 32-bit signed int (at most 2^31 - 1), any value reaching line 12 with n >= 1 produces an exponent of at most 30, so Math.pow(2, ...) is at most 2^30 = 1073741824, which fits cleanly in both double and int without overflow."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8
+          ],
+          "assumption": "Using Scanner and input.nextInt() on lines 7-8 avoids any nextLine() newline-leftover bug because only one value is read, assuming the input contains a single integer token with no leading blank lines or extra tokens on the same line.",
+          "suggestion": null,
+          "reasoning": "Python int(input()) reads a full line and strips surrounding whitespace, while Java Scanner.nextInt() reads the next whitespace-separated token. Since n is the only input read in the program and no nextLine() call follows it, valid single-integer inputs behave identically."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Declaring int n = input.nextInt() assumes the input integer fits in a signed 32-bit int (-2^31 to 2^31 - 1), an input range the code does not state, whereas Python int() accepts arbitrary-size integers.",
+          "suggestion": "Replace int n = input.nextInt(); with BigInteger n = input.nextBigInteger(); and update the loop on lines 10-13 to use BigInteger methods (for example, printing n.bitCount()).",
+          "reasoning": "For any input outside 32-bit signed int range such as 3000000000, Python int(input()) succeeds and prints 2 while Java input.nextInt() throws InputMismatchException."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "The condition Math.log(n) / Math.log(2) % 1 != 0 is unaffected by the % sign difference when comparing against 0 for positive n, but assumes exact floating-point base-2 logarithm results and n >= 1.",
+          "suggestion": "Guard non-positive inputs with if (n <= 0) throw new IllegalArgumentException(); and replace the condition on line 10 with while ((n & (n - 1)) != 0) {.",
+          "reasoning": "For n = 536870912 (2^29), Math.log(536870912) / Math.log(2) evaluates in IEEE 754 double precision to 29.000000000000004 rather than 29.0, so % 1 != 0 is true; line 12 then sets n to 0 and line 10 loops infinitely on NaN != 0, whereas Python exits immediately and prints 1. Also, for n <= 0 Python raises ValueError while Java loops infinitely."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Line 12 uses n -= Math.pow(2, (int) (Math.log(n) / Math.log(2))), assuming n is within the signed 32-bit int range enforced at line 8 (an unstated input range) so the power of 2 is at most 2^30 and does not overflow.",
+          "suggestion": null,
+          "reasoning": "Because n is a 32-bit signed int (at most 2^31 - 1), any value reaching line 12 with n >= 1 produces an exponent of at most 30, so Math.pow(2, ...) is at most 2^30 = 1073741824, which fits cleanly in both double and int without overflow."
+        }
+      ]
+    }
+  }
+}

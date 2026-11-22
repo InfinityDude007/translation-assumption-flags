@@ -1,0 +1,74 @@
+{
+  "sample_id": "codenet-s491954463",
+  "finished_at": "2026-11-22T09:42:08.704156Z",
+  "seconds": 130.4,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input().split()",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7
+        ],
+        "assumption": "The calls to scanner.nextInt() handle arbitrary runs of whitespace as delimiters just like Python's split(), assuming the first input line provides exactly two whitespace-separated 32-bit integers rather than relying on line-boundary checks.",
+        "suggestion": null,
+        "reasoning": "Python uses input().split() to split on arbitrary whitespace and ignore leading/trailing spaces. Java avoids String.split(\" \") by using Scanner.nextInt() on lines 6 and 7, whose default delimiter is \\p{javaWhitespace}+. Thus whitespace handling matches Python, assuming valid input format of two integers on the line."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "input().split()",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12,
+          13
+        ],
+        "assumption": "The calls to scanner.nextInt() handle arbitrary runs of whitespace and leading/trailing spaces like Python's split(), assuming each of the m lines contains exactly two whitespace-separated 32-bit integers.",
+        "suggestion": null,
+        "reasoning": "Python uses input().split() inside the loop on line 5. Java uses scanner.nextInt() on lines 12 and 13, which splits on arbitrary whitespace runs and skips leading/trailing whitespace, avoiding the String.split(\" \") issue."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "1",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7
+          ],
+          "assumption": "The calls to scanner.nextInt() handle arbitrary runs of whitespace as delimiters just like Python's split(), assuming the first input line provides exactly two whitespace-separated 32-bit integers rather than relying on line-boundary checks.",
+          "suggestion": null,
+          "reasoning": "Python uses input().split() to split on arbitrary whitespace and ignore leading/trailing spaces. Java avoids String.split(\" \") by using Scanner.nextInt() on lines 6 and 7, whose default delimiter is \\p{javaWhitespace}+. Thus whitespace handling matches Python, assuming valid input format of two integers on the line."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            12,
+            13
+          ],
+          "assumption": "The calls to scanner.nextInt() handle arbitrary runs of whitespace and leading/trailing spaces like Python's split(), assuming each of the m lines contains exactly two whitespace-separated 32-bit integers.",
+          "suggestion": null,
+          "reasoning": "Python uses input().split() inside the loop on line 5. Java uses scanner.nextInt() on lines 12 and 13, which splits on arbitrary whitespace runs and skips leading/trailing whitespace, avoiding the String.split(\" \") issue."
+        }
+      ]
+    }
+  }
+}
