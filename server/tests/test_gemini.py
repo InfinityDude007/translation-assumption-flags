@@ -141,10 +141,11 @@ def test_client_parses_structured_output() -> None:
 
 
 def test_client_wraps_api_errors() -> None:
-    """An HTTP error surfaces as a GeminiError."""
+    """An HTTP error surfaces as a GeminiError carrying its status."""
     error = {"error": {"code": 400, "message": "x", "status": "INVALID_ARGUMENT"}}
-    with pytest.raises(GeminiError):
+    with pytest.raises(GeminiError) as caught:
         fake_client(400, error).complete("sys", "prompt", Answer)
+    assert caught.value.status == 400
 
 
 @pytest.mark.parametrize("finish_reason", ["MAX_TOKENS", "SAFETY"])

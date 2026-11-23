@@ -23,7 +23,16 @@ Rate limits (429) are not retried, so a run stops and can be resumed later.
 
 
 class GeminiError(RuntimeError):
-    """A Gemini call failed or returned no usable structured output."""
+    """A Gemini call failed or returned no usable structured output.
+
+    Attributes:
+        status: HTTP status of a failed request, or None if the request succeeded.
+    """
+
+    def __init__(self, message: str, status: int | None = None) -> None:
+        """Store the message and the HTTP status."""
+        super().__init__(message)
+        self.status = status
 
 
 class GeminiClient:
@@ -75,7 +84,7 @@ class GeminiClient:
             )
 
         except errors.APIError as error:
-            raise GeminiError(f"Gemini request failed: {error}") from error
+            raise GeminiError(f"Gemini request failed: {error}", error.code) from error
 
         reason = response.candidates[0].finish_reason if response.candidates else None
         if reason is not None and reason != types.FinishReason.STOP:
