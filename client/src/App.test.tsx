@@ -1,4 +1,4 @@
-// Tests for the review screen, over a fake API.
+// Tests for the app, over a fake API.
 
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -53,6 +53,8 @@ let routes: Routes;
 let posted: { path: string; body: unknown }[];
 
 beforeEach(() => {
+    window.location.hash = "";
+    window.localStorage.clear();
     posted = [];
     routes = {
         "GET /samples": [
@@ -99,7 +101,9 @@ beforeEach(() => {
             }
             return new Response(
                 JSON.stringify(reply ?? { detail: "not found" }),
-                { status: reply ? 200 : 404 },
+                {
+                    status: reply ? 200 : 404,
+                },
             );
         }),
     );
@@ -109,24 +113,53 @@ afterEach(() => {
     vi.unstubAllGlobals();
 });
 
+/** The open flag's evidence block from one part of the system. */
+const evidence = (title: string) =>
+    screen
+        .getByRole("heading", { name: new RegExp(`^${title}`) })
+        .closest("section")!;
+
 describe("App", () => {
-    it("shows archived flags with where they came from, without calling Gemini", async () => {
+    it("is named after the repository", async () => {
         render(<App />);
         expect(
-            await screen.findByText("0 of 2 flags decided"),
+            screen.getByRole("heading", {
+                name: "Translation assumption flags",
+            }),
         ).toBeInTheDocument();
+        await screen.findByText("0 of 2 decided");
+    });
+
+    it("shows archived flags without calling Gemini or offering to", async () => {
+        render(<App />);
+        expect(await screen.findByText("0 of 2 decided")).toBeInTheDocument();
+        expect(screen.getByLabelText("Run")).toHaveValue("test-v2");
         expect(
-            screen.getByText(
-                /Saved by gemini-test with prompt version 2, in run test-v2/,
-            ),
-        ).toBeInTheDocument();
+            screen.queryByRole("button", { name: /Analyse/ }),
+        ).not.toBeInTheDocument();
         expect(posted).toEqual([]);
     });
 
-    it("opens the first undecided flag with its evidence", async () => {
+    it("counts each verdict in the key above the code", async () => {
         render(<App />);
-        expect(await screen.findByText("assumption 1")).toBeInTheDocument();
-        expect(screen.getByText("reason 1")).toBeInTheDocument();
+        await screen.findByText("0 of 2 decided");
+        expect(
+            screen.getByText(/Behaves differently \(1\)/),
+        ).toBeInTheDocument();
+        expect(screen.getByText(/Can't tell \(0\)/)).toBeInTheDocument();
+        expect(screen.getByText(/Handled \(1\)/)).toBeInTheDocument();
+    });
+
+    it("labels each piece of evidence with where it came from", async () => {
+        render(<App />);
+        await screen.findByText("assumption 1");
+        expect(evidence("Detector")).toHaveTextContent("reason 1");
+        expect(evidence("Detector")).not.toHaveTextContent("assumption 1");
+        expect(evidence("Explainer")).toHaveTextContent(
+            "gemini-test, prompt 2, run test-v2",
+        );
+        expect(evidence("Explainer")).toHaveTextContent("assumption 1");
+        expect(evidence("Your decision")).toHaveTextContent("not decided");
         expect(screen.queryByText("assumption 2")).not.toBeInTheDocument();
     });
 
@@ -145,9 +178,7 @@ describe("App", () => {
             flag: REVIEW.flags[0],
             decision: "intended",
         });
-        expect(
-            await screen.findByText("1 of 2 flags decided"),
-        ).toBeInTheDocument();
+        expect(await screen.findByText("1 of 2 decided")).toBeInTheDocument();
         expect(screen.getByText("assumption 2")).toBeInTheDocument();
     });
 
@@ -178,13 +209,11 @@ describe("App", () => {
             },
         ];
         render(<App />);
-        expect(
-            await screen.findByText("1 of 2 flags decided"),
-        ).toBeInTheDocument();
+        expect(await screen.findByText("1 of 2 decided")).toBeInTheDocument();
         expect(screen.getByText("assumption 2")).toBeInTheDocument();
     });
 
-    it("asks before a live analysis, explains a used-up limit and lets the reviewer retry", async () => {
+    it("runs live analysis on its own page, explains a used-up limit and allows a retry", async () => {
         const user = userEvent.setup();
         routes["POST /analyse"] = {
             status: 429,
@@ -192,7 +221,9 @@ describe("App", () => {
         } satisfies Failure;
         render(<App />);
         await screen.findByText("assumption 1");
-        await user.selectOptions(screen.getByLabelText("Flags from"), "live");
+        await user.click(screen.getByRole("link", { name: "Live analysis" }));
+        expect(await screen.findByText(/No flags yet/)).toBeInTheDocument();
+        expect(screen.queryByLabelText("Run")).not.toBeInTheDocument();
         expect(posted).toEqual([]);
 
         await user.click(
@@ -202,15 +233,37 @@ describe("App", () => {
             "Gemini's daily request limit for this key is used up",
         );
 
-        routes["POST /analyse"] = REVIEW;
-        await user.click(screen.getByRole("button", { name: "Try again" }));
-        expect(
-            await screen.findByText("0 of 2 flags decided"),
-        ).toBeInTheDocument();
+        routes["POST /analyse"] = { ...REVIEW, run: null };
+        await user.click(
+            screen.getByRole("button", { name: "Analyse with Gemini" }),
+        );
+        expect(await screen.findByText("0 of 2 decided")).toBeInTheDocument();
+        expect(evidence("Explainer")).toHaveTextContent(
+            "gemini-test, prompt 2, live",
+        );
         expect(posted.map((call) => call.path)).toEqual([
             "/analyse",
             "/analyse",
         ]);
+    });
+
+    it("widens the flag panel from the keyboard and remembers it", async () => {
+        const user = userEvent.setup();
+        render(<App />);
+        await screen.findByText("assumption 1");
+        const grip = screen.getByRole("separator", {
+            name: "Resize the flag panel",
+        });
+        const before = Number(grip.getAttribute("aria-valuenow"));
+        grip.focus();
+        await user.keyboard("{ArrowLeft}");
+        const after = Number(grip.getAttribute("aria-valuenow"));
+        expect(after).toBeGreaterThan(before);
+        expect(
+            window.localStorage.getItem(
+                "translation-assumption-flags.side-width",
+            ),
+        ).toBe(String(after));
     });
 
     it("says how to start the API when it cannot be reached", async () => {

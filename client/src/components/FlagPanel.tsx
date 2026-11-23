@@ -1,11 +1,12 @@
-// The flag list: each flag opens in place to show why it was raised and take a decision.
+// The flag list: each flag opens in place, its evidence grouped by where it came from.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { Decision, DecisionKind, Review, ReviewFlag } from "../api";
 import {
     CATEGORY_NAMES,
     DECISION_ACTIONS,
     DECISION_NAMES,
+    VERDICT_MARKS,
     VERDICT_NAMES,
 } from "../labels";
 
@@ -21,34 +22,35 @@ interface Props {
     onDecide: (flag: ReviewFlag, kind: DecisionKind) => void;
 }
 
-/** Every flag in source line order, with the selected one opened. */
+/** Every flag in source line order, the selected one opened, then dropped sites. */
 export function FlagPanel(props: Props) {
-    const {
-        review,
-        decisions,
-        selectedId,
-        saving,
-        saveError,
-        notes,
-        onNote,
-        onSelect,
-        onDecide,
-    } = props;
+    const { review, decisions, selectedId, saving, saveError } = props;
+    const { notes, onNote, onSelect, onDecide } = props;
     const decided = review.flags.filter((flag) =>
         decisions.has(flag.id),
     ).length;
+    const explainer = [
+        review.model ?? "no model",
+        `prompt ${review.prompt_version}`,
+        review.run ? `run ${review.run}` : "live",
+    ].join(", ");
+
     return (
         <aside className="panel" aria-label="Flags">
-            <p className="panel-summary">
-                {review.flags.length === 0
-                    ? "No flags for this program."
-                    : `${decided} of ${review.flags.length} flags decided`}
-            </p>
+            <div className="panel-head">
+                <h2>Flags</h2>
+                <span>
+                    {review.flags.length === 0
+                        ? "None for this program"
+                        : `${decided} of ${review.flags.length} decided`}
+                </span>
+            </div>
             <ol className="flags">
                 {review.flags.map((flag) => (
                     <FlagItem
                         key={flag.id}
                         flag={flag}
+                        explainer={explainer}
                         decision={decisions.get(flag.id)}
                         open={flag.id === selectedId}
                         saving={saving}
@@ -63,21 +65,22 @@ export function FlagPanel(props: Props) {
                 ))}
             </ol>
             {review.dropped.length > 0 && (
-                <details className="dropped">
-                    <summary>
-                        {review.dropped.length === 1
-                            ? "1 site gave no flag"
-                            : `${review.dropped.length} sites gave no flag`}
-                    </summary>
+                <section className="dropped">
+                    <h3>Dropped by the checks ({review.dropped.length})</h3>
+                    <p>
+                        The detector found these sites, but the server's checks
+                        rejected Gemini's answer, so they have no flag and are
+                        not marked in the code.
+                    </p>
                     <ul>
                         {review.dropped.map(({ site, reason }) => (
                             <li key={`${site.category}-${site.line}`}>
-                                <code>{site.snippet}</code> on Python line{" "}
+                                <code>{site.snippet}</code>, Python line{" "}
                                 {site.line}: {reason}
                             </li>
                         ))}
                     </ul>
-                </details>
+                </section>
             )}
         </aside>
     );
@@ -85,6 +88,7 @@ export function FlagPanel(props: Props) {
 
 interface ItemProps {
     flag: ReviewFlag;
+    explainer: string;
     decision: Decision | undefined;
     open: boolean;
     saving: boolean;
@@ -95,22 +99,17 @@ interface ItemProps {
     onDecide: (kind: DecisionKind) => void;
 }
 
-/** One flag: a summary row, and when open, the evidence and the decision buttons. */
-function FlagItem({
-    flag,
-    decision,
-    open,
-    saving,
-    saveError,
-    note,
-    onNote,
-    onSelect,
-    onDecide,
-}: ItemProps) {
+/** One flag: a summary row, and when open, its evidence and the decision. */
+function FlagItem(props: ItemProps) {
+    const { flag, explainer, decision, open, saving, saveError } = props;
+    const { note, onNote, onSelect, onDecide } = props;
     const item = useRef<HTMLLIElement>(null);
     const openedOnLoad = useRef(open);
     const { site } = flag;
-    const javaLines = flag.translation_lines.join(", ");
+    const pythonLines =
+        site.line === site.end_line
+            ? `${site.line}`
+            : `${site.line}–${site.end_line}`;
 
     // Keep the flag in view when it is opened from the code or the keyboard, but
     // not on load, where scrolling would carry a phone's page past the code.
@@ -126,7 +125,6 @@ function FlagItem({
             className="flag"
             data-open={open || undefined}
             data-verdict={flag.verdict}
-            style={{ ["--cat" as string]: `var(--cat-${site.category})` }}
         >
             <button
                 type="button"
@@ -135,12 +133,15 @@ function FlagItem({
                 aria-controls={`flag-${flag.id}`}
                 onClick={onSelect}
             >
-                <span className="flag-snippet">{site.snippet}</span>
-                <span className="flag-meta">
-                    {CATEGORY_NAMES[site.category]}, line {site.line}
+                <span className="mark" aria-hidden="true">
+                    {VERDICT_MARKS[flag.verdict]}
                 </span>
+                <span className="flag-snippet">{site.snippet}</span>
                 <span className="flag-verdict">
                     {VERDICT_NAMES[flag.verdict]}
+                </span>
+                <span className="flag-meta">
+                    {CATEGORY_NAMES[site.category]}, line {site.line}
                 </span>
                 <span className="flag-decision" data-kind={decision?.decision}>
                     {decision
@@ -150,71 +151,129 @@ function FlagItem({
             </button>
             {open && (
                 <div className="flag-body" id={`flag-${flag.id}`}>
-                    <p className="flag-lines">
-                        Python line{" "}
-                        {site.line === site.end_line
-                            ? site.line
-                            : `${site.line}–${site.end_line}`}
-                        {javaLines
-                            ? `, Java line${flag.translation_lines.length > 1 ? "s" : ""} ${javaLines}`
-                            : ", no Java lines found"}
-                    </p>
-                    <section>
-                        <h3>What the translation assumed</h3>
-                        <p className="source-note">
-                            Gemini's reading of the Java
-                        </p>
-                        <p>{flag.assumption}</p>
-                    </section>
-                    {flag.suggestion && (
-                        <section>
-                            <h3>Suggested Java</h3>
-                            <p className="source-note">From Gemini</p>
-                            <pre className="suggestion">{flag.suggestion}</pre>
-                        </section>
-                    )}
-                    <section>
-                        <h3>Why this construct can differ</h3>
-                        <p className="source-note">
-                            From the rule booklet (
-                            {site.rule.replaceAll("_", " ")})
-                        </p>
-                        <p>{site.reason}</p>
-                    </section>
-                    <div
-                        className="decide"
-                        role="group"
-                        aria-label="Your decision"
+                    <Evidence
+                        source="detector"
+                        title="Detector"
+                        detail="rule booklet"
                     >
-                        {DECISION_ACTIONS.map(({ kind, label, key }) => (
-                            <button
-                                key={kind}
-                                type="button"
-                                className="decide-button"
-                                data-kind={kind}
-                                aria-pressed={decision?.decision === kind}
-                                aria-keyshortcuts={key}
-                                disabled={saving}
-                                onClick={() => onDecide(kind)}
+                        <Fact name="Python">
+                            line {pythonLines}, <code>{site.snippet}</code>
+                        </Fact>
+                        <Fact name="Rule">
+                            {site.rule.replaceAll("_", " ")} (
+                            {CATEGORY_NAMES[site.category].toLowerCase()})
+                        </Fact>
+                        <p>{site.reason}</p>
+                    </Evidence>
+                    <Evidence
+                        source="explainer"
+                        title="Explainer"
+                        detail={explainer}
+                    >
+                        <Fact name="Verdict">
+                            <span
+                                className="verdict"
+                                data-verdict={flag.verdict}
                             >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                    <label className="note">
-                        <span>Note (optional)</span>
-                        <input
-                            value={note}
-                            onChange={(event) => onNote(event.target.value)}
-                        />
-                    </label>
-                    {saveError && (
-                        <p className="error" role="alert">
-                            Not saved: {saveError}
+                                <span className="mark" aria-hidden="true">
+                                    {VERDICT_MARKS[flag.verdict]}
+                                </span>
+                                {VERDICT_NAMES[flag.verdict]}
+                            </span>
+                        </Fact>
+                        <Fact name="Java">
+                            {flag.translation_lines.length > 0
+                                ? `line${flag.translation_lines.length > 1 ? "s" : ""} ${flag.translation_lines.join(", ")}`
+                                : "no line found"}
+                        </Fact>
+                        <h4>What the translation assumed</h4>
+                        <p>{flag.assumption}</p>
+                        {flag.suggestion && (
+                            <>
+                                <h4>Suggested Java</h4>
+                                <pre className="suggestion">
+                                    {flag.suggestion}
+                                </pre>
+                            </>
+                        )}
+                    </Evidence>
+                    <Evidence
+                        source="you"
+                        title="Your decision"
+                        detail={
+                            decision
+                                ? `saved: ${DECISION_NAMES[decision.decision].toLowerCase()}`
+                                : "not decided"
+                        }
+                    >
+                        <div
+                            className="decide"
+                            role="group"
+                            aria-label="Your decision"
+                        >
+                            {DECISION_ACTIONS.map(({ kind, label, key }) => (
+                                <button
+                                    key={kind}
+                                    type="button"
+                                    className="decide-button"
+                                    data-kind={kind}
+                                    aria-pressed={decision?.decision === kind}
+                                    aria-keyshortcuts={key}
+                                    title={`Key ${key}`}
+                                    disabled={saving}
+                                    onClick={() => onDecide(kind)}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                        <label className="note">
+                            <span>Note</span>
+                            <input
+                                value={note}
+                                onChange={(event) => onNote(event.target.value)}
+                            />
+                        </label>
+                        {saveError && (
+                            <p className="error" role="alert">
+                                Not saved: {saveError}
+                            </p>
+                        )}
+                        <p className="keys">
+                            Keys: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> decide,{" "}
+                            <kbd>j</kbd> <kbd>k</kbd> move between flags.
                         </p>
-                    )}
+                    </Evidence>
                 </div>
             )}
         </li>
+    );
+}
+
+/** A block of evidence, labelled with the part of the system it came from. */
+function Evidence(props: {
+    source: "detector" | "explainer" | "you";
+    title: string;
+    detail: string;
+    children: ReactNode;
+}) {
+    return (
+        <section className="evidence" data-source={props.source}>
+            <h3 className="evidence-head">
+                <span className="evidence-tag">{props.title}</span>
+                <span className="evidence-detail">{props.detail}</span>
+            </h3>
+            {props.children}
+        </section>
+    );
+}
+
+/** A labelled fact on one line, e.g. "Java: line 7". */
+function Fact({ name, children }: { name: string; children: ReactNode }) {
+    return (
+        <p className="fact">
+            <span className="fact-name">{name}</span>
+            <span>{children}</span>
+        </p>
     );
 }

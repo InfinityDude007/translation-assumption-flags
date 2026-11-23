@@ -3,6 +3,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { ReviewFlag, SampleCode, Verdict } from "../api";
 import { highlightLines } from "../highlight";
+import {
+    VERDICT_MARKS,
+    VERDICT_MEANINGS,
+    VERDICT_NAMES,
+    VERDICTS,
+} from "../labels";
 
 /** Height of one code line, in pixels; the CSS uses the same value. */
 const LINE = 22;
@@ -10,13 +16,6 @@ const LINE = 22;
 const HEAD = 40;
 /** Width of the bridge between the columns, in pixels. */
 const BRIDGE = 72;
-
-/** Which verdict wins when several flags share a line. */
-const STRENGTH: Record<Verdict, number> = {
-    mismatch: 3,
-    unclear: 2,
-    handled: 1,
-};
 
 /** Vertical centre of a line inside the bench. */
 const middle = (line: number) => HEAD + (line - 1) * LINE + LINE / 2;
@@ -29,7 +28,7 @@ interface Props {
 }
 
 /**
- * The two code columns and the bridge between them, in one scrolling area.
+ * The key, then the two code columns and the bridge between them.
  *
  * Both columns share a line height, so a flag's lines sit at known heights and
  * the bridge can draw them without measuring the page.
@@ -85,46 +84,74 @@ export function CodeBench({ code, flags, selectedId, onSelect }: Props) {
     };
 
     return (
-        <div className="bench" ref={scroller}>
-            <div className="bench-grid" style={{ minHeight: height }}>
-                <Column
-                    title="Python source"
-                    lines={source}
-                    flagsOnLine={sourceFlags}
-                    selectedId={selectedId}
-                    onPick={pick}
-                />
-                <svg
-                    className="bridge"
-                    width={BRIDGE}
-                    height={height}
-                    aria-hidden="true"
-                >
-                    {flags.flatMap((flag) =>
-                        flag.translation_lines.map((line) => (
-                            <path
-                                key={`${flag.id}-${line}`}
-                                className="link"
-                                data-verdict={flag.verdict}
-                                data-selected={
-                                    flag.id === selectedId || undefined
-                                }
-                                style={{
-                                    stroke: `var(--cat-${flag.site.category})`,
-                                }}
-                                d={curve(middle(flag.site.line), middle(line))}
-                            />
-                        )),
-                    )}
-                </svg>
-                <Column
-                    title="Java translation by GPT-4"
-                    lines={translation}
-                    flagsOnLine={translationFlags}
-                    selectedId={selectedId}
-                    onPick={pick}
-                />
+        <div className="bench-wrap">
+            <Key flags={flags} />
+            <div className="bench" ref={scroller}>
+                <div className="bench-grid" style={{ minHeight: height }}>
+                    <Column
+                        title="Python source"
+                        lines={source}
+                        flagsOnLine={sourceFlags}
+                        selectedId={selectedId}
+                        onPick={pick}
+                    />
+                    <svg
+                        className="bridge"
+                        width={BRIDGE}
+                        height={height}
+                        aria-hidden="true"
+                    >
+                        {flags.flatMap((flag) =>
+                            flag.translation_lines.map((line) => (
+                                <path
+                                    key={`${flag.id}-${line}`}
+                                    className="link"
+                                    data-verdict={flag.verdict}
+                                    data-selected={
+                                        flag.id === selectedId || undefined
+                                    }
+                                    d={curve(
+                                        middle(flag.site.line),
+                                        middle(line),
+                                    )}
+                                />
+                            )),
+                        )}
+                    </svg>
+                    <Column
+                        title="Java translation by GPT-4"
+                        lines={translation}
+                        flagsOnLine={translationFlags}
+                        selectedId={selectedId}
+                        onPick={pick}
+                    />
+                </div>
             </div>
+        </div>
+    );
+}
+
+/** What the line marks mean, with how many flags have each verdict. */
+function Key({ flags }: { flags: ReviewFlag[] }) {
+    return (
+        <div className="key">
+            <span className="key-title">
+                Gemini's verdict on each flagged line:
+            </span>
+            {VERDICTS.map((verdict) => (
+                <span
+                    key={verdict}
+                    className="key-item"
+                    data-verdict={verdict}
+                    title={VERDICT_MEANINGS[verdict]}
+                >
+                    <span className="mark" aria-hidden="true">
+                        {VERDICT_MARKS[verdict]}
+                    </span>
+                    {VERDICT_NAMES[verdict]} (
+                    {flags.filter((flag) => flag.verdict === verdict).length})
+                </span>
+            ))}
         </div>
     );
 }
@@ -137,7 +164,7 @@ interface ColumnProps {
     onPick: (onLine: ReviewFlag[]) => void;
 }
 
-/** One file, a line per row, with flagged lines marked by category and verdict. */
+/** One file, a line per row, with flagged lines marked by verdict. */
 function Column({
     title,
     lines,
@@ -156,23 +183,19 @@ function Column({
                         const chosen = onLine.find(
                             (flag) => flag.id === selectedId,
                         );
-                        const lead = chosen ?? strongest(onLine);
+                        const verdict = chosen?.verdict ?? strongest(onLine);
                         return (
                             <div
                                 key={number}
                                 className="line"
-                                data-verdict={lead?.verdict}
+                                data-verdict={verdict}
                                 data-selected={chosen ? true : undefined}
-                                style={
-                                    lead
-                                        ? {
-                                              ["--cat" as string]: `var(--cat-${lead.site.category})`,
-                                          }
-                                        : undefined
-                                }
                                 onClick={() => onPick(onLine)}
                             >
                                 <span className="line-number">{number}</span>
+                                <span className="mark" aria-hidden="true">
+                                    {verdict ? VERDICT_MARKS[verdict] : ""}
+                                </span>
                                 <code
                                     dangerouslySetInnerHTML={{
                                         __html: html || " ",
@@ -200,11 +223,11 @@ function flagsByLine(
     return map;
 }
 
-/** The flag whose verdict should colour a shared line. */
-function strongest(flags: ReviewFlag[]): ReviewFlag | undefined {
-    return [...flags].sort(
-        (a, b) => STRENGTH[b.verdict] - STRENGTH[a.verdict],
-    )[0];
+/** The most serious verdict among a line's flags, if it has any. */
+function strongest(flags: ReviewFlag[]): Verdict | undefined {
+    return VERDICTS.find((verdict) =>
+        flags.some((flag) => flag.verdict === verdict),
+    );
 }
 
 /** Whole numbers from first to last, inclusive. */
