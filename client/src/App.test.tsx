@@ -150,6 +150,28 @@ describe("App", () => {
         expect(screen.getByText(/Handled \(1\)/)).toBeInTheDocument();
     });
 
+    it("explains every mark in a guide opened from the key", async () => {
+        const user = userEvent.setup();
+        render(<App />);
+        await screen.findByText("0 of 2 decided");
+        await user.click(
+            screen.getByRole("button", { name: "What do these mean?" }),
+        );
+        const guide = screen.getByRole("dialog", {
+            name: "How to read this page",
+        });
+        for (const text of [
+            "Line marks",
+            "Detector",
+            "Explainer",
+            "Checks",
+            "Mark intended",
+        ])
+            expect(within(guide).getAllByText(text).length).toBeGreaterThan(0);
+        await user.click(within(guide).getByRole("button", { name: "Close" }));
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
     it("labels each piece of evidence with where it came from", async () => {
         render(<App />);
         await screen.findByText("assumption 1");

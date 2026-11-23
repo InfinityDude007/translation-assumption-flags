@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { ReviewFlag, SampleCode, Verdict } from "../api";
 import { highlightLines } from "../highlight";
+import { KeyGuide } from "./KeyGuide";
 import {
     VERDICT_MARKS,
     VERDICT_MEANINGS,
@@ -11,7 +12,7 @@ import {
 } from "../labels";
 
 /** Height of one code line, in pixels; the CSS uses the same value. */
-const LINE = 22;
+const LINE = 24;
 /** Height of a column's heading row, in pixels; the CSS uses the same value. */
 const HEAD = 40;
 /** Width of the bridge between the columns, in pixels. */
@@ -152,6 +153,7 @@ function Key({ flags }: { flags: ReviewFlag[] }) {
                     {flags.filter((flag) => flag.verdict === verdict).length})
                 </span>
             ))}
+            <KeyGuide />
         </div>
     );
 }

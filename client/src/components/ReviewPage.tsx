@@ -276,9 +276,6 @@ export function ReviewPage(props: Props) {
                         >
                             {review ? "Analyse again" : "Analyse with Gemini"}
                         </button>
-                        <span>
-                            Uses one of the key's daily Gemini requests.
-                        </span>
                     </div>
                 )}
             </div>
