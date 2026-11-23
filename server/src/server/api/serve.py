@@ -1,0 +1,25 @@
+"""Command to serve the review API locally."""
+
+import uvicorn
+
+from ..settings import (
+    get_api_settings,
+    get_dataset_settings,
+    get_evaluation_settings,
+)
+from .app import create_app
+
+
+def main() -> None:
+    """Serve the API with uvicorn, configured from the settings.
+
+    Usage: serve
+    """
+    api = get_api_settings()
+    app = create_app(
+        get_dataset_settings().samples_dir,
+        get_evaluation_settings().runs_dir,
+        api.decisions_file,
+        api.cors_origins,
+    )
+    uvicorn.run(app, host=api.host, port=api.port)

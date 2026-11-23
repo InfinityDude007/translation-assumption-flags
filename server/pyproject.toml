@@ -25,6 +25,7 @@ detect = "server.detection.cli:main"
 explain = "server.explanation.cli:main"
 evaluate = "server.evaluation.cli:evaluate"
 score = "server.evaluation.cli:score"
+serve = "server.api.cli:main"
 # Dev scripts
 tests = "server.dev:run_tests"
 check = "server.dev:check"
