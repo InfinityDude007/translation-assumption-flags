@@ -8,7 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ..dataset import SampleMeta
 from ..evaluation.archive import CONFIG_FILE, load_samples
-from ..evaluation.models import RunConfig, SampleRun
+from ..evaluation.models import RunConfig, RunScore, SampleRun
+from ..evaluation.scoring import score_run
 from ..explanation import explain
 from ..gemini import GeminiClient, GeminiError, get_client
 from .decisions import load_decisions, save_decision
@@ -125,6 +126,16 @@ def create_app(
             )
         archived = SampleRun.model_validate_json(path.read_text())
         return Review.from_explanation(archived.explanation, run)
+
+    @app.get("/runs/{run}/score")
+    def get_score(run: str) -> RunScore:
+        """Score a run against the tagged lines, over the samples archived so far.
+
+        This route shows the ground truth, so the review pages never call it.
+        """
+        if run not in find_runs():
+            raise HTTPException(status.HTTP_404_NOT_FOUND, f"no run {run!r}")
+        return score_run(runs_dir / run, samples_dir)
 
     @app.post("/analyse")
     def analyse(

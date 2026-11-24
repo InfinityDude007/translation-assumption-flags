@@ -186,6 +186,24 @@ def test_missing_archived_reviews_are_not_found(api: TestClient, path: str) -> N
     assert api.get(path).status_code == 404
 
 
+def test_run_score_counts_caught_bugs(api: TestClient) -> None:
+    """The score is worked out from the archived flags and the tagged lines."""
+    response = api.get("/runs/test-v1/score")
+    assert response.status_code == 200
+    score = response.json()
+    assert score["config"]["name"] == "test-v1"
+    assert (score["bugs"], score["bugs_caught"]) == (1, 1)
+    assert (score["mismatch_flags"], score["false_alarms"]) == (1, 0)
+    [sample] = score["samples"]
+    assert (sample["sample_id"], sample["bug_caught"]) == (SAMPLE, True)
+    assert score["missing"] == []
+
+
+def test_unknown_run_has_no_score(api: TestClient) -> None:
+    """Scoring a run that does not exist is a 404."""
+    assert api.get("/runs/nope/score").status_code == 404
+
+
 def test_analyse_explains_live(api: TestClient) -> None:
     """A live analysis has no run and keeps Gemini's working out of the response."""
     response = api.post("/analyse", json={"source": SOURCE, "translation": TRANSLATION})
