@@ -106,6 +106,9 @@ export interface SampleScore {
     mismatch_flags: number;
     bug_caught: boolean | null;
     latent_caught: boolean | null;
+    /** Whether a mismatch or unclear flag hit a bug line; null if no bug. */
+    bug_surfaced: boolean | null;
+    latent_surfaced: boolean | null;
     false_alarms: number;
     handled: number;
     unclear: number;
@@ -125,6 +128,9 @@ export interface RunScore {
     bugs_caught: number;
     latent: number;
     latent_caught: number;
+    /** Bugs a mismatch or unclear flag hit: both are tinted for the reviewer. */
+    bugs_surfaced: number;
+    latent_surfaced: number;
     mismatch_flags: number;
     false_alarms: number;
     missing: string[];

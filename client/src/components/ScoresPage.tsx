@@ -101,7 +101,10 @@ export function ScoresPage(props: Props) {
                 <p className="scores-lead">
                     Only flags Gemini marked “behaves differently” count. A flag
                     catches a bug when one of its Java lines is a hand-tagged
-                    bug line; a false alarm hits no tagged line at all.
+                    bug line; a false alarm hits no tagged line at all. The
+                    review page also tints “can't tell” lines, so the columns
+                    counting can't tell show what reached the reviewer either
+                    way.
                 </p>
                 <div className="table-wrap">
                     <table
@@ -115,6 +118,8 @@ export function ScoresPage(props: Props) {
                                 <th scope="col">Prompt</th>
                                 <th scope="col">Bugs caught</th>
                                 <th scope="col">Latent bugs caught</th>
+                                <th scope="col">Bugs, counting can't tell</th>
+                                <th scope="col">Latent, counting can't tell</th>
                                 <th scope="col">Flags on a tagged line</th>
                                 <th scope="col">False alarms</th>
                                 <th scope="col">Programs scored</th>
@@ -162,6 +167,18 @@ export function ScoresPage(props: Props) {
                                                 </td>
                                                 <td className="number">
                                                     {share(
+                                                        score.bugs_surfaced,
+                                                        score.bugs,
+                                                    )}
+                                                </td>
+                                                <td className="number">
+                                                    {share(
+                                                        score.latent_surfaced,
+                                                        score.latent,
+                                                    )}
+                                                </td>
+                                                <td className="number">
+                                                    {share(
                                                         score.mismatch_flags -
                                                             score.false_alarms,
                                                         score.mismatch_flags,
@@ -172,7 +189,7 @@ export function ScoresPage(props: Props) {
                                                 </td>
                                             </>
                                         ) : (
-                                            <td colSpan={4} className="muted">
+                                            <td colSpan={6} className="muted">
                                                 Scoring…
                                             </td>
                                         )}

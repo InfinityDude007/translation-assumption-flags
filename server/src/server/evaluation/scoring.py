@@ -10,6 +10,9 @@ from .models import RunConfig, RunScore, SampleRun, SampleScore
 def score_sample(meta: SampleMeta, run: SampleRun) -> SampleScore:
     """Compare one sample's mismatch flags with its tagged Java lines.
 
+    A bug is caught when a mismatch flag hits one of its lines, and surfaced
+    when a mismatch or unclear flag does: the review page tints both.
+
     Args:
         meta: The sample's metadata and tags.
         run: The archived explainer result for it.
@@ -23,6 +26,11 @@ def score_sample(meta: SampleMeta, run: SampleRun) -> SampleScore:
     mismatch = [
         set(flag.translation_lines) for flag in flags if flag.verdict == "mismatch"
     ]
+    surfaced = [
+        set(flag.translation_lines)
+        for flag in flags
+        if flag.verdict in ("mismatch", "unclear")
+    ]
 
     return SampleScore(
         sample_id=meta.id,
@@ -33,6 +41,8 @@ def score_sample(meta: SampleMeta, run: SampleRun) -> SampleScore:
         mismatch_flags=len(mismatch),
         bug_caught=any(lines & bug for lines in mismatch) if bug else None,
         latent_caught=any(lines & latent for lines in mismatch) if latent else None,
+        bug_surfaced=any(lines & bug for lines in surfaced) if bug else None,
+        latent_surfaced=any(lines & latent for lines in surfaced) if latent else None,
         false_alarms=sum(1 for lines in mismatch if not lines & (bug | latent)),
         handled=sum(1 for flag in flags if flag.verdict == "handled"),
         unclear=sum(1 for flag in flags if flag.verdict == "unclear"),
@@ -70,6 +80,8 @@ def score_run(run_dir: Path, samples_dir: Path) -> RunScore:
         bugs_caught=sum(1 for score in scores if score.bug_caught),
         latent=sum(1 for score in scores if score.latent_caught is not None),
         latent_caught=sum(1 for score in scores if score.latent_caught),
+        bugs_surfaced=sum(1 for score in scores if score.bug_surfaced),
+        latent_surfaced=sum(1 for score in scores if score.latent_surfaced),
         mismatch_flags=sum(score.mismatch_flags for score in scores),
         false_alarms=sum(score.false_alarms for score in scores),
         missing=missing,
@@ -110,6 +122,8 @@ def format_score(score: RunScore) -> str:
         "",
         f"Test-exposed bugs caught: {score.bugs_caught}/{score.bugs}",
         f"Latent bugs caught:       {score.latent_caught}/{score.latent}",
+        f"Surfaced, with unclear:   bugs {score.bugs_surfaced}/{score.bugs}, "
+        f"latent {score.latent_surfaced}/{score.latent}",
         f"Mismatch flags:           {score.mismatch_flags}, "
         f"of which false alarms: {score.false_alarms}",
     ]

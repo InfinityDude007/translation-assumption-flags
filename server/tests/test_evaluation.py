@@ -57,18 +57,21 @@ ANSWER = GeminiAnswer(
 class FakeClient(GeminiClient):
     """A Gemini client that returns ANSWER, and can fail on chosen calls."""
 
-    def __init__(self, fail_on: int | None = None) -> None:
-        """Set the model name and, optionally, which call (1-based) should fail."""
+    def __init__(
+        self, fail_on: int | None = None, answer: GeminiAnswer = ANSWER
+    ) -> None:
+        """Set the model name, the answer, and which call (1-based) should fail."""
         self._model = "gemini-test"
         self.calls = 0
         self.fail_on = fail_on
+        self.answer = answer
 
     def complete[T: BaseModel](self, system: str, prompt: str, schema: type[T]) -> T:
-        """Count the call, fail if asked, and return ANSWER validated as `schema`."""
+        """Count the call, fail if asked, and return the answer as `schema`."""
         self.calls += 1
         if self.calls == self.fail_on:
             raise GeminiError("Gemini request failed: 429")
-        return schema.model_validate(ANSWER.model_dump())
+        return schema.model_validate(self.answer.model_dump())
 
 
 def add_sample(
@@ -179,6 +182,7 @@ def test_scoring_counts_mismatch_flags_against_the_tags(
 
     assert (score.bugs, score.bugs_caught) == (1, 1)
     assert (score.latent, score.latent_caught) == (1, 1)
+    assert (score.bugs_surfaced, score.latent_surfaced) == (1, 1)
     assert (score.mismatch_flags, score.false_alarms) == (6, 4)
     assert score.missing == ["d"]
 
@@ -191,3 +195,20 @@ def test_a_missed_bug_is_reported(samples: Path, tmp_path: Path) -> None:
     assert score.samples[0].bug_caught is False
     assert (score.bugs, score.bugs_caught, score.false_alarms) == (1, 0, 2)
     assert "Test-exposed bugs caught: 0/1" in format_score(score)
+
+
+def test_an_unclear_flag_surfaces_a_bug_without_catching_it(
+    samples: Path, tmp_path: Path
+) -> None:
+    """An unclear flag on a bug line counts as surfaced, not as caught."""
+    unclear = ANSWER.model_copy(deep=True)
+    unclear.answers[2].verdict = "unclear"
+    runs = tmp_path / "runs"
+    run(FakeClient(answer=unclear), samples, runs, ["a"])
+    score = score_run(runs / "test", samples)
+    assert (score.samples[0].bug_caught, score.samples[0].bug_surfaced) == (
+        False,
+        True,
+    )
+    assert (score.bugs_caught, score.bugs_surfaced) == (0, 1)
+    assert "Surfaced, with unclear:   bugs 1/1, latent 0/0" in format_score(score)

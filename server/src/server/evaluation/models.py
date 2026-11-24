@@ -55,6 +55,9 @@ class SampleScore(BaseModel):
         mismatch_flags: Number of mismatch flags.
         bug_caught: Whether a mismatch flag hit a bug line; None if no bug.
         latent_caught: Whether a mismatch flag hit a latent line; None if none.
+        bug_surfaced: Whether a mismatch or unclear flag hit a bug line; None
+            if no bug. The review page tints both, so both reach the reviewer.
+        latent_surfaced: The same for latent lines; None if none.
         false_alarms: Mismatch flags that hit neither bug nor latent lines.
         handled: Flags with the verdict "handled".
         unclear: Flags with the verdict "unclear".
@@ -69,6 +72,8 @@ class SampleScore(BaseModel):
     mismatch_flags: int
     bug_caught: bool | None
     latent_caught: bool | None
+    bug_surfaced: bool | None
+    latent_surfaced: bool | None
     false_alarms: int
     handled: int
     unclear: int
@@ -85,6 +90,8 @@ class RunScore(BaseModel):
         bugs_caught: Of those, how many a mismatch flag hit.
         latent: Samples with a latent bug.
         latent_caught: Of those, how many a mismatch flag hit.
+        bugs_surfaced: Bugs a mismatch or unclear flag hit.
+        latent_surfaced: Latent bugs a mismatch or unclear flag hit.
         mismatch_flags: All mismatch flags.
         false_alarms: Mismatch flags that hit no tagged line.
         missing: Samples in the dataset that the run has not reached yet.
@@ -96,6 +103,8 @@ class RunScore(BaseModel):
     bugs_caught: int
     latent: int
     latent_caught: int
+    bugs_surfaced: int
+    latent_surfaced: int
     mismatch_flags: int
     false_alarms: int
     missing: list[str]

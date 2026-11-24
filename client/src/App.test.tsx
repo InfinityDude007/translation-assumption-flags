@@ -144,9 +144,11 @@ beforeEach(() => {
                     mismatch_flags: 3,
                     bug_caught: false,
                     latent_caught: null,
+                    bug_surfaced: true,
+                    latent_surfaced: null,
                     false_alarms: 3,
                     handled: 1,
-                    unclear: 0,
+                    unclear: 1,
                     dropped: 0,
                 },
             ],
@@ -154,6 +156,8 @@ beforeEach(() => {
             bugs_caught: 0,
             latent: 0,
             latent_caught: 0,
+            bugs_surfaced: 1,
+            latent_surfaced: 0,
             mismatch_flags: 3,
             false_alarms: 3,
             missing: [],
@@ -383,6 +387,12 @@ describe("App", () => {
         const row = within(runs).getByRole("row", { name: /test-v2/ });
         expect(row).toHaveTextContent("0 of 1 (0%)");
         expect(row).toHaveTextContent("0 of 3 (0%)");
+        const surfaced = within(runs).getByRole("columnheader", {
+            name: "Bugs, counting can't tell",
+        });
+        const cells = within(row).getAllByRole("cell");
+        const column = [...surfaced.parentElement!.children].indexOf(surfaced);
+        expect(cells[column - 1]).toHaveTextContent("1 of 1 (100%)");
         expect(screen.getByText("Missed")).toBeInTheDocument();
     });
 
