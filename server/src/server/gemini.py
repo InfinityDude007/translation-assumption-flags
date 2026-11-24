@@ -10,8 +10,8 @@ from .settings import get_gemini_settings
 
 RETRY = types.HttpRetryOptions(
     attempts=11,
-    initial_delay=30,
-    max_delay=30,
+    initial_delay=1,
+    max_delay=10,
     exp_base=1,
     jitter=0,
     http_status_codes=[503],
