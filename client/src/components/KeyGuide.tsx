@@ -152,6 +152,21 @@ export function KeyGuide() {
                     </section>
 
                     <section>
+                        <h3>The token probabilities view</h3>
+                        <p>
+                            On Archived runs, "Token probabilities" swaps the
+                            flags for the usual way of highlighting generated
+                            code. A local model reads the Python and the Java,
+                            and each Java token it found unlikely is shaded,
+                            deeper the less likely it was. A line is marked{" "}
+                            <span className="probability-mark">•</span> when its
+                            least likely token is below the threshold. It is the
+                            view the flags are compared against: it shows where
+                            the code is surprising, not what it assumed.
+                        </p>
+                    </section>
+
+                    <section>
                         <h3>What this page does not show</h3>
                         <p>
                             The hand-tagged bug lines are hidden here so the

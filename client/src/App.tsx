@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import {
+    listBaselines,
     listRuns,
     listSamples,
+    type BaselineSummary,
     type RunSummary,
     type SampleSummary,
 } from "./api";
@@ -33,6 +35,7 @@ export default function App() {
     const [page, setPage] = useState<Page>(pageFromHash);
     const [samples, setSamples] = useState<SampleSummary[]>([]);
     const [runs, setRuns] = useState<RunSummary[]>([]);
+    const [baselines, setBaselines] = useState<BaselineSummary[]>([]);
     const [startError, setStartError] = useState<string | null>(null);
     const [sampleId, setSampleId] = useState<string | null>(null);
     const [runName, setRunName] = useState<string>(LIVE);
@@ -53,6 +56,10 @@ export default function App() {
                 setRunName(defaultRun(runs, samples.length));
             })
             .catch((error) => setStartError(describeError(error)));
+        // Without baselines the probability view is simply not offered.
+        listBaselines()
+            .then(setBaselines)
+            .catch(() => setBaselines([]));
     }, []);
 
     return (
@@ -87,6 +94,7 @@ export default function App() {
             ) : page === "scores" ? (
                 <ScoresPage
                     runs={runs}
+                    baselines={baselines}
                     samples={samples}
                     runName={runName}
                     onRun={setRunName}
@@ -101,6 +109,7 @@ export default function App() {
                     mode={page === "live" ? "live" : "archived"}
                     samples={samples}
                     runs={runs}
+                    baselines={baselines}
                     sampleId={sampleId}
                     onSample={setSampleId}
                     runName={runName}

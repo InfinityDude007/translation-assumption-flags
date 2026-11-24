@@ -56,3 +56,18 @@ export const DECISION_ACTIONS: {
     { kind: "intended", label: "Mark intended", key: "2" },
     { kind: "dismissed", label: "Dismiss", key: "3" },
 ];
+
+/**
+ * A probability as a percentage, e.g. 0.034 as "3.4%" and 0.05 as "5%".
+ *
+ * @param probability A value from 0 to 1.
+ * @returns Whole percent from 10% up, one decimal below (dropping ".0"),
+ *     and "<0.1%" for tiny values.
+ */
+export function percent(probability: number): string {
+    if (probability < 0.001) return "<0.1%";
+    const value = probability * 100;
+    const shown =
+        probability < 0.1 ? Number(value.toFixed(1)) : Math.round(value);
+    return `${shown}%`;
+}

@@ -2,16 +2,21 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+    getBaselineScore,
     getScore,
+    type BaselineScore,
+    type BaselineSummary,
     type RunScore,
     type RunSummary,
     type SampleScore,
     type SampleSummary,
 } from "../api";
 import { describeError } from "../errors";
+import { percent } from "../labels";
 
 interface Props {
     runs: RunSummary[];
+    baselines: BaselineSummary[];
     samples: SampleSummary[];
     runName: string;
     onRun: (name: string) => void;
@@ -33,8 +38,10 @@ function share(part: number, whole: number): string {
  * It shows the ground truth, which the review pages hide, so it sits on its
  * own tab and is meant for evaluation, not for reviewing.
  */
-export function ScoresPage({ runs, samples, runName, onRun, onReview }: Props) {
+export function ScoresPage(props: Props) {
+    const { runs, baselines, samples, runName, onRun, onReview } = props;
     const [scores, setScores] = useState<Record<string, RunScore>>({});
+    const [baselineScores, setBaselineScores] = useState<BaselineScore[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<Filter>("all");
 
@@ -49,6 +56,14 @@ export function ScoresPage({ runs, samples, runName, onRun, onReview }: Props) {
             )
             .catch((error) => setError(describeError(error)));
     }, [runs]);
+
+    useEffect(() => {
+        Promise.all(
+            baselines.map((baseline) => getBaselineScore(baseline.name)),
+        )
+            .then(setBaselineScores)
+            .catch((error) => setError(describeError(error)));
+    }, [baselines]);
 
     const programs = useMemo(
         () => new Map(samples.map((sample) => [sample.id, sample.program])),
@@ -82,14 +97,17 @@ export function ScoresPage({ runs, samples, runName, onRun, onReview }: Props) {
     return (
         <main className="scores">
             <section className="scores-section">
-                <h2>Runs compared</h2>
+                <h2 id="runs-compared">Runs compared</h2>
                 <p className="scores-lead">
                     Only flags Gemini marked “behaves differently” count. A flag
                     catches a bug when one of its Java lines is a hand-tagged
                     bug line; a false alarm hits no tagged line at all.
                 </p>
                 <div className="table-wrap">
-                    <table className="scores-table">
+                    <table
+                        className="scores-table"
+                        aria-labelledby="runs-compared"
+                    >
                         <thead>
                             <tr>
                                 <th scope="col">Run</th>
@@ -171,9 +189,80 @@ export function ScoresPage({ runs, samples, runName, onRun, onReview }: Props) {
                 </div>
             </section>
 
+            {baselineScores.length > 0 && (
+                <section className="scores-section">
+                    <h2 id="baseline-scores">Token-probability baseline</h2>
+                    <p className="scores-lead">
+                        The same Java, scored token by token by a local model:
+                        the usual way to highlight generated code. It marks
+                        lines, not flags, so its counts are per line. The rank
+                        ignores the threshold: it is where the first bug line
+                        comes when a program's lines are sorted from least to
+                        most likely, as a median over the programs with a bug.
+                    </p>
+                    <div className="table-wrap">
+                        <table
+                            className="scores-table"
+                            aria-labelledby="baseline-scores"
+                        >
+                            <thead>
+                                <tr>
+                                    <th scope="col">Baseline</th>
+                                    <th scope="col">Model</th>
+                                    <th scope="col">Marks lines below</th>
+                                    <th scope="col">Bugs caught</th>
+                                    <th scope="col">Latent bugs caught</th>
+                                    <th scope="col">
+                                        Marked lines on a tagged line
+                                    </th>
+                                    <th scope="col">False-alarm lines</th>
+                                    <th scope="col">Median rank of the bug</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {baselineScores.map((score) => (
+                                    <tr key={score.config.name}>
+                                        <th scope="row">{score.config.name}</th>
+                                        <td>{score.config.model}</td>
+                                        <td className="number">
+                                            {percent(score.threshold)}
+                                        </td>
+                                        <td className="number">
+                                            {share(
+                                                score.bugs_caught,
+                                                score.bugs,
+                                            )}
+                                        </td>
+                                        <td className="number">
+                                            {share(
+                                                score.latent_caught,
+                                                score.latent,
+                                            )}
+                                        </td>
+                                        <td className="number">
+                                            {share(
+                                                score.highlighted -
+                                                    score.false_alarms,
+                                                score.highlighted,
+                                            )}
+                                        </td>
+                                        <td className="number">
+                                            {score.false_alarms}
+                                        </td>
+                                        <td className="number">
+                                            {medianRank(score)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            )}
+
             <section className="scores-section">
                 <div className="scores-head">
-                    <h2>Program by program</h2>
+                    <h2 id="by-program">Program by program</h2>
                     <label>
                         <span>Run</span>
                         <select
@@ -210,7 +299,10 @@ export function ScoresPage({ runs, samples, runName, onRun, onReview }: Props) {
                     <p className="status">Scoring…</p>
                 ) : (
                     <div className="table-wrap">
-                        <table className="scores-table">
+                        <table
+                            className="scores-table"
+                            aria-labelledby="by-program"
+                        >
                             <thead>
                                 <tr>
                                     <th scope="col">Program</th>
@@ -284,6 +376,21 @@ export function ScoresPage({ runs, samples, runName, onRun, onReview }: Props) {
             </section>
         </main>
     );
+}
+
+/** The median rank of the first bug line, over programs with a bug. */
+function medianRank(score: BaselineScore): string {
+    const ranks = score.samples
+        .map((sample) => sample.bug_rank)
+        .filter((rank): rank is number => rank !== null)
+        .sort((a, b) => a - b);
+    if (ranks.length === 0) return "none";
+    const middle = Math.floor(ranks.length / 2);
+    const median =
+        ranks.length % 2
+            ? ranks[middle]
+            : (ranks[middle - 1] + ranks[middle]) / 2;
+    return `${median} (${ranks.length} program${ranks.length === 1 ? "" : "s"})`;
 }
 
 /** Name the kind of program: a translation bug, a control, or a non-translation failure. */

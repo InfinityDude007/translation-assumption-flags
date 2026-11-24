@@ -75,6 +75,57 @@ beforeEach(() => {
             translation: "a\nb\nc\nd\ne\n",
         },
         [`GET /decisions?sample_id=${SAMPLE}`]: [],
+        "GET /baselines": [
+            {
+                name: "test-model",
+                model: "fake/coder",
+                prompt_version: "1",
+                created_at: "2026-11-24T18:00:00Z",
+                samples: 1,
+            },
+        ],
+        [`GET /baselines/test-model/samples/${SAMPLE}`]: {
+            baseline: "test-model",
+            model: "fake/coder",
+            threshold: 0.05,
+            lines: ["a", "b", "c", "d", "e", ""].map((text, index) => ({
+                line: index + 1,
+                lowest: text ? (index === 4 ? 0.01 : 0.9) : 1,
+                tokens: text
+                    ? [{ text, probability: index === 4 ? 0.01 : 0.9 }]
+                    : [],
+            })),
+        },
+        "GET /baselines/test-model/score": {
+            config: {
+                name: "test-model",
+                model: "fake/coder",
+                prompt_version: "1",
+                created_at: "2026-11-24T18:00:00Z",
+            },
+            threshold: 0.05,
+            samples: [
+                {
+                    sample_id: SAMPLE,
+                    group: "buggy",
+                    no_bug: false,
+                    bug_lines: [5],
+                    latent_lines: [],
+                    highlighted: [5],
+                    bug_caught: true,
+                    latent_caught: null,
+                    false_alarms: 0,
+                    bug_rank: 1,
+                },
+            ],
+            bugs: 1,
+            bugs_caught: 1,
+            latent: 0,
+            latent_caught: 0,
+            highlighted: 1,
+            false_alarms: 0,
+            missing: [],
+        },
         [`GET /runs/test-v2/samples/${SAMPLE}`]: REVIEW,
         "GET /runs/test-v2/score": {
             config: {
@@ -326,7 +377,9 @@ describe("App", () => {
         expect(screen.queryByText(/Bugs caught/)).not.toBeInTheDocument();
 
         await user.click(screen.getByRole("link", { name: "Scores" }));
-        const runs = await screen.findByRole("table", { name: "" });
+        const runs = await screen.findByRole("table", {
+            name: "Runs compared",
+        });
         const row = within(runs).getByRole("row", { name: /test-v2/ });
         expect(row).toHaveTextContent("0 of 1 (0%)");
         expect(row).toHaveTextContent("0 of 3 (0%)");
@@ -344,6 +397,60 @@ describe("App", () => {
         await user.click(screen.getByRole("button", { name: "Review" }));
         expect(await screen.findByLabelText("Run")).toHaveValue("test-v2");
         expect(window.location.hash).toBe("#/");
+    });
+
+    it("swaps the flags for token probabilities, and explains where they come from", async () => {
+        const user = userEvent.setup();
+        render(<App />);
+        await screen.findByText("0 of 2 decided");
+        await user.click(
+            screen.getByRole("button", { name: "Token probabilities" }),
+        );
+
+        const panel = await screen.findByRole("complementary", {
+            name: "Token probabilities",
+        });
+        expect(panel).toHaveTextContent("1 of 6 lines below 5%");
+        expect(evidence("Local model")).toHaveTextContent("fake/coder");
+        expect(evidence("Local model")).toHaveTextContent("not wrong");
+        expect(screen.queryByText("0 of 2 decided")).not.toBeInTheDocument();
+        expect(screen.queryByLabelText("Run")).not.toBeInTheDocument();
+
+        const java = screen.getByRole("region", {
+            name: "Java translation by GPT-4",
+        });
+        const low = within(java).getByTitle("1%");
+        expect(low).toHaveTextContent("e");
+        expect(low.closest(".line")).toHaveAttribute("data-doubt", "true");
+
+        await user.click(within(panel).getByRole("button", { name: /line 5/ }));
+        expect(low.closest(".line")).toHaveAttribute("data-selected", "true");
+
+        await user.click(screen.getByRole("button", { name: "Flags" }));
+        expect(await screen.findByText("0 of 2 decided")).toBeInTheDocument();
+    });
+
+    it("does not offer the probability view when there are no baselines", async () => {
+        routes["GET /baselines"] = [];
+        render(<App />);
+        await screen.findByText("0 of 2 decided");
+        expect(
+            screen.queryByRole("button", { name: "Token probabilities" }),
+        ).not.toBeInTheDocument();
+    });
+
+    it("scores the baseline beside the runs", async () => {
+        const user = userEvent.setup();
+        render(<App />);
+        await screen.findByText("0 of 2 decided");
+        await user.click(screen.getByRole("link", { name: "Scores" }));
+        const table = await screen.findByRole("table", {
+            name: "Token-probability baseline",
+        });
+        const row = within(table).getByRole("row", { name: /test-model/ });
+        expect(row).toHaveTextContent("5%");
+        expect(row).toHaveTextContent("1 of 1 (100%)");
+        expect(row).toHaveTextContent("1 (1 program)");
     });
 
     it("says how to start the API when it cannot be reached", async () => {

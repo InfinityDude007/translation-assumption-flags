@@ -1,4 +1,4 @@
-// One review page: archived flags from a run, or live flags from Gemini.
+// One review page: archived flags or token probabilities, or live flags from Gemini.
 
 import {
     useCallback,
@@ -12,11 +12,14 @@ import {
     analyse,
     ApiError,
     getArchivedReview,
+    getProbabilities,
     getSample,
     listDecisions,
     saveDecision,
+    type BaselineSummary,
     type Decision,
     type DecisionKind,
+    type ProbabilityReview,
     type Review,
     type ReviewFlag,
     type RunSummary,
@@ -29,6 +32,7 @@ import { DECISION_ACTIONS } from "../labels";
 import { LIVE } from "../runs";
 import { CodeBench } from "./CodeBench";
 import { FlagPanel } from "./FlagPanel";
+import { ProbabilityPanel } from "./ProbabilityPanel";
 import { useSideWidth } from "./useSideWidth";
 
 /** The state of the flags for one program and source. */
@@ -39,6 +43,13 @@ export type Status =
     | { kind: "analysing"; since: number }
     | { kind: "failed"; message: string };
 
+/** What the archived page shows on the code: Gemini's flags, or token probabilities. */
+type View = "flags" | "probabilities";
+
+/** A program's token probabilities, or why they could not be loaded. */
+type Probabilities =
+    { key: string; review: ProbabilityReview } | { key: string; error: string };
+
 /** A program's code and decision log, or why they could not be loaded. */
 type Loaded =
     | { id: string; code: SampleCode; log: Decision[] }
@@ -48,6 +59,7 @@ interface Props {
     mode: "archived" | "live";
     samples: SampleSummary[];
     runs: RunSummary[];
+    baselines: BaselineSummary[];
     sampleId: string | null;
     onSample: (id: string) => void;
     runName: string;
@@ -65,7 +77,18 @@ interface Props {
  */
 export function ReviewPage(props: Props) {
     const { mode, samples, runs, sampleId, onSample, runName, onRun } = props;
-    const { live, setLive } = props;
+    const { baselines, live, setLive } = props;
+    const [chosenView, setView] = useState<View>("flags");
+    const [chosenBaseline, setBaseline] = useState<string | null>(null);
+    const [probabilities, setProbabilities] = useState<Probabilities | null>(
+        null,
+    );
+    const [lineSelection, setLineSelection] = useState<{
+        key: string;
+        line: number;
+    } | null>(null);
+    const baseline = chosenBaseline ?? baselines[0]?.name ?? null;
+    const view: View = mode === "archived" && baseline ? chosenView : "flags";
     const source = mode === "live" ? LIVE : runName;
     const [loaded, setLoaded] = useState<Loaded | null>(null);
     const [archived, setArchived] = useState<{
@@ -110,6 +133,14 @@ export function ReviewPage(props: Props) {
                   review?.flags[0]
               )?.id ?? null);
 
+    const probabilityKey = `${sampleId}|${baseline}`;
+    const shownProbabilities =
+        view === "probabilities" && probabilities?.key === probabilityKey
+            ? probabilities
+            : null;
+    const selectedLine =
+        lineSelection?.key === probabilityKey ? lineSelection.line : null;
+
     const select = useCallback(
         (id: string) => setSelection({ key, id }),
         [key],
@@ -140,6 +171,16 @@ export function ReviewPage(props: Props) {
                 setArchived({ key, status: { kind: "failed", message } });
             });
     }, [sampleId, source]);
+
+    useEffect(() => {
+        if (!sampleId || !baseline || view !== "probabilities") return;
+        const key = `${sampleId}|${baseline}`;
+        getProbabilities(baseline, sampleId)
+            .then((review) => setProbabilities({ key, review }))
+            .catch((error) =>
+                setProbabilities({ key, error: describeError(error) }),
+            );
+    }, [sampleId, baseline, view]);
 
     const runAnalysis = async () => {
         if (!code || !sampleId) return;
@@ -202,7 +243,13 @@ export function ReviewPage(props: Props) {
     useEffect(() => {
         const onKey = (event: KeyboardEvent) => {
             const target = event.target as HTMLElement;
-            if (!review || event.metaKey || event.ctrlKey || event.altKey)
+            if (
+                !review ||
+                view !== "flags" ||
+                event.metaKey ||
+                event.ctrlKey ||
+                event.altKey
+            )
                 return;
             if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
                 return;
@@ -227,7 +274,7 @@ export function ReviewPage(props: Props) {
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, [review, selectedId, saving, decide, select]);
+    }, [review, view, selectedId, saving, decide, select]);
 
     const analysing = status.kind === "analysing";
 
@@ -247,7 +294,48 @@ export function ReviewPage(props: Props) {
                         ))}
                     </select>
                 </label>
-                {mode === "archived" ? (
+                {mode === "archived" && baseline && (
+                    <div
+                        className="segmented"
+                        role="group"
+                        aria-label="Show on the code"
+                    >
+                        <button
+                            type="button"
+                            aria-pressed={view === "flags"}
+                            onClick={() => setView("flags")}
+                        >
+                            Flags
+                        </button>
+                        <button
+                            type="button"
+                            aria-pressed={view === "probabilities"}
+                            onClick={() => setView("probabilities")}
+                        >
+                            Token probabilities
+                        </button>
+                    </div>
+                )}
+                {mode === "archived" && view === "probabilities" ? (
+                    <label>
+                        <span>Model</span>
+                        <select
+                            value={baseline ?? ""}
+                            onChange={(event) =>
+                                setBaseline(event.target.value)
+                            }
+                        >
+                            {baselines.map((baseline) => (
+                                <option
+                                    key={baseline.name}
+                                    value={baseline.name}
+                                >
+                                    {baseline.model}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                ) : mode === "archived" ? (
                     <label>
                         <span>Run</span>
                         <select
@@ -286,9 +374,18 @@ export function ReviewPage(props: Props) {
                 {code ? (
                     <CodeBench
                         code={code}
-                        flags={review?.flags ?? []}
-                        selectedId={selectedId}
+                        flags={view === "flags" ? (review?.flags ?? []) : []}
+                        selectedId={view === "flags" ? selectedId : null}
                         onSelect={select}
+                        probabilities={
+                            shownProbabilities && "review" in shownProbabilities
+                                ? shownProbabilities.review
+                                : null
+                        }
+                        selectedLine={selectedLine}
+                        onSelectLine={(line) =>
+                            setLineSelection({ key: probabilityKey, line })
+                        }
                     />
                 ) : (
                     <div className="bench bench-empty">
@@ -309,8 +406,31 @@ export function ReviewPage(props: Props) {
                     {...side.handlers}
                 />
                 <div className="side">
-                    <StatusView status={status} />
-                    {review && (
+                    {view === "probabilities" ? (
+                        !shownProbabilities ? (
+                            <p className="status">
+                                Loading token probabilities…
+                            </p>
+                        ) : "error" in shownProbabilities ? (
+                            <p className="status status-error" role="alert">
+                                {shownProbabilities.error}
+                            </p>
+                        ) : (
+                            <ProbabilityPanel
+                                review={shownProbabilities.review}
+                                selectedLine={selectedLine}
+                                onSelectLine={(line) =>
+                                    setLineSelection({
+                                        key: probabilityKey,
+                                        line,
+                                    })
+                                }
+                            />
+                        )
+                    ) : (
+                        <StatusView status={status} />
+                    )}
+                    {view === "flags" && review && (
                         <FlagPanel
                             review={review}
                             decisions={decisions}

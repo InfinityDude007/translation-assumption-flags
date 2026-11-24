@@ -33,6 +33,69 @@ export interface RunSummary {
     samples: number;
 }
 
+/** A token-probability baseline: a local model's view of the same Java. */
+export interface BaselineSummary {
+    name: string;
+    model: string;
+    prompt_version: string;
+    created_at: string;
+    samples: number;
+}
+
+/** One token's share of a Java line, with the local model's probability. */
+export interface TokenProbability {
+    text: string;
+    probability: number;
+}
+
+/** One Java line's tokens, and the probability of its least likely token. */
+export interface LineProbability {
+    line: number;
+    lowest: number;
+    tokens: TokenProbability[];
+}
+
+/** One program's token probabilities, and the threshold the view marks below. */
+export interface ProbabilityReview {
+    baseline: string;
+    model: string;
+    threshold: number;
+    lines: LineProbability[];
+}
+
+/** How one sample's highlighted lines compare with its hand-tagged Java lines. */
+export interface BaselineSampleScore {
+    sample_id: string;
+    group: "buggy" | "control";
+    no_bug: boolean;
+    bug_lines: number[];
+    latent_lines: number[];
+    highlighted: number[];
+    bug_caught: boolean | null;
+    latent_caught: boolean | null;
+    false_alarms: number;
+    bug_rank: number | null;
+}
+
+/** A baseline's totals at the configured threshold. */
+export interface BaselineScore {
+    config: {
+        name: string;
+        model: string;
+        prompt_version: string;
+        created_at: string;
+    };
+    threshold: number;
+    samples: BaselineSampleScore[];
+    bugs: number;
+    bugs_caught: number;
+    latent: number;
+    latent_caught: number;
+    highlighted: number;
+    false_alarms: number;
+    missing: string[];
+}
+
 /** How one sample's mismatch flags compare with its hand-tagged Java lines. */
 export interface SampleScore {
     sample_id: string;
@@ -191,6 +254,19 @@ export const getArchivedReview = (run: string, id: string) =>
 /** Score a run against the tagged lines; only the Scores page calls this. */
 export const getScore = (run: string) =>
     call<RunScore>(`/runs/${encodeURIComponent(run)}/score`);
+
+/** List the token-probability baselines. */
+export const listBaselines = () => call<BaselineSummary[]>("/baselines");
+
+/** Fetch a sample's token probabilities from a baseline. */
+export const getProbabilities = (baseline: string, id: string) =>
+    call<ProbabilityReview>(
+        `/baselines/${encodeURIComponent(baseline)}/samples/${encodeURIComponent(id)}`,
+    );
+
+/** Score a baseline against the tagged lines; only the Scores page calls this. */
+export const getBaselineScore = (baseline: string) =>
+    call<BaselineScore>(`/baselines/${encodeURIComponent(baseline)}/score`);
 
 /** Analyse a program now, calling Gemini. */
 export const analyse = (source: string, translation: string) =>

@@ -1,6 +1,6 @@
 // The flag list: each flag opens in place, its evidence grouped by where it came from.
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import type { Decision, DecisionKind, Review, ReviewFlag } from "../api";
 import {
     CATEGORY_NAMES,
@@ -9,6 +9,7 @@ import {
     VERDICT_MARKS,
     VERDICT_NAMES,
 } from "../labels";
+import { Evidence, Fact } from "./Evidence";
 
 interface Props {
     review: Review;
@@ -247,33 +248,5 @@ function FlagItem(props: ItemProps) {
                 </div>
             )}
         </li>
-    );
-}
-
-/** A block of evidence, labelled with the part of the system it came from. */
-function Evidence(props: {
-    source: "detector" | "explainer" | "you";
-    title: string;
-    detail: string;
-    children: ReactNode;
-}) {
-    return (
-        <section className="evidence" data-source={props.source}>
-            <h3 className="evidence-head">
-                <span className="evidence-tag">{props.title}</span>
-                <span className="evidence-detail">{props.detail}</span>
-            </h3>
-            {props.children}
-        </section>
-    );
-}
-
-/** A labelled fact on one line, e.g. "Java: line 7". */
-function Fact({ name, children }: { name: string; children: ReactNode }) {
-    return (
-        <p className="fact">
-            <span className="fact-name">{name}</span>
-            <span>{children}</span>
-        </p>
     );
 }

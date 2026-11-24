@@ -1,10 +1,17 @@
 // Python and Java side by side, with each flag's lines joined across a bridge.
 
 import { useEffect, useMemo, useRef } from "react";
-import type { ReviewFlag, SampleCode, Verdict } from "../api";
+import type {
+    LineProbability,
+    ProbabilityReview,
+    ReviewFlag,
+    SampleCode,
+    Verdict,
+} from "../api";
 import { highlightLines } from "../highlight";
 import { KeyGuide } from "./KeyGuide";
 import {
+    percent,
     VERDICT_MARKS,
     VERDICT_MEANINGS,
     VERDICT_NAMES,
@@ -26,6 +33,10 @@ interface Props {
     flags: ReviewFlag[];
     selectedId: string | null;
     onSelect: (id: string) => void;
+    /** Token probabilities to show on the Java instead of flags. */
+    probabilities?: ProbabilityReview | null;
+    selectedLine?: number | null;
+    onSelectLine?: (line: number) => void;
 }
 
 /**
@@ -34,7 +45,9 @@ interface Props {
  * Both columns share a line height, so a flag's lines sit at known heights and
  * the bridge can draw them without measuring the page.
  */
-export function CodeBench({ code, flags, selectedId, onSelect }: Props) {
+export function CodeBench(props: Props) {
+    const { code, flags, selectedId, onSelect } = props;
+    const { probabilities = null, selectedLine = null, onSelectLine } = props;
     const scroller = useRef<HTMLDivElement>(null);
     const source = useMemo(
         () => highlightLines(code.source, "python"),
@@ -60,10 +73,20 @@ export function CodeBench({ code, flags, selectedId, onSelect }: Props) {
     );
     const selected = flags.find((flag) => flag.id === selectedId) ?? null;
 
+    const target = useMemo(
+        () =>
+            selected
+                ? [selected.site.line, ...selected.translation_lines]
+                : selectedLine
+                  ? [selectedLine]
+                  : null,
+        [selected, selectedLine],
+    );
+
     useEffect(() => {
         const box = scroller.current;
-        if (!box || !selected) return;
-        const lines = [selected.site.line, ...selected.translation_lines];
+        if (!box || !target) return;
+        const lines = target;
         const top = middle(Math.min(...lines)) - LINE;
         const bottom = middle(Math.max(...lines)) + LINE;
         if (top >= box.scrollTop && bottom <= box.scrollTop + box.clientHeight)
@@ -75,7 +98,7 @@ export function CodeBench({ code, flags, selectedId, onSelect }: Props) {
             top: Math.max(top - box.clientHeight / 3, 0),
             behavior: reduce ? "auto" : "smooth",
         });
-    }, [selected]);
+    }, [target]);
 
     /** Select the next flag on a clicked line, cycling if the line has several. */
     const pick = (onLine: ReviewFlag[]) => {
@@ -86,7 +109,11 @@ export function CodeBench({ code, flags, selectedId, onSelect }: Props) {
 
     return (
         <div className="bench-wrap">
-            <Key flags={flags} />
+            {probabilities ? (
+                <ProbabilityKey review={probabilities} />
+            ) : (
+                <Key flags={flags} />
+            )}
             <div className="bench" ref={scroller}>
                 <div className="bench-grid" style={{ minHeight: height }}>
                     <Column
@@ -125,6 +152,9 @@ export function CodeBench({ code, flags, selectedId, onSelect }: Props) {
                         flagsOnLine={translationFlags}
                         selectedId={selectedId}
                         onPick={pick}
+                        probabilities={probabilities}
+                        selectedLine={selectedLine}
+                        onPickLine={onSelectLine}
                     />
                 </div>
             </div>
@@ -158,12 +188,40 @@ function Key({ flags }: { flags: ReviewFlag[] }) {
     );
 }
 
+/** What the probability shading means, with how many lines are marked. */
+function ProbabilityKey({ review }: { review: ProbabilityReview }) {
+    const marked = review.lines.filter(
+        (line) => line.lowest < review.threshold,
+    ).length;
+    return (
+        <div className="key">
+            <span className="key-title">Token probabilities:</span>
+            <span className="key-item">
+                <span className="token" data-low="true">
+                    shaded
+                </span>
+                below {percent(review.threshold)}, by the local model
+            </span>
+            <span className="key-item">
+                <span className="mark probability-mark" aria-hidden="true">
+                    •
+                </span>
+                line marked ({marked})
+            </span>
+            <KeyGuide />
+        </div>
+    );
+}
+
 interface ColumnProps {
     title: string;
     lines: string[];
     flagsOnLine: Map<number, ReviewFlag[]>;
     selectedId: string | null;
     onPick: (onLine: ReviewFlag[]) => void;
+    probabilities?: ProbabilityReview | null;
+    selectedLine?: number | null;
+    onPickLine?: (line: number) => void;
 }
 
 /** One file, a line per row, with flagged lines marked by verdict. */
@@ -173,42 +231,122 @@ function Column({
     flagsOnLine,
     selectedId,
     onPick,
+    probabilities,
+    selectedLine,
+    onPickLine,
 }: ColumnProps) {
     return (
         <section className="column" aria-label={title}>
             <h2 className="column-title">{title}</h2>
             <div className="column-lines">
                 <div className="column-inner">
-                    {lines.map((html, index) => {
-                        const number = index + 1;
-                        const onLine = flagsOnLine.get(number) ?? [];
-                        const chosen = onLine.find(
-                            (flag) => flag.id === selectedId,
-                        );
-                        const verdict = chosen?.verdict ?? strongest(onLine);
-                        return (
-                            <div
-                                key={number}
-                                className="line"
-                                data-verdict={verdict}
-                                data-selected={chosen ? true : undefined}
-                                onClick={() => onPick(onLine)}
-                            >
-                                <span className="line-number">{number}</span>
-                                <span className="mark" aria-hidden="true">
-                                    {verdict ? VERDICT_MARKS[verdict] : ""}
-                                </span>
-                                <code
-                                    dangerouslySetInnerHTML={{
-                                        __html: html || " ",
-                                    }}
-                                />
-                            </div>
-                        );
-                    })}
+                    {probabilities &&
+                        probabilities.lines.map((line) => (
+                            <TokenLine
+                                key={line.line}
+                                line={line}
+                                threshold={probabilities.threshold}
+                                selected={line.line === selectedLine}
+                                onPick={onPickLine}
+                            />
+                        ))}
+                    {!probabilities &&
+                        lines.map((html, index) => {
+                            const number = index + 1;
+                            const onLine = flagsOnLine.get(number) ?? [];
+                            const chosen = onLine.find(
+                                (flag) => flag.id === selectedId,
+                            );
+                            const verdict =
+                                chosen?.verdict ?? strongest(onLine);
+                            return (
+                                <div
+                                    key={number}
+                                    className="line"
+                                    data-verdict={verdict}
+                                    data-selected={chosen ? true : undefined}
+                                    onClick={() => onPick(onLine)}
+                                >
+                                    <span className="line-number">
+                                        {number}
+                                    </span>
+                                    <span className="mark" aria-hidden="true">
+                                        {verdict ? VERDICT_MARKS[verdict] : ""}
+                                    </span>
+                                    <code
+                                        dangerouslySetInnerHTML={{
+                                            __html: html || " ",
+                                        }}
+                                    />
+                                </div>
+                            );
+                        })}
                 </div>
             </div>
         </section>
+    );
+}
+
+interface TokenLineProps {
+    line: LineProbability;
+    threshold: number;
+    selected: boolean;
+    onPick?: (line: number) => void;
+}
+
+/**
+ * One Java line drawn token by token, each shaded by how unlikely it was.
+ *
+ * Shading starts at the threshold and deepens as the probability falls, so
+ * the marked tokens stand out and the rest stay plain.
+ */
+function TokenLine({ line, threshold, selected, onPick }: TokenLineProps) {
+    const marked = line.lowest < threshold;
+    return (
+        <div
+            className="line"
+            data-doubt={marked || undefined}
+            data-selected={selected || undefined}
+            onClick={() => marked && onPick?.(line.line)}
+        >
+            <span className="line-number">{line.line}</span>
+            <span className="mark probability-mark" aria-hidden="true">
+                {marked ? "•" : ""}
+            </span>
+            <code>
+                {line.tokens.length === 0
+                    ? " "
+                    : line.tokens.map((token, index) => {
+                          const low = token.probability < threshold;
+                          return (
+                              <span
+                                  key={index}
+                                  className="token"
+                                  data-low={low || undefined}
+                                  style={
+                                      low
+                                          ? {
+                                                ["--depth" as string]: `${Math.round(
+                                                    (1 -
+                                                        token.probability /
+                                                            threshold) *
+                                                        100,
+                                                )}%`,
+                                            }
+                                          : undefined
+                                  }
+                                  title={
+                                      token.text.trim()
+                                          ? percent(token.probability)
+                                          : undefined
+                                  }
+                              >
+                                  {token.text}
+                              </span>
+                          );
+                      })}
+            </code>
+        </div>
     );
 }
 
