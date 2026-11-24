@@ -31,3 +31,6 @@ logs/
 
 # Sample Tagging Artefacts
 *.class
+
+# Reviewer decisions written by the API
+data/decisions.jsonl
