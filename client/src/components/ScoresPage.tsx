@@ -195,10 +195,14 @@ export function ScoresPage(props: Props) {
                     <p className="scores-lead">
                         The same Java, scored token by token by a local model:
                         the usual way to highlight generated code. It marks
-                        lines, not flags, so its counts are per line. The rank
-                        ignores the threshold: it is where the first bug line
-                        comes when a program's lines are sorted from least to
-                        most likely, as a median over the programs with a bug.
+                        lines, not flags, so its counts are per line. Each
+                        model's threshold is set from its own probabilities so
+                        that it marks the same number of lines in total, about
+                        as many as the flags mark; the tagged lines play no
+                        part. The rank ignores the threshold: it is where the
+                        first bug line comes when a program's lines are sorted
+                        from least to most likely, as a median over the programs
+                        with a bug.
                     </p>
                     <div className="table-wrap">
                         <table
