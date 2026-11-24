@@ -1,0 +1,1068 @@
+{
+  "sample_id": "avatar-atcoder_AGC046_B",
+  "finished_at": "2026-11-24T19:53:32.185544Z",
+  "seconds": 1.33,
+  "lines": [
+    {
+      "line": 1,
+      "lowest": 1.0,
+      "tokens": []
+    },
+    {
+      "line": 2,
+      "lowest": 0.4040572941303253,
+      "tokens": [
+        {
+          "text": "import",
+          "probability": 0.4040572941303253
+        },
+        {
+          "text": " java",
+          "probability": 0.999805212020874
+        },
+        {
+          "text": ".util",
+          "probability": 0.9696584939956665
+        },
+        {
+          "text": ".Scanner",
+          "probability": 0.9438316226005554
+        },
+        {
+          "text": ";",
+          "probability": 0.9898877143859863
+        }
+      ]
+    },
+    {
+      "line": 3,
+      "lowest": 1.0,
+      "tokens": []
+    },
+    {
+      "line": 4,
+      "lowest": 0.44819965958595276,
+      "tokens": [
+        {
+          "text": "public",
+          "probability": 0.9911981821060181
+        },
+        {
+          "text": " class",
+          "probability": 0.9999068975448608
+        },
+        {
+          "text": " at",
+          "probability": 0.44819965958595276
+        },
+        {
+          "text": "coder",
+          "probability": 0.9999582767486572
+        },
+        {
+          "text": "_A",
+          "probability": 0.9993705153465271
+        },
+        {
+          "text": "GC",
+          "probability": 0.9999702572822571
+        },
+        {
+          "text": "0",
+          "probability": 0.9998705387115479
+        },
+        {
+          "text": "4",
+          "probability": 0.9999573826789856
+        },
+        {
+          "text": "6",
+          "probability": 0.999972403049469
+        },
+        {
+          "text": "_B",
+          "probability": 0.9999045729637146
+        },
+        {
+          "text": " {",
+          "probability": 0.7529336810112
+        }
+      ]
+    },
+    {
+      "line": 5,
+      "lowest": 0.9822553396224976,
+      "tokens": [
+        {
+          "text": "   ",
+          "probability": 0.9895095825195312
+        },
+        {
+          "text": " public",
+          "probability": 0.9822553396224976
+        },
+        {
+          "text": " static",
+          "probability": 0.9998666048049927
+        },
+        {
+          "text": " void",
+          "probability": 0.9865943789482117
+        },
+        {
+          "text": " main",
+          "probability": 0.9999303817749023
+        },
+        {
+          "text": "(String",
+          "probability": 0.9989643692970276
+        },
+        {
+          "text": "[]",
+          "probability": 0.9993890523910522
+        },
+        {
+          "text": " args",
+          "probability": 0.9999377131462097
+        },
+        {
+          "text": ")",
+          "probability": 0.9997417330741882
+        },
+        {
+          "text": " {",
+          "probability": 0.9985687732696533
+        }
+      ]
+    },
+    {
+      "line": 6,
+      "lowest": 0.01109744980931282,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9997962117195129
+        },
+        {
+          "text": " Scanner",
+          "probability": 0.9983949065208435
+        },
+        {
+          "text": " in",
+          "probability": 0.01109744980931282
+        },
+        {
+          "text": " =",
+          "probability": 0.9990676641464233
+        },
+        {
+          "text": " new",
+          "probability": 0.999971866607666
+        },
+        {
+          "text": " Scanner",
+          "probability": 0.999991774559021
+        },
+        {
+          "text": "(System",
+          "probability": 0.9995414614677429
+        },
+        {
+          "text": ".in",
+          "probability": 0.9999963045120239
+        },
+        {
+          "text": ");",
+          "probability": 0.9719621539115906
+        }
+      ]
+    },
+    {
+      "line": 7,
+      "lowest": 0.9062585234642029,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9366832971572876
+        },
+        {
+          "text": " int",
+          "probability": 0.9062585234642029
+        },
+        {
+          "text": " A",
+          "probability": 0.9799647927284241
+        },
+        {
+          "text": " =",
+          "probability": 0.9975990653038025
+        },
+        {
+          "text": " in",
+          "probability": 0.9956409931182861
+        },
+        {
+          "text": ".nextInt",
+          "probability": 0.9999680519104004
+        },
+        {
+          "text": "();",
+          "probability": 0.9486546516418457
+        }
+      ]
+    },
+    {
+      "line": 8,
+      "lowest": 0.9998390674591064,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9999958276748657
+        },
+        {
+          "text": " int",
+          "probability": 0.9998390674591064
+        },
+        {
+          "text": " B",
+          "probability": 0.999991238117218
+        },
+        {
+          "text": " =",
+          "probability": 0.9999933242797852
+        },
+        {
+          "text": " in",
+          "probability": 0.9999898672103882
+        },
+        {
+          "text": ".nextInt",
+          "probability": 0.9999963641166687
+        },
+        {
+          "text": "();",
+          "probability": 0.9999589323997498
+        }
+      ]
+    },
+    {
+      "line": 9,
+      "lowest": 0.9999500513076782,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.999994158744812
+        },
+        {
+          "text": " int",
+          "probability": 0.9999552965164185
+        },
+        {
+          "text": " C",
+          "probability": 0.9999500513076782
+        },
+        {
+          "text": " =",
+          "probability": 0.9999939799308777
+        },
+        {
+          "text": " in",
+          "probability": 0.9999839067459106
+        },
+        {
+          "text": ".nextInt",
+          "probability": 0.9999960660934448
+        },
+        {
+          "text": "();",
+          "probability": 0.9999725818634033
+        }
+      ]
+    },
+    {
+      "line": 10,
+      "lowest": 0.975726842880249,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9999939799308777
+        },
+        {
+          "text": " int",
+          "probability": 0.9999480247497559
+        },
+        {
+          "text": " D",
+          "probability": 0.9999890923500061
+        },
+        {
+          "text": " =",
+          "probability": 0.999997615814209
+        },
+        {
+          "text": " in",
+          "probability": 0.9999839663505554
+        },
+        {
+          "text": ".nextInt",
+          "probability": 0.9999853372573853
+        },
+        {
+          "text": "();",
+          "probability": 0.975726842880249
+        }
+      ]
+    },
+    {
+      "line": 11,
+      "lowest": 0.014049350284039974,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9315218925476074
+        },
+        {
+          "text": " in",
+          "probability": 0.014049350284039974
+        },
+        {
+          "text": ".close",
+          "probability": 0.9988370537757874
+        },
+        {
+          "text": "();",
+          "probability": 0.557709813117981
+        }
+      ]
+    },
+    {
+      "line": 12,
+      "lowest": 1.0,
+      "tokens": []
+    },
+    {
+      "line": 13,
+      "lowest": 0.39307814836502075,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9999452233314514
+        },
+        {
+          "text": " int",
+          "probability": 0.39307814836502075
+        },
+        {
+          "text": " m",
+          "probability": 0.760166347026825
+        },
+        {
+          "text": " =",
+          "probability": 0.999990701675415
+        },
+        {
+          "text": " ",
+          "probability": 0.9958369731903076
+        },
+        {
+          "text": "9",
+          "probability": 0.9997701048851013
+        },
+        {
+          "text": "9",
+          "probability": 0.9998949766159058
+        },
+        {
+          "text": "8",
+          "probability": 0.9999830722808838
+        },
+        {
+          "text": "2",
+          "probability": 0.9971978664398193
+        },
+        {
+          "text": "4",
+          "probability": 0.9999880194664001
+        },
+        {
+          "text": "4",
+          "probability": 0.9999285340309143
+        },
+        {
+          "text": "3",
+          "probability": 0.9999885559082031
+        },
+        {
+          "text": "5",
+          "probability": 0.9999656677246094
+        },
+        {
+          "text": "3",
+          "probability": 0.9999683499336243
+        },
+        {
+          "text": ";",
+          "probability": 0.9620816111564636
+        }
+      ]
+    },
+    {
+      "line": 14,
+      "lowest": 0.41509464383125305,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9913653135299683
+        },
+        {
+          "text": " int",
+          "probability": 0.41509464383125305
+        },
+        {
+          "text": "[][]",
+          "probability": 0.9966349601745605
+        },
+        {
+          "text": " d",
+          "probability": 0.9932973384857178
+        },
+        {
+          "text": " =",
+          "probability": 0.9999855756759644
+        },
+        {
+          "text": " new",
+          "probability": 0.9999750852584839
+        },
+        {
+          "text": " int",
+          "probability": 0.9999966621398926
+        },
+        {
+          "text": "[C",
+          "probability": 0.9991883635520935
+        },
+        {
+          "text": " +",
+          "probability": 0.998859167098999
+        },
+        {
+          "text": " ",
+          "probability": 0.9999933242797852
+        },
+        {
+          "text": "1",
+          "probability": 0.9997249245643616
+        },
+        {
+          "text": "][",
+          "probability": 0.9999606013298035
+        },
+        {
+          "text": "D",
+          "probability": 0.9998915195465088
+        },
+        {
+          "text": " +",
+          "probability": 0.9999969601631165
+        },
+        {
+          "text": " ",
+          "probability": 0.9999949932098389
+        },
+        {
+          "text": "1",
+          "probability": 0.9999687671661377
+        },
+        {
+          "text": "];",
+          "probability": 0.8350188732147217
+        }
+      ]
+    },
+    {
+      "line": 15,
+      "lowest": 0.9119662046432495,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.986609160900116
+        },
+        {
+          "text": " d",
+          "probability": 0.9983890652656555
+        },
+        {
+          "text": "[A",
+          "probability": 0.9996323585510254
+        },
+        {
+          "text": "][",
+          "probability": 0.9997159838676453
+        },
+        {
+          "text": "B",
+          "probability": 0.9999971389770508
+        },
+        {
+          "text": "]",
+          "probability": 0.9999411702156067
+        },
+        {
+          "text": " =",
+          "probability": 0.99998939037323
+        },
+        {
+          "text": " ",
+          "probability": 0.9999798536300659
+        },
+        {
+          "text": "1",
+          "probability": 0.9999842643737793
+        },
+        {
+          "text": ";",
+          "probability": 0.9119662046432495
+        }
+      ]
+    },
+    {
+      "line": 16,
+      "lowest": 1.0,
+      "tokens": []
+    },
+    {
+      "line": 17,
+      "lowest": 0.9911583065986633,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9999843835830688
+        },
+        {
+          "text": " for",
+          "probability": 0.998762845993042
+        },
+        {
+          "text": " (",
+          "probability": 0.997730016708374
+        },
+        {
+          "text": "int",
+          "probability": 0.9999268054962158
+        },
+        {
+          "text": " i",
+          "probability": 0.9999196529388428
+        },
+        {
+          "text": " =",
+          "probability": 0.9999862909317017
+        },
+        {
+          "text": " A",
+          "probability": 0.9997351169586182
+        },
+        {
+          "text": ";",
+          "probability": 0.9998636245727539
+        },
+        {
+          "text": " i",
+          "probability": 0.9999963045120239
+        },
+        {
+          "text": " <=",
+          "probability": 0.9958159327507019
+        },
+        {
+          "text": " C",
+          "probability": 0.9999864101409912
+        },
+        {
+          "text": ";",
+          "probability": 0.9999551773071289
+        },
+        {
+          "text": " i",
+          "probability": 0.9911583065986633
+        },
+        {
+          "text": "++)",
+          "probability": 0.9998781681060791
+        },
+        {
+          "text": " {",
+          "probability": 0.9999532699584961
+        }
+      ]
+    },
+    {
+      "line": 18,
+      "lowest": 0.9997476935386658,
+      "tokens": [
+        {
+          "text": "           ",
+          "probability": 0.9999961256980896
+        },
+        {
+          "text": " for",
+          "probability": 0.9997476935386658
+        },
+        {
+          "text": " (",
+          "probability": 0.9999821186065674
+        },
+        {
+          "text": "int",
+          "probability": 0.9999971389770508
+        },
+        {
+          "text": " j",
+          "probability": 0.9999954700469971
+        },
+        {
+          "text": " =",
+          "probability": 0.9999985098838806
+        },
+        {
+          "text": " B",
+          "probability": 0.9999774694442749
+        },
+        {
+          "text": ";",
+          "probability": 0.9999810457229614
+        },
+        {
+          "text": " j",
+          "probability": 0.999997615814209
+        },
+        {
+          "text": " <=",
+          "probability": 0.9999944567680359
+        },
+        {
+          "text": " D",
+          "probability": 0.9999907612800598
+        },
+        {
+          "text": ";",
+          "probability": 0.9999926090240479
+        },
+        {
+          "text": " j",
+          "probability": 0.999997615814209
+        },
+        {
+          "text": "++)",
+          "probability": 0.9999929070472717
+        },
+        {
+          "text": " {",
+          "probability": 0.9999702572822571
+        }
+      ]
+    },
+    {
+      "line": 19,
+      "lowest": 0.01776297204196453,
+      "tokens": [
+        {
+          "text": "               ",
+          "probability": 0.9999834299087524
+        },
+        {
+          "text": " d",
+          "probability": 0.9758772850036621
+        },
+        {
+          "text": "[i",
+          "probability": 0.9999436140060425
+        },
+        {
+          "text": "][",
+          "probability": 0.9999969005584717
+        },
+        {
+          "text": "j",
+          "probability": 0.9999978542327881
+        },
+        {
+          "text": "]",
+          "probability": 0.9999550580978394
+        },
+        {
+          "text": " +=",
+          "probability": 0.06268635392189026
+        },
+        {
+          "text": " (",
+          "probability": 0.8448829650878906
+        },
+        {
+          "text": "int",
+          "probability": 0.01776297204196453
+        },
+        {
+          "text": ")(((",
+          "probability": 0.4009491801261902
+        },
+        {
+          "text": "long",
+          "probability": 0.9823403358459473
+        },
+        {
+          "text": ")d",
+          "probability": 0.9363857507705688
+        },
+        {
+          "text": "[i",
+          "probability": 0.9999131560325623
+        },
+        {
+          "text": "][",
+          "probability": 0.9988715052604675
+        },
+        {
+          "text": "j",
+          "probability": 0.9999944567680359
+        },
+        {
+          "text": " -",
+          "probability": 0.971805214881897
+        },
+        {
+          "text": " ",
+          "probability": 0.9999201893806458
+        },
+        {
+          "text": "1",
+          "probability": 0.9999986886978149
+        },
+        {
+          "text": "]",
+          "probability": 0.9894654154777527
+        },
+        {
+          "text": " *",
+          "probability": 0.9981475472450256
+        },
+        {
+          "text": " i",
+          "probability": 0.9883570671081543
+        },
+        {
+          "text": " +",
+          "probability": 0.9231638312339783
+        },
+        {
+          "text": " (",
+          "probability": 0.638800323009491
+        },
+        {
+          "text": "long",
+          "probability": 0.9997760653495789
+        },
+        {
+          "text": ")d",
+          "probability": 0.9961574673652649
+        },
+        {
+          "text": "[i",
+          "probability": 0.9999952912330627
+        },
+        {
+          "text": " -",
+          "probability": 0.9999026656150818
+        },
+        {
+          "text": " ",
+          "probability": 0.9999756217002869
+        },
+        {
+          "text": "1",
+          "probability": 0.9999992847442627
+        },
+        {
+          "text": "][",
+          "probability": 0.9999895095825195
+        },
+        {
+          "text": "j",
+          "probability": 0.9999943971633911
+        },
+        {
+          "text": "]",
+          "probability": 0.9999066591262817
+        },
+        {
+          "text": " *",
+          "probability": 0.9999614953994751
+        },
+        {
+          "text": " j",
+          "probability": 0.999843955039978
+        },
+        {
+          "text": " -",
+          "probability": 0.8456634879112244
+        },
+        {
+          "text": " (",
+          "probability": 0.9626349210739136
+        },
+        {
+          "text": "long",
+          "probability": 0.9998688697814941
+        },
+        {
+          "text": ")d",
+          "probability": 0.9986584186553955
+        },
+        {
+          "text": "[i",
+          "probability": 0.9999971389770508
+        },
+        {
+          "text": " -",
+          "probability": 0.9999441504478455
+        },
+        {
+          "text": " ",
+          "probability": 0.9999750852584839
+        },
+        {
+          "text": "1",
+          "probability": 0.9999993443489075
+        },
+        {
+          "text": "][",
+          "probability": 0.999992847442627
+        },
+        {
+          "text": "j",
+          "probability": 0.9999944567680359
+        },
+        {
+          "text": " -",
+          "probability": 0.999987781047821
+        },
+        {
+          "text": " ",
+          "probability": 0.9999821186065674
+        },
+        {
+          "text": "1",
+          "probability": 0.9999992847442627
+        },
+        {
+          "text": "]",
+          "probability": 0.9996671676635742
+        },
+        {
+          "text": " *",
+          "probability": 0.9999150633811951
+        },
+        {
+          "text": " (",
+          "probability": 0.9726709127426147
+        },
+        {
+          "text": "i",
+          "probability": 0.9660497903823853
+        },
+        {
+          "text": " -",
+          "probability": 0.9998666048049927
+        },
+        {
+          "text": " ",
+          "probability": 0.9999409317970276
+        },
+        {
+          "text": "1",
+          "probability": 0.9999949932098389
+        },
+        {
+          "text": ")",
+          "probability": 0.9968648552894592
+        },
+        {
+          "text": " *",
+          "probability": 0.9999370574951172
+        },
+        {
+          "text": " (",
+          "probability": 0.9996901154518127
+        },
+        {
+          "text": "j",
+          "probability": 0.998871386051178
+        },
+        {
+          "text": " -",
+          "probability": 0.9999950528144836
+        },
+        {
+          "text": " ",
+          "probability": 0.9999691843986511
+        },
+        {
+          "text": "1",
+          "probability": 0.9999995231628418
+        },
+        {
+          "text": "))",
+          "probability": 0.9823923707008362
+        },
+        {
+          "text": " %",
+          "probability": 0.9997206330299377
+        },
+        {
+          "text": " m",
+          "probability": 0.9976499080657959
+        },
+        {
+          "text": ");",
+          "probability": 0.9758868217468262
+        }
+      ]
+    },
+    {
+      "line": 20,
+      "lowest": 0.9999282360076904,
+      "tokens": [
+        {
+          "text": "           ",
+          "probability": 0.42261433601379395
+        },
+        {
+          "text": " }",
+          "probability": 0.9999282360076904
+        }
+      ]
+    },
+    {
+      "line": 21,
+      "lowest": 0.942884087562561,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9998528957366943
+        },
+        {
+          "text": " }",
+          "probability": 0.942884087562561
+        }
+      ]
+    },
+    {
+      "line": 22,
+      "lowest": 1.0,
+      "tokens": []
+    },
+    {
+      "line": 23,
+      "lowest": 0.8894233703613281,
+      "tokens": [
+        {
+          "text": "       ",
+          "probability": 0.9999790191650391
+        },
+        {
+          "text": " System",
+          "probability": 0.9993133544921875
+        },
+        {
+          "text": ".out",
+          "probability": 0.9999933242797852
+        },
+        {
+          "text": ".println",
+          "probability": 0.9949049949645996
+        },
+        {
+          "text": "(d",
+          "probability": 0.999159038066864
+        },
+        {
+          "text": "[C",
+          "probability": 0.9999109506607056
+        },
+        {
+          "text": "][",
+          "probability": 0.9999901056289673
+        },
+        {
+          "text": "D",
+          "probability": 0.9999954700469971
+        },
+        {
+          "text": "]);",
+          "probability": 0.8894233703613281
+        }
+      ]
+    },
+    {
+      "line": 24,
+      "lowest": 0.9965735673904419,
+      "tokens": [
+        {
+          "text": "   ",
+          "probability": 0.9150424599647522
+        },
+        {
+          "text": " }",
+          "probability": 0.9965735673904419
+        }
+      ]
+    },
+    {
+      "line": 25,
+      "lowest": 0.5308159589767456,
+      "tokens": [
+        {
+          "text": "}",
+          "probability": 0.5308159589767456
+        }
+      ]
+    },
+    {
+      "line": 26,
+      "lowest": 1.0,
+      "tokens": []
+    },
+    {
+      "line": 27,
+      "lowest": 0.00005474919089465402,
+      "tokens": [
+        {
+          "text": "//",
+          "probability": 0.7041479349136353
+        },
+        {
+          "text": " End",
+          "probability": 0.9990715980529785
+        },
+        {
+          "text": " of",
+          "probability": 0.999956488609314
+        },
+        {
+          "text": " Code",
+          "probability": 0.9996076822280884
+        },
+        {
+          "text": ".",
+          "probability": 0.00005474919089465402
+        }
+      ]
+    },
+    {
+      "line": 28,
+      "lowest": 1.0,
+      "tokens": []
+    }
+  ]
+}

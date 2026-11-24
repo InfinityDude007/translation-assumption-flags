@@ -5,7 +5,7 @@
     "prompt_version": "1",
     "created_at": "2026-11-24T19:06:44.576475Z"
   },
-  "threshold": 0.05,
+  "threshold": 0.04971916973590851,
   "samples": [
     {
       "sample_id": "avatar-atcoder_ABC123_C",
@@ -35,12 +35,11 @@
         6,
         24,
         47,
-        54,
         69
       ],
       "bug_caught": null,
       "latent_caught": null,
-      "false_alarms": 6,
+      "false_alarms": 5,
       "bug_rank": null
     },
     {
@@ -322,12 +321,10 @@
         18
       ],
       "latent_lines": [],
-      "highlighted": [
-        5
-      ],
+      "highlighted": [],
       "bug_caught": false,
       "latent_caught": null,
-      "false_alarms": 1,
+      "false_alarms": 0,
       "bug_rank": 13
     },
     {
@@ -618,7 +615,7 @@
   "bugs_caught": 7,
   "latent": 8,
   "latent_caught": 1,
-  "highlighted": 72,
-  "false_alarms": 63,
+  "highlighted": 70,
+  "false_alarms": 61,
   "missing": []
 }
