@@ -1,0 +1,126 @@
+{
+  "sample_id": "avatar-codeforces_579_A",
+  "finished_at": "2026-11-24T23:11:48.292417Z",
+  "seconds": 68.52,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8
+        ],
+        "assumption": "Lines 7 and 8 use Scanner.nextInt() to read a single integer token, assuming the input contains a single integer without extra tokens on the line and no later line-based reads follow.",
+        "suggestion": null,
+        "reasoning": "Python reads the whole line and int() parses a single integer ignoring surrounding whitespace. Java uses Scanner.nextInt() on line 8 (with Scanner initialized on line 7), and since there is only one input read in the program and no subsequent nextLine() call, the nextLine()-after-nextInt() issue cannot occur."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Line 8 uses int n = input.nextInt(), which assumes the input value fits in a signed 32-bit int (-2147483648 to 2147483647) rather than Python's arbitrary-precision int, and the code does not state the input range.",
+        "suggestion": null,
+        "reasoning": "The Python program gives no evidence that n exceeds 32-bit int (no large constants, no operations growing n, and no big-integer usage). Since the input range is not stated in the code, the verdict is unclear and we state the 32-bit int range assumed by input.nextInt()."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "math.log2 ( n ) % 1",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Line 10 uses Math.log(n) / Math.log(2) % 1 != 0, which assumes n >= 1 (the valid domain of Python's math.log2) so the dividend is non-negative and Java's % operator behaves the same as Python's % with divisor 1.",
+        "suggestion": null,
+        "reasoning": "For n >= 1, Math.log(n) / Math.log(2) is non-negative and the divisor 1 is positive, so Java's remainder has the same sign and value as Python's modulo. Additionally, for all 32-bit positive integers n, Math.log(n) / Math.log(2) rounds to an exact integer when n is a power of 2 and remains non-integer otherwise, so != 0 matches Python's while condition."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 6,
+          "end_line": 6,
+          "snippet": "2 ** ( int ( math.log2 ( n ) ) )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "Line 12 uses n -= Math.pow(2, (int) (Math.log(n) / Math.log(2))), which assumes n is a positive 32-bit int (from line 8) so the exponent is at most 30, Math.pow(2, e) fits exactly in double and int without overflow, and the compound subtraction does not overflow.",
+        "suggestion": null,
+        "reasoning": "Given n is a positive 32-bit int (1 <= n <= 2^31 - 1), (int) (Math.log(n) / Math.log(2)) is between 0 and 30 inclusive. Math.pow(2, e) is at most 2^30, which is exact in IEEE 754 double and smaller than Integer.MAX_VALUE, so n - Math.pow(2, e) stays in [0, 2^30 - 1] and casts back to int without overflow."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8
+          ],
+          "assumption": "Lines 7 and 8 use Scanner.nextInt() to read a single integer token, assuming the input contains a single integer without extra tokens on the line and no later line-based reads follow.",
+          "suggestion": null,
+          "reasoning": "Python reads the whole line and int() parses a single integer ignoring surrounding whitespace. Java uses Scanner.nextInt() on line 8 (with Scanner initialized on line 7), and since there is only one input read in the program and no subsequent nextLine() call, the nextLine()-after-nextInt() issue cannot occur."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Line 8 uses int n = input.nextInt(), which assumes the input value fits in a signed 32-bit int (-2147483648 to 2147483647) rather than Python's arbitrary-precision int, and the code does not state the input range.",
+          "suggestion": null,
+          "reasoning": "The Python program gives no evidence that n exceeds 32-bit int (no large constants, no operations growing n, and no big-integer usage). Since the input range is not stated in the code, the verdict is unclear and we state the 32-bit int range assumed by input.nextInt()."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Line 10 uses Math.log(n) / Math.log(2) % 1 != 0, which assumes n >= 1 (the valid domain of Python's math.log2) so the dividend is non-negative and Java's % operator behaves the same as Python's % with divisor 1.",
+          "suggestion": null,
+          "reasoning": "For n >= 1, Math.log(n) / Math.log(2) is non-negative and the divisor 1 is positive, so Java's remainder has the same sign and value as Python's modulo. Additionally, for all 32-bit positive integers n, Math.log(n) / Math.log(2) rounds to an exact integer when n is a power of 2 and remains non-integer otherwise, so != 0 matches Python's while condition."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "Line 12 uses n -= Math.pow(2, (int) (Math.log(n) / Math.log(2))), which assumes n is a positive 32-bit int (from line 8) so the exponent is at most 30, Math.pow(2, e) fits exactly in double and int without overflow, and the compound subtraction does not overflow.",
+          "suggestion": null,
+          "reasoning": "Given n is a positive 32-bit int (1 <= n <= 2^31 - 1), (int) (Math.log(n) / Math.log(2)) is between 0 and 30 inclusive. Math.pow(2, e) is at most 2^30, which is exact in IEEE 754 double and smaller than Integer.MAX_VALUE, so n - Math.pow(2, e) stays in [0, 2^30 - 1] and casts back to int without overflow."
+        }
+      ]
+    }
+  }
+}

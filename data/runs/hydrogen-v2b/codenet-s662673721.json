@@ -1,0 +1,207 @@
+{
+  "sample_id": "codenet-s662673721",
+  "finished_at": "2026-11-24T23:15:59.162016Z",
+  "seconds": 32.22,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7
+        ],
+        "assumption": "The code uses Scanner.nextInt() on line 7 after constructing a Scanner on line 6, which reads a single whitespace-delimited integer and does not mix nextLine() calls.",
+        "suggestion": null,
+        "reasoning": "Python reads a single integer via input() on line 4 and never reads another line. Java uses new Scanner(System.in) on line 6 and scanner.nextInt() on line 7, avoiding any nextLine() after nextInt() issue."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "int(input())",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "Using int n = scanner.nextInt() on line 7 assumes the input fits in a signed 32-bit int (up to 2^31 - 1), whereas Python's ans = 10 ** 18 sentinel indicates n can exceed int range.",
+        "suggestion": "Change line 7 to long n = scanner.nextLong();, and update i on line 10 and j on line 14 to long (for (long i = 1; i <= Math.sqrt(n) + 1; i++) and long j = n / i;) so the division compiles and i + j - 2 on line 15 does not overflow int.",
+        "reasoning": "Python initializes ans = 10 ** 18 on line 6, which is evidence that inputs and computed answers can exceed 32-bit int range. For an input like 1000000000000, scanner.nextInt() throws InputMismatchException while Python succeeds."
+      },
+      {
+        "site": {
+          "rule": "const_overflow",
+          "category": "numeric",
+          "line": 6,
+          "end_line": 6,
+          "snippet": "10 ** 18",
+          "reason": "This constant is outside Java's int range (-2^31 to 2^31-1), so the translation needs long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          8
+        ],
+        "assumption": "Java declares long ans = (long) 1e18 on line 8, which fits in a 64-bit signed long and represents 10^18 exactly.",
+        "suggestion": null,
+        "reasoning": "10^18 = 2^18 * 5^18, and 5^18 uses 42 bits of precision, well within IEEE 754 double's 53-bit significand. Casting (long) 1e18 produces exact 1000000000000000000L, matching Python's 10 ** 18."
+      },
+      {
+        "site": {
+          "rule": "true_division",
+          "category": "division",
+          "line": 8,
+          "end_line": 8,
+          "snippet": "1 / 2",
+          "reason": "Python / on ints gives a float (7 / 2 is 3.5); Java int / int truncates (7 / 2 is 3)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "Java calls Math.sqrt(n) on line 10 instead of computing a fractional exponent with integer division, matching Python's floating-point 1 / 2 exponent.",
+        "suggestion": null,
+        "reasoning": "Python computes n ** (1 / 2) where 1 / 2 evaluates to 0.5. Java avoids integer division entirely by calling Math.sqrt(n) on line 10."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 8,
+          "end_line": 8,
+          "snippet": "int(n ** (1 / 2))",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "The loop header for (int i = 1; i <= Math.sqrt(n) + 1; i++) on line 10 assumes Math.sqrt(n) + 1 fits in a 32-bit int (roughly n <= 4.6e18), an upper bound not explicitly stated in the Python code.",
+        "suggestion": null,
+        "reasoning": "While ans = 10 ** 18 suggests n is at most around 10^18 (where sqrt(n) <= 10^9 fits in int), the Python code does not explicitly state the input range of n, and for very large n (> 4.61e18) int i would overflow."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 9,
+          "end_line": 9,
+          "snippet": "n % i",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "The check if (n % i != 0) on line 11 assumes checking divisibility to zero behaves identically in Java and Python, which holds regardless of sign and is further ensured because i >= 1 and n >= 0.",
+        "suggestion": null,
+        "reasoning": "For any integers n and nonzero i, n % i == 0 if and only if i divides n evenly, so n % i != 0 has the same truth value in both Java and Python. Moreover i >= 1 and Python's n ** (1 / 2) requires n >= 0."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "n // i",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "The division int j = n / i on line 14 assumes both operands are non-negative (since i >= 1 and Python's n ** (1 / 2) requires n >= 0, plus line 11 guarantees exact divisibility), where Java's truncation toward zero matches Python's floor division.",
+        "suggestion": null,
+        "reasoning": "Line 14 is only reached when n % i == 0, with i >= 1 and n >= 0 for valid inputs to Python's n ** (1 / 2), so n / i equals n // i."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-4-hydrogen",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7
+          ],
+          "assumption": "The code uses Scanner.nextInt() on line 7 after constructing a Scanner on line 6, which reads a single whitespace-delimited integer and does not mix nextLine() calls.",
+          "suggestion": null,
+          "reasoning": "Python reads a single integer via input() on line 4 and never reads another line. Java uses new Scanner(System.in) on line 6 and scanner.nextInt() on line 7, avoiding any nextLine() after nextInt() issue."
+        },
+        {
+          "site_id": 1,
+          "verdict": "mismatch",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "Using int n = scanner.nextInt() on line 7 assumes the input fits in a signed 32-bit int (up to 2^31 - 1), whereas Python's ans = 10 ** 18 sentinel indicates n can exceed int range.",
+          "suggestion": "Change line 7 to long n = scanner.nextLong();, and update i on line 10 and j on line 14 to long (for (long i = 1; i <= Math.sqrt(n) + 1; i++) and long j = n / i;) so the division compiles and i + j - 2 on line 15 does not overflow int.",
+          "reasoning": "Python initializes ans = 10 ** 18 on line 6, which is evidence that inputs and computed answers can exceed 32-bit int range. For an input like 1000000000000, scanner.nextInt() throws InputMismatchException while Python succeeds."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            8
+          ],
+          "assumption": "Java declares long ans = (long) 1e18 on line 8, which fits in a 64-bit signed long and represents 10^18 exactly.",
+          "suggestion": null,
+          "reasoning": "10^18 = 2^18 * 5^18, and 5^18 uses 42 bits of precision, well within IEEE 754 double's 53-bit significand. Casting (long) 1e18 produces exact 1000000000000000000L, matching Python's 10 ** 18."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "Java calls Math.sqrt(n) on line 10 instead of computing a fractional exponent with integer division, matching Python's floating-point 1 / 2 exponent.",
+          "suggestion": null,
+          "reasoning": "Python computes n ** (1 / 2) where 1 / 2 evaluates to 0.5. Java avoids integer division entirely by calling Math.sqrt(n) on line 10."
+        },
+        {
+          "site_id": 4,
+          "verdict": "unclear",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "The loop header for (int i = 1; i <= Math.sqrt(n) + 1; i++) on line 10 assumes Math.sqrt(n) + 1 fits in a 32-bit int (roughly n <= 4.6e18), an upper bound not explicitly stated in the Python code.",
+          "suggestion": null,
+          "reasoning": "While ans = 10 ** 18 suggests n is at most around 10^18 (where sqrt(n) <= 10^9 fits in int), the Python code does not explicitly state the input range of n, and for very large n (> 4.61e18) int i would overflow."
+        },
+        {
+          "site_id": 5,
+          "verdict": "handled",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "The check if (n % i != 0) on line 11 assumes checking divisibility to zero behaves identically in Java and Python, which holds regardless of sign and is further ensured because i >= 1 and n >= 0.",
+          "suggestion": null,
+          "reasoning": "For any integers n and nonzero i, n % i == 0 if and only if i divides n evenly, so n % i != 0 has the same truth value in both Java and Python. Moreover i >= 1 and Python's n ** (1 / 2) requires n >= 0."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "The division int j = n / i on line 14 assumes both operands are non-negative (since i >= 1 and Python's n ** (1 / 2) requires n >= 0, plus line 11 guarantees exact divisibility), where Java's truncation toward zero matches Python's floor division.",
+          "suggestion": null,
+          "reasoning": "Line 14 is only reached when n % i == 0, with i >= 1 and n >= 0 for valid inputs to Python's n ** (1 / 2), so n / i equals n // i."
+        }
+      ]
+    }
+  }
+}
