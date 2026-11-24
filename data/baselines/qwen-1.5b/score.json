@@ -1,0 +1,624 @@
+{
+  "config": {
+    "name": "qwen-1.5b",
+    "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "prompt_version": "1",
+    "created_at": "2026-11-24T19:06:44.576475Z"
+  },
+  "threshold": 0.05,
+  "samples": [
+    {
+      "sample_id": "avatar-atcoder_ABC123_C",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        7,
+        8,
+        10,
+        14
+      ],
+      "latent_lines": [],
+      "highlighted": [],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": 2
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC126_D",
+      "group": "buggy",
+      "no_bug": true,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        5,
+        6,
+        24,
+        47,
+        54,
+        69
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 6,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC134_E",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        28
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC143_D",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        15,
+        20,
+        24
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        12
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": 10
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC150_C",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        32,
+        34
+      ],
+      "latent_lines": [
+        12,
+        13
+      ],
+      "highlighted": [
+        15,
+        16,
+        17,
+        23,
+        27,
+        39,
+        54
+      ],
+      "bug_caught": false,
+      "latent_caught": false,
+      "false_alarms": 7,
+      "bug_rank": 21
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC158_B",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        7,
+        11,
+        16
+      ],
+      "bug_caught": true,
+      "latent_caught": null,
+      "false_alarms": 2,
+      "bug_rank": 2
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC167_D",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        7
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        16
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": 32
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC178_A",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        23
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-atcoder_ABC178_B",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        13
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        10,
+        17
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 2,
+      "bug_rank": 7
+    },
+    {
+      "sample_id": "avatar-atcoder_AGC010_B",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        18,
+        21
+      ],
+      "latent_lines": [
+        24,
+        26
+      ],
+      "highlighted": [
+        13,
+        22,
+        33,
+        35
+      ],
+      "bug_caught": false,
+      "latent_caught": false,
+      "false_alarms": 4,
+      "bug_rank": 13
+    },
+    {
+      "sample_id": "avatar-atcoder_AGC019_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        11
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        12
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": 6
+    },
+    {
+      "sample_id": "avatar-atcoder_AGC033_B",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-atcoder_AGC046_B",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        19
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        11,
+        19,
+        27
+      ],
+      "bug_caught": true,
+      "latent_caught": null,
+      "false_alarms": 2,
+      "bug_rank": 1
+    },
+    {
+      "sample_id": "avatar-atcoder_ARC086_B",
+      "group": "buggy",
+      "no_bug": true,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        23,
+        33
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 2,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-codeforces_108_B",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [
+        14
+      ],
+      "highlighted": [
+        8,
+        13
+      ],
+      "bug_caught": null,
+      "latent_caught": false,
+      "false_alarms": 2,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-codeforces_148_B",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        19
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-codeforces_306_A",
+      "group": "buggy",
+      "no_bug": true,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-codeforces_30_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        3,
+        4,
+        5
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        3
+      ],
+      "bug_caught": true,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": 1
+    },
+    {
+      "sample_id": "avatar-codeforces_387_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        18
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        5
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": 13
+    },
+    {
+      "sample_id": "avatar-codeforces_400_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        33
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        28,
+        33,
+        40,
+        45
+      ],
+      "bug_caught": true,
+      "latent_caught": null,
+      "false_alarms": 3,
+      "bug_rank": 3
+    },
+    {
+      "sample_id": "avatar-codeforces_459_A",
+      "group": "buggy",
+      "no_bug": true,
+      "bug_lines": [],
+      "latent_lines": [
+        9
+      ],
+      "highlighted": [
+        10,
+        24
+      ],
+      "bug_caught": null,
+      "latent_caught": false,
+      "false_alarms": 2,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-codeforces_569_A",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "avatar-codeforces_579_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        10
+      ],
+      "latent_lines": [],
+      "highlighted": [],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": 5
+    },
+    {
+      "sample_id": "avatar-codeforces_621_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        24
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        13
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": 28
+    },
+    {
+      "sample_id": "avatar-codeforces_637_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        22,
+        24
+      ],
+      "latent_lines": [
+        10,
+        22
+      ],
+      "highlighted": [
+        2,
+        3,
+        20,
+        22,
+        30
+      ],
+      "bug_caught": true,
+      "latent_caught": true,
+      "false_alarms": 4,
+      "bug_rank": 1
+    },
+    {
+      "sample_id": "avatar-codeforces_651_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        8,
+        10,
+        13,
+        16,
+        17,
+        19
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        8,
+        10,
+        16
+      ],
+      "bug_caught": true,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": 1
+    },
+    {
+      "sample_id": "avatar-codeforces_665_A",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        12,
+        13
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        15,
+        32
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 2,
+      "bug_rank": 12
+    },
+    {
+      "sample_id": "codenet-s259116349",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        15,
+        16
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        33,
+        49,
+        57
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 3,
+      "bug_rank": 23
+    },
+    {
+      "sample_id": "codenet-s491954463",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        17
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "codenet-s622795537",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [],
+      "highlighted": [
+        6
+      ],
+      "bug_caught": null,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "codenet-s662673721",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [
+        7,
+        14
+      ],
+      "highlighted": [
+        1,
+        8
+      ],
+      "bug_caught": null,
+      "latent_caught": false,
+      "false_alarms": 2,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "codenet-s764169243",
+      "group": "control",
+      "no_bug": false,
+      "bug_lines": [],
+      "latent_lines": [
+        58,
+        75
+      ],
+      "highlighted": [
+        10,
+        36,
+        62,
+        82
+      ],
+      "bug_caught": null,
+      "latent_caught": false,
+      "false_alarms": 4,
+      "bug_rank": null
+    },
+    {
+      "sample_id": "codenet-s813548165",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        7
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        7
+      ],
+      "bug_caught": true,
+      "latent_caught": null,
+      "false_alarms": 0,
+      "bug_rank": 1
+    },
+    {
+      "sample_id": "codenet-s826716211",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        47
+      ],
+      "latent_lines": [],
+      "highlighted": [
+        42
+      ],
+      "bug_caught": false,
+      "latent_caught": null,
+      "false_alarms": 1,
+      "bug_rank": 5
+    },
+    {
+      "sample_id": "codenet-s875904659",
+      "group": "buggy",
+      "no_bug": false,
+      "bug_lines": [
+        17,
+        35
+      ],
+      "latent_lines": [
+        53
+      ],
+      "highlighted": [
+        1,
+        6,
+        44,
+        46,
+        80
+      ],
+      "bug_caught": false,
+      "latent_caught": false,
+      "false_alarms": 5,
+      "bug_rank": 18
+    }
+  ],
+  "bugs": 21,
+  "bugs_caught": 7,
+  "latent": 8,
+  "latent_caught": 1,
+  "highlighted": 72,
+  "false_alarms": 63,
+  "missing": []
+}
