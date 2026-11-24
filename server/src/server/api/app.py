@@ -6,13 +6,25 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from ..baseline.archive import CONFIG_FILE as BASELINE_CONFIG
-from ..baseline.models import BaselineConfig, BaselineScore, SampleBaseline
-from ..baseline.scoring import score_baseline
+from ..baseline import (
+    CONFIG_FILE as BASELINE_CONFIG,
+)
+from ..baseline import (
+    BaselineConfig,
+    BaselineScore,
+    SampleBaseline,
+    budget_threshold,
+    score_baseline,
+)
 from ..dataset import SampleMeta
-from ..evaluation.archive import CONFIG_FILE, load_samples
-from ..evaluation.models import RunConfig, RunScore, SampleRun
-from ..evaluation.scoring import score_run
+from ..evaluation import (
+    CONFIG_FILE,
+    RunConfig,
+    RunScore,
+    SampleRun,
+    load_samples,
+    score_run,
+)
 from ..explanation import explain
 from ..gemini import GeminiClient, GeminiError, get_client
 from .decisions import load_decisions, save_decision
@@ -50,7 +62,7 @@ def create_app(
     decisions_file: Path,
     cors_origins: list[str],
     baselines_dir: Path | None = None,
-    threshold: float = 0.05,
+    line_budget: int = 70,
 ) -> FastAPI:
     """Build the API over the given folders.
 
@@ -60,7 +72,7 @@ def create_app(
         decisions_file: JSON Lines file for reviewer decisions.
         cors_origins: Browser origins allowed to call the API.
         baselines_dir: The token-probability baselines folder; none if omitted.
-        threshold: Lines whose least likely token is below this are highlighted.
+        line_budget: How many Java lines each baseline marks; sets its threshold.
 
     Returns:
         The app.
@@ -190,18 +202,21 @@ def create_app(
         return ProbabilityReview(
             baseline=name,
             model=find_baselines()[name].model,
-            threshold=threshold,
+            threshold=budget_threshold(folder, line_budget),
             lines=scored.lines,
         )
 
     @app.get("/baselines/{name}/score")
     def get_baseline_score(name: str) -> BaselineScore:
-        """Score a baseline against the tagged lines at the configured threshold.
+        """Score a baseline against the tagged lines at its line-budget threshold.
 
         Like the run scores, this shows the ground truth, so the review pages
         never call it.
         """
-        return score_baseline(baseline_folder(name), samples_dir, threshold)
+        folder = baseline_folder(name)
+        return score_baseline(
+            folder, samples_dir, budget_threshold(folder, line_budget)
+        )
 
     @app.post("/analyse")
     def analyse(

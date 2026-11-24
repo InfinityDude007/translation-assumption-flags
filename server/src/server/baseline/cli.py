@@ -5,7 +5,7 @@ import sys
 
 from ..settings import get_baseline_settings, get_dataset_settings
 from .archive import run_baseline
-from .scoring import format_baseline_score, score_baseline
+from .scoring import budget_threshold, format_baseline_score, score_baseline
 
 
 def baseline() -> None:
@@ -55,7 +55,7 @@ def score_baseline_command() -> None:
     parser.add_argument(
         "--threshold",
         type=float,
-        help="highlight below this; BASELINE_THRESHOLD if omitted",
+        help="mark below this; if omitted, the threshold that marks BASELINE_LINE_BUDGET lines",
     )
     args = parser.parse_args()
 
@@ -64,7 +64,11 @@ def score_baseline_command() -> None:
     if not folder.is_dir():
         sys.exit(f"score-baseline: no baseline named {args.name!r} in {folder.parent}")
 
-    threshold = settings.threshold if args.threshold is None else args.threshold
+    threshold = (
+        budget_threshold(folder, settings.line_budget)
+        if args.threshold is None
+        else args.threshold
+    )
     result = score_baseline(folder, get_dataset_settings().samples_dir, threshold)
     (folder / "score.json").write_text(result.model_dump_json(indent=2) + "\n")
     print(format_baseline_score(result))

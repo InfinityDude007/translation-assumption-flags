@@ -4,14 +4,17 @@ from pathlib import Path
 
 import pytest
 
-from server.baseline.archive import CONFIG_FILE, run_baseline
-from server.baseline.lines import line_probabilities
-from server.baseline.models import (
+from server.baseline import (
+    CONFIG_FILE,
     BaselineConfig,
     LineProbability,
     SampleBaseline,
+    budget_threshold,
+    format_baseline_score,
+    line_probabilities,
+    run_baseline,
+    score_baseline,
 )
-from server.baseline.scoring import format_baseline_score, score_baseline
 from server.dataset import SampleMeta
 
 TRANSLATION = "int n = in.nextInt();\nSystem.out.println(n / 2);\n"
@@ -135,3 +138,14 @@ def test_score_counts_highlighted_lines(samples: Path, tmp_path: Path) -> None:
     assert everything.samples[0].bug_rank == 1
 
     assert "Test-exposed bugs caught: 1/1" in format_baseline_score(caught)
+
+
+def test_budget_threshold_marks_that_many_lines(samples: Path, tmp_path: Path) -> None:
+    """The threshold marks the budgeted lines; blank lines never count."""
+    baselines = tmp_path / "baselines"
+    run_baseline(FakeScorer(), "fake", "1", samples, baselines)
+    folder = baselines / "fake"
+
+    assert budget_threshold(folder, 1) == 0.5
+    assert score_baseline(folder, samples, 0.5).highlighted == 1
+    assert budget_threshold(folder, 2) == 1.0

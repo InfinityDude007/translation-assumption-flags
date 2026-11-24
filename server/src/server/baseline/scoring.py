@@ -8,6 +8,31 @@ from .archive import CONFIG_FILE
 from .models import BaselineConfig, BaselineSampleScore, BaselineScore, SampleBaseline
 
 
+def budget_threshold(folder: Path, budget: int) -> float:
+    """Find the threshold at which a baseline marks a set number of lines.
+
+    It looks only at the baseline's own probabilities, never at the tagged
+    lines, so choosing it cannot favour the baseline.
+
+    Args:
+        folder: The baseline's folder.
+        budget: How many Java lines to mark, over every scored sample.
+
+    Returns:
+        The lowest probability not marked: the lines below it number at most
+        `budget` (fewer only when lines tie at it). 1.0 if the baseline has no
+        more than `budget` non-blank lines, so every one is marked.
+    """
+    lowest = sorted(
+        line.lowest
+        for path in folder.glob("*.json")
+        if path.name not in (CONFIG_FILE, "score.json")
+        for line in SampleBaseline.model_validate_json(path.read_text()).lines
+        if line.tokens and any(token.text.strip() for token in line.tokens)
+    )
+    return lowest[budget] if len(lowest) > budget else 1.0
+
+
 def score_baseline_sample(
     meta: SampleMeta, baseline: SampleBaseline, threshold: float
 ) -> BaselineSampleScore:

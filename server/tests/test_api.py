@@ -12,13 +12,10 @@ from pydantic import BaseModel
 from pydantic_settings import SettingsConfigDict
 
 from server.api import create_app, gemini_client
-from server.baseline.lines import line_probabilities
-from server.baseline.models import BaselineConfig, SampleBaseline
+from server.baseline import BaselineConfig, SampleBaseline, line_probabilities
 from server.dataset import SampleMeta
-from server.evaluation.models import RunConfig, SampleRun
-from server.explanation import explain
-from server.explanation.models import GeminiAnswer, SiteAnswer
-from server.explanation.prompts import PROMPT_VERSION
+from server.evaluation import RunConfig, SampleRun
+from server.explanation import PROMPT_VERSION, GeminiAnswer, SiteAnswer, explain
 from server.gemini import GeminiClient, GeminiError
 from server.settings import ApiSettings
 
@@ -133,7 +130,7 @@ def api(folders: dict[str, Path]) -> Iterator[TestClient]:
         folders["decisions"],
         [ORIGIN],
         folders["baselines"],
-        0.05,
+        1,
     )
     app.dependency_overrides[gemini_client] = lambda: FakeClient()
     yield TestClient(app)
@@ -232,14 +229,14 @@ def test_baselines_are_listed(api: TestClient) -> None:
 
 
 def test_probabilities_come_with_the_threshold(api: TestClient) -> None:
-    """A sample's lines are returned with the threshold the view highlights at."""
+    """With a budget of one line, the threshold sits just above the lowest line."""
     response = api.get(f"/baselines/test-model/samples/{SAMPLE}")
     assert response.status_code == 200
     body = response.json()
     assert (body["baseline"], body["model"], body["threshold"]) == (
         "test-model",
         "fake/model",
-        0.05,
+        0.5,
     )
     assert [line["lowest"] for line in body["lines"]][3:5] == [0.5, 0.01]
 
@@ -253,10 +250,10 @@ def test_unknown_baselines_are_not_found(api: TestClient, path: str) -> None:
 
 
 def test_baseline_score_uses_the_threshold(api: TestClient) -> None:
-    """Only the line below 0.05 is highlighted, and it is the bug line."""
+    """Only the one budgeted line is highlighted, and it is the bug line."""
     score = api.get("/baselines/test-model/score").json()
     assert (score["threshold"], score["bugs_caught"], score["highlighted"]) == (
-        0.05,
+        0.5,
         1,
         1,
     )

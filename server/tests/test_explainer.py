@@ -8,9 +8,15 @@ from google.genai import types
 from pydantic import BaseModel
 
 from server.detection import detect
-from server.explanation import explain
-from server.explanation.models import Explanation, GeminiAnswer, SiteAnswer
-from server.explanation.prompts import PROMPT_VERSION, SYSTEM_PROMPT, build_prompt
+from server.explanation import (
+    PROMPT_VERSION,
+    SYSTEM_PROMPT,
+    Explanation,
+    GeminiAnswer,
+    SiteAnswer,
+    build_prompt,
+    explain,
+)
 from server.gemini import GeminiClient
 
 SOURCE = "n = int(input())\nprint(n // 2)\n"

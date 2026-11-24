@@ -24,6 +24,6 @@ def main() -> None:
         api.decisions_file,
         api.cors_origins,
         baseline.baselines_dir,
-        baseline.threshold,
+        baseline.line_budget,
     )
     uvicorn.run(app, host=api.host, port=api.port)
