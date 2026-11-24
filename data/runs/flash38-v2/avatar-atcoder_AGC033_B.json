@@ -1,0 +1,130 @@
+{
+  "sample_id": "avatar-atcoder_AGC033_B",
+  "finished_at": "2026-11-24T21:54:15.724286Z",
+  "seconds": 17.42,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6,
+          7,
+          8
+        ],
+        "assumption": "`sc.nextInt()` assumes the input consists of whitespace-separated integer tokens that fit within a 32-bit signed int.",
+        "suggestion": null,
+        "reasoning": "`sc.nextInt()` automatically skips arbitrary whitespace between tokens, properly handling the whitespace splitting."
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          9,
+          10
+        ],
+        "assumption": "`sc.nextInt()` assumes the input consists of whitespace-separated integer tokens that fit within a 32-bit signed int.",
+        "suggestion": null,
+        "reasoning": "`sc.nextInt()` handles whitespace-separated tokens without issue."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          11
+        ],
+        "assumption": "`sc.next()` assumes the string token contains no internal whitespace and correctly skips preceding newline characters.",
+        "suggestion": null,
+        "reasoning": "Using `sc.next()` avoids the common pitfall where `nextLine()` immediately after `nextInt()` reads an empty trailing line."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "`sc.next()` assumes the input string does not contain internal whitespace and skips preceding whitespace.",
+        "suggestion": null,
+        "reasoning": "The string consists of direction characters without spaces, so `sc.next()` correctly reads the token across newlines."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6,
+            7,
+            8
+          ],
+          "assumption": "`sc.nextInt()` assumes the input consists of whitespace-separated integer tokens that fit within a 32-bit signed int.",
+          "suggestion": null,
+          "reasoning": "`sc.nextInt()` automatically skips arbitrary whitespace between tokens, properly handling the whitespace splitting."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            9,
+            10
+          ],
+          "assumption": "`sc.nextInt()` assumes the input consists of whitespace-separated integer tokens that fit within a 32-bit signed int.",
+          "suggestion": null,
+          "reasoning": "`sc.nextInt()` handles whitespace-separated tokens without issue."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            11
+          ],
+          "assumption": "`sc.next()` assumes the string token contains no internal whitespace and correctly skips preceding newline characters.",
+          "suggestion": null,
+          "reasoning": "Using `sc.next()` avoids the common pitfall where `nextLine()` immediately after `nextInt()` reads an empty trailing line."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "`sc.next()` assumes the input string does not contain internal whitespace and skips preceding whitespace.",
+          "suggestion": null,
+          "reasoning": "The string consists of direction characters without spaces, so `sc.next()` correctly reads the token across newlines."
+        }
+      ]
+    }
+  }
+}

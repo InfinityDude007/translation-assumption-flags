@@ -1,0 +1,130 @@
+{
+  "sample_id": "avatar-atcoder_AGC046_B",
+  "finished_at": "2026-11-24T21:54:49.812491Z",
+  "seconds": 28.09,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7,
+          8,
+          9,
+          10
+        ],
+        "assumption": "The translation uses Scanner.nextInt() on lines 7-10, assuming input values are whitespace-separated integers.",
+        "suggestion": null,
+        "reasoning": "Scanner.nextInt() automatically skips arbitrary whitespace delimiters and parses integers, correctly matching Python's input().split() mapped to int."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "[ 0 ] * ( D + 1 )",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          14
+        ],
+        "assumption": "The translation allocates a 2D array on line 14, assuming C + 1 and D + 1 fit within positive 32-bit signed integer limits for array dimensions.",
+        "suggestion": null,
+        "reasoning": "The program does not specify an input range, and Java array dimensions must be non-negative 32-bit integers."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "( d [ i ] [ j - 1 ] * i + d [ i - 1 ] [ j ] * j - d [ i - 1 ",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "The translation uses Java's % operator on line 19, assuming the dividend is non-negative.",
+        "suggestion": "d[i][j] += (int) Math.floorMod((long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1), m);",
+        "reasoning": "Because of subtraction of previously reduced modulo values, the term can become negative. In Python, negative % positive yields a positive remainder, whereas Java's % preserves the negative sign."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "d [ i ] [ j - 1 ] * i",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          19
+        ],
+        "assumption": "The translation casts to long on line 19, assuming the intermediate product fits within a 64-bit signed integer.",
+        "suggestion": null,
+        "reasoning": "Explicit casting to long prevents 32-bit integer overflow during multiplication."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7,
+            8,
+            9,
+            10
+          ],
+          "assumption": "The translation uses Scanner.nextInt() on lines 7-10, assuming input values are whitespace-separated integers.",
+          "suggestion": null,
+          "reasoning": "Scanner.nextInt() automatically skips arbitrary whitespace delimiters and parses integers, correctly matching Python's input().split() mapped to int."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            14
+          ],
+          "assumption": "The translation allocates a 2D array on line 14, assuming C + 1 and D + 1 fit within positive 32-bit signed integer limits for array dimensions.",
+          "suggestion": null,
+          "reasoning": "The program does not specify an input range, and Java array dimensions must be non-negative 32-bit integers."
+        },
+        {
+          "site_id": 2,
+          "verdict": "mismatch",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "The translation uses Java's % operator on line 19, assuming the dividend is non-negative.",
+          "suggestion": "d[i][j] += (int) Math.floorMod((long)d[i][j - 1] * i + (long)d[i - 1][j] * j - (long)d[i - 1][j - 1] * (i - 1) * (j - 1), m);",
+          "reasoning": "Because of subtraction of previously reduced modulo values, the term can become negative. In Python, negative % positive yields a positive remainder, whereas Java's % preserves the negative sign."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            19
+          ],
+          "assumption": "The translation casts to long on line 19, assuming the intermediate product fits within a 64-bit signed integer.",
+          "suggestion": null,
+          "reasoning": "Explicit casting to long prevents 32-bit integer overflow during multiplication."
+        }
+      ]
+    }
+  }
+}

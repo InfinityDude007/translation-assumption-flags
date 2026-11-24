@@ -1,0 +1,259 @@
+{
+  "sample_id": "codenet-s259116349",
+  "finished_at": "2026-11-24T22:08:27.839673Z",
+  "seconds": 8.87,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6
+        ],
+        "assumption": "The Java code uses `scanner.nextInt()` to parse the input integer token, matching Python's `input()` for reading a single token.",
+        "suggestion": null,
+        "reasoning": "Standard token-based integer reading matches the single integer input."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "int(input())",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6
+        ],
+        "assumption": "The Java code assumes `N` fits within a standard 32-bit signed `int` (problem range is typically up to 100 as implied by `divs` size 100).",
+        "suggestion": null,
+        "reasoning": "divs has 100 elements, so N is expected to be <= 100, fitting comfortably in int."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "i//p",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "The Java code replaces `i // p == i / p` with `i % p == 0`, which is mathematically equivalent for positive integers `i` and `p`.",
+        "suggestion": null,
+        "reasoning": "Since i and p are positive integers, integer division / modulo behaves identically without negative rounding issues."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "i//p",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          16
+        ],
+        "assumption": "The Java code uses `i /= p` where `i` and `p` are positive, so rounding toward zero is identical to Python floor division.",
+        "suggestion": null,
+        "reasoning": "Positive integers produce identical division results in Java and Python."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "num(15)*(num(5)-1)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          36
+        ],
+        "assumption": "The Java code assumes the result of `num(15, divsum) * (num(5, divsum) - 1)` fits within `int`, which holds since `num` returns at most `primes.length` (15).",
+        "suggestion": null,
+        "reasoning": "The values returned by num() are at most 15, so multiplication never overflows int."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 36,
+          "end_line": 36,
+          "snippet": "num(25)*(num(3)-1)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          39
+        ],
+        "assumption": "The Java code assumes the multiplication fits within `int`, which holds since `num` is bounded by 15.",
+        "suggestion": null,
+        "reasoning": "Bounded by 15 * 15, no overflow possible."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 39,
+          "end_line": 39,
+          "snippet": "num(5) * (num(5)-1) * (num(3)-2) // 2",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          42
+        ],
+        "assumption": "The Java code assumes the dividend is non-negative and divisible by 2, so integer division `/ 2` matches Python `// 2`.",
+        "suggestion": null,
+        "reasoning": "num(5)*(num(5)-1) is always even and non-negative, so integer division truncates identically to floor division."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 39,
+          "end_line": 39,
+          "snippet": "num(5) * (num(5)-1) * (num(3)-2)",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          42
+        ],
+        "assumption": "The Java code assumes the product `num(5, divsum) * (num(5, divsum) - 1) * (num(3, divsum) - 2)` fits in `int`, which holds as `num <= 15`.",
+        "suggestion": null,
+        "reasoning": "Max value is 15 * 14 * 13, well within 32-bit int."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 40,
+          "end_line": 40,
+          "snippet": "int(ans)",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          44
+        ],
+        "assumption": "The Java code assumes `ans` is already an `int` and prints it directly.",
+        "suggestion": null,
+        "reasoning": "ans is declared as int on line 30, so no conversion is needed."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6
+          ],
+          "assumption": "The Java code uses `scanner.nextInt()` to parse the input integer token, matching Python's `input()` for reading a single token.",
+          "suggestion": null,
+          "reasoning": "Standard token-based integer reading matches the single integer input."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            6
+          ],
+          "assumption": "The Java code assumes `N` fits within a standard 32-bit signed `int` (problem range is typically up to 100 as implied by `divs` size 100).",
+          "suggestion": null,
+          "reasoning": "divs has 100 elements, so N is expected to be <= 100, fitting comfortably in int."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "The Java code replaces `i // p == i / p` with `i % p == 0`, which is mathematically equivalent for positive integers `i` and `p`.",
+          "suggestion": null,
+          "reasoning": "Since i and p are positive integers, integer division / modulo behaves identically without negative rounding issues."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            16
+          ],
+          "assumption": "The Java code uses `i /= p` where `i` and `p` are positive, so rounding toward zero is identical to Python floor division.",
+          "suggestion": null,
+          "reasoning": "Positive integers produce identical division results in Java and Python."
+        },
+        {
+          "site_id": 4,
+          "verdict": "handled",
+          "translation_lines": [
+            36
+          ],
+          "assumption": "The Java code assumes the result of `num(15, divsum) * (num(5, divsum) - 1)` fits within `int`, which holds since `num` returns at most `primes.length` (15).",
+          "suggestion": null,
+          "reasoning": "The values returned by num() are at most 15, so multiplication never overflows int."
+        },
+        {
+          "site_id": 5,
+          "verdict": "handled",
+          "translation_lines": [
+            39
+          ],
+          "assumption": "The Java code assumes the multiplication fits within `int`, which holds since `num` is bounded by 15.",
+          "suggestion": null,
+          "reasoning": "Bounded by 15 * 15, no overflow possible."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            42
+          ],
+          "assumption": "The Java code assumes the dividend is non-negative and divisible by 2, so integer division `/ 2` matches Python `// 2`.",
+          "suggestion": null,
+          "reasoning": "num(5)*(num(5)-1) is always even and non-negative, so integer division truncates identically to floor division."
+        },
+        {
+          "site_id": 7,
+          "verdict": "handled",
+          "translation_lines": [
+            42
+          ],
+          "assumption": "The Java code assumes the product `num(5, divsum) * (num(5, divsum) - 1) * (num(3, divsum) - 2)` fits in `int`, which holds as `num <= 15`.",
+          "suggestion": null,
+          "reasoning": "Max value is 15 * 14 * 13, well within 32-bit int."
+        },
+        {
+          "site_id": 8,
+          "verdict": "handled",
+          "translation_lines": [
+            44
+          ],
+          "assumption": "The Java code assumes `ans` is already an `int` and prints it directly.",
+          "suggestion": null,
+          "reasoning": "ans is declared as int on line 30, so no conversion is needed."
+        }
+      ]
+    }
+  }
+}

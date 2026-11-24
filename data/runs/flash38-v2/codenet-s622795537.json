@@ -1,0 +1,97 @@
+{
+  "sample_id": "codenet-s622795537",
+  "finished_at": "2026-11-24T22:09:04.899705Z",
+  "seconds": 14.94,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          6
+        ],
+        "assumption": "The translation uses `scanner.nextLine()`, which correctly reads the full line like Python's `input()` without leaving leftover newline characters.",
+        "suggestion": null,
+        "reasoning": "`scanner.nextLine()` directly reads a full line, matching Python's `input()`."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "int(input())",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "unclear",
+        "translation_lines": [
+          6
+        ],
+        "assumption": "`Integer.parseInt` assumes the value for `n` fits within Java's signed 32-bit integer range (-2^31 to 2^31 - 1).",
+        "suggestion": null,
+        "reasoning": "The program provides no indication that `n` exceeds standard integer limits, so per guidelines this is unclear."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 5,
+          "end_line": 5,
+          "snippet": "input()",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "`scanner.nextLine()` is used throughout, so there are no unconsumed newlines between input operations.",
+        "suggestion": null,
+        "reasoning": "Because both line 6 and line 10 use `scanner.nextLine()`, the scanner reads entire lines properly on each iteration."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            6
+          ],
+          "assumption": "The translation uses `scanner.nextLine()`, which correctly reads the full line like Python's `input()` without leaving leftover newline characters.",
+          "suggestion": null,
+          "reasoning": "`scanner.nextLine()` directly reads a full line, matching Python's `input()`."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [
+            6
+          ],
+          "assumption": "`Integer.parseInt` assumes the value for `n` fits within Java's signed 32-bit integer range (-2^31 to 2^31 - 1).",
+          "suggestion": null,
+          "reasoning": "The program provides no indication that `n` exceeds standard integer limits, so per guidelines this is unclear."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "`scanner.nextLine()` is used throughout, so there are no unconsumed newlines between input operations.",
+          "suggestion": null,
+          "reasoning": "Because both line 6 and line 10 use `scanner.nextLine()`, the scanner reads entire lines properly on each iteration."
+        }
+      ]
+    }
+  }
+}

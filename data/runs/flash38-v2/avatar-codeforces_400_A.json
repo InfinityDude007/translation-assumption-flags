@@ -1,0 +1,462 @@
+{
+  "sample_id": "avatar-codeforces_400_A",
+  "finished_at": "2026-11-24T22:00:06.215875Z",
+  "seconds": 16.56,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          13
+        ],
+        "assumption": "The translation uses reader.readLine() to read an entire line matching Python's input().",
+        "suggestion": null,
+        "reasoning": "Python's inp() calls input(), which is read via reader.readLine()."
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 13,
+          "end_line": 13,
+          "snippet": "int ( input ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          13
+        ],
+        "assumption": "Integer.parseInt assumes the number of test cases fits within a standard 32-bit signed integer.",
+        "suggestion": null,
+        "reasoning": "Standard integer parsing for test cases count."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 15,
+          "end_line": 15,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "reader.readLine() is used to read a full line of input matching Python's instr() / input().",
+        "suggestion": null,
+        "reasoning": "line 15 reader.readLine() matches line 26 x = instr() -> input()."
+      },
+      {
+        "site": {
+          "rule": "slicing",
+          "category": "api",
+          "line": 20,
+          "end_line": 20,
+          "snippet": "l [ i * a : i * a + a ]",
+          "reason": "Python slicing clamps out-of-range bounds ([1, 2][5:9] is []); Java subList and substring throw, and Arrays.copyOfRange pads with zeros."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          43
+        ],
+        "assumption": "subList assumes indices are strictly within bounds, which is guaranteed because a * b == 12 == l.size().",
+        "suggestion": null,
+        "reasoning": "Since a * b = 12 and the list l has size 12, i * a + a never exceeds 12 for i < b."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 20,
+          "end_line": 20,
+          "snippet": "i * a",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          43
+        ],
+        "assumption": "The integer multiplication i * a uses 32-bit int arithmetic, which cannot overflow since factors are <= 12.",
+        "suggestion": null,
+        "reasoning": "Values are between 0 and 12, well within 32-bit int bounds."
+      },
+      {
+        "site": {
+          "rule": "sum_overflow",
+          "category": "numeric",
+          "line": 22,
+          "end_line": 22,
+          "snippet": "sum ( ( i ) )",
+          "reason": "A Python sum() of ints never overflows; a Java int accumulator wraps silently."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          46
+        ],
+        "assumption": "The stream sum on integers cannot overflow since row length is at most 12 and values are 0 or 1.",
+        "suggestion": null,
+        "reasoning": "Sum of at most 12 elements with values 0 or 1 cannot overflow 32-bit int."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 32,
+          "end_line": 32,
+          "snippet": "12 % i",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          26
+        ],
+        "assumption": "The operator % is evaluated on positive integers 1 to 12, where Java % and Python % are identical.",
+        "suggestion": null,
+        "reasoning": "Both dividend (12) and divisor (i >= 1) are positive."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 33,
+          "end_line": 33,
+          "snippet": "12 // i",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          27,
+          28
+        ],
+        "assumption": "Integer division 12 / i operates on positive integers, where truncating division is identical to floor division.",
+        "suggestion": null,
+        "reasoning": "Dividend and divisor are both positive integers."
+      },
+      {
+        "site": {
+          "rule": "print_sep_end",
+          "category": "output",
+          "line": 34,
+          "end_line": 34,
+          "snippet": "print ( len ( tot ) , end = ' ' )",
+          "reason": "A custom sep or end changes what print() writes between and after items; Java must reproduce it exactly."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          32
+        ],
+        "assumption": "System.out.print accurately reproduces print(..., end=' ') by printing the size followed by a space without a newline.",
+        "suggestion": null,
+        "reasoning": "System.out.print prints tot.size() + \" \" without a trailing newline."
+      },
+      {
+        "site": {
+          "rule": "print_sep_end",
+          "category": "output",
+          "line": 36,
+          "end_line": 36,
+          "snippet": "print ( f'{a}x{b}' , end = ' ' )",
+          "reason": "A custom sep or end changes what print() writes between and after items; Java must reproduce it exactly."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          33,
+          34
+        ],
+        "assumption": "The Java code iterates directly through tot in insertion order without sorting, whereas Python sorts tot by (a, b) before printing.",
+        "suggestion": "Sort tot before printing, for example: tot.sort((x, y) -> !x.get(0).equals(y.get(0)) ? Integer.compare(x.get(0), y.get(0)) : Integer.compare(x.get(1), y.get(1)));",
+        "reasoning": "In Python: for a, b in sorted(tot): print(f'{a}x{b}', end=' '). In Java: for (List<Integer> a : tot) System.out.print(a.get(0) + \"x\" + a.get(1) + \" \");. tot contains elements (12/i, i) appended for i in 1..12. For example, for \"XXXXXXXXXXXX\", Python adds (12, 1), (6, 2), (4, 3), (3, 4), (2, 6), (1, 12). In Python sorted(tot), it will sort by the first element, so (1, 12) comes first: 1x12 2x6 3x4 4x3 6x2 12x1. In Java, it prints in insertion order: 12x1 6x2 4x3 3x4 2x6 1x12. This is a clear mismatch in behavior."
+      }
+    ],
+    "dropped": [
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 9,
+          "end_line": 9,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 10,
+          "end_line": 10,
+          "snippet": "sys.stdin.readline ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 11,
+          "end_line": 11,
+          "snippet": "int ( i )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "sys.stdin.readline ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 12,
+          "end_line": 12,
+          "snippet": "int ( i )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "sys.stdin.readline ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "int_parse",
+          "category": "numeric",
+          "line": 14,
+          "end_line": 14,
+          "snippet": "int ( sys.stdin.readline ( ) )",
+          "reason": "Python int() accepts any size; Java Integer.parseInt and Scanner.nextInt throw for values outside int range, so the translation must choose int, long or BigInteger."
+        },
+        "reason": "no valid Java line"
+      },
+      {
+        "site": {
+          "rule": "whitespace_split",
+          "category": "input",
+          "line": 16,
+          "end_line": 16,
+          "snippet": "input ( ).split ( )",
+          "reason": "split() with no argument treats any run of whitespace as one separator and drops leading and trailing empties; Java split(\" \") splits on every single space and keeps a leading empty string."
+        },
+        "reason": "no valid Java line"
+      }
+    ],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function value() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 1,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function values() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 2,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function inlst() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 3,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function inlst() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 4,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function inlsts() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 5,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function inlsts() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            13
+          ],
+          "assumption": "The translation uses reader.readLine() to read an entire line matching Python's input().",
+          "suggestion": null,
+          "reasoning": "Python's inp() calls input(), which is read via reader.readLine()."
+        },
+        {
+          "site_id": 7,
+          "verdict": "handled",
+          "translation_lines": [
+            13
+          ],
+          "assumption": "Integer.parseInt assumes the number of test cases fits within a standard 32-bit signed integer.",
+          "suggestion": null,
+          "reasoning": "Standard integer parsing for test cases count."
+        },
+        {
+          "site_id": 8,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function inps() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 9,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function inps() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 10,
+          "verdict": "handled",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "reader.readLine() is used to read a full line of input matching Python's instr() / input().",
+          "suggestion": null,
+          "reasoning": "line 15 reader.readLine() matches line 26 x = instr() -> input()."
+        },
+        {
+          "site_id": 11,
+          "verdict": "unclear",
+          "translation_lines": [],
+          "assumption": "The helper function stlst() is unused and has no corresponding implementation in the Java code.",
+          "suggestion": null,
+          "reasoning": "Unused helper function in Python, not translated to Java."
+        },
+        {
+          "site_id": 12,
+          "verdict": "handled",
+          "translation_lines": [
+            43
+          ],
+          "assumption": "subList assumes indices are strictly within bounds, which is guaranteed because a * b == 12 == l.size().",
+          "suggestion": null,
+          "reasoning": "Since a * b = 12 and the list l has size 12, i * a + a never exceeds 12 for i < b."
+        },
+        {
+          "site_id": 13,
+          "verdict": "handled",
+          "translation_lines": [
+            43
+          ],
+          "assumption": "The integer multiplication i * a uses 32-bit int arithmetic, which cannot overflow since factors are <= 12.",
+          "suggestion": null,
+          "reasoning": "Values are between 0 and 12, well within 32-bit int bounds."
+        },
+        {
+          "site_id": 14,
+          "verdict": "handled",
+          "translation_lines": [
+            46
+          ],
+          "assumption": "The stream sum on integers cannot overflow since row length is at most 12 and values are 0 or 1.",
+          "suggestion": null,
+          "reasoning": "Sum of at most 12 elements with values 0 or 1 cannot overflow 32-bit int."
+        },
+        {
+          "site_id": 15,
+          "verdict": "handled",
+          "translation_lines": [
+            26
+          ],
+          "assumption": "The operator % is evaluated on positive integers 1 to 12, where Java % and Python % are identical.",
+          "suggestion": null,
+          "reasoning": "Both dividend (12) and divisor (i >= 1) are positive."
+        },
+        {
+          "site_id": 16,
+          "verdict": "handled",
+          "translation_lines": [
+            27,
+            28
+          ],
+          "assumption": "Integer division 12 / i operates on positive integers, where truncating division is identical to floor division.",
+          "suggestion": null,
+          "reasoning": "Dividend and divisor are both positive integers."
+        },
+        {
+          "site_id": 17,
+          "verdict": "handled",
+          "translation_lines": [
+            32
+          ],
+          "assumption": "System.out.print accurately reproduces print(..., end=' ') by printing the size followed by a space without a newline.",
+          "suggestion": null,
+          "reasoning": "System.out.print prints tot.size() + \" \" without a trailing newline."
+        },
+        {
+          "site_id": 18,
+          "verdict": "mismatch",
+          "translation_lines": [
+            33,
+            34
+          ],
+          "assumption": "The Java code iterates directly through tot in insertion order without sorting, whereas Python sorts tot by (a, b) before printing.",
+          "suggestion": "Sort tot before printing, for example: tot.sort((x, y) -> !x.get(0).equals(y.get(0)) ? Integer.compare(x.get(0), y.get(0)) : Integer.compare(x.get(1), y.get(1)));",
+          "reasoning": "In Python: for a, b in sorted(tot): print(f'{a}x{b}', end=' '). In Java: for (List<Integer> a : tot) System.out.print(a.get(0) + \"x\" + a.get(1) + \" \");. tot contains elements (12/i, i) appended for i in 1..12. For example, for \"XXXXXXXXXXXX\", Python adds (12, 1), (6, 2), (4, 3), (3, 4), (2, 6), (1, 12). In Python sorted(tot), it will sort by the first element, so (1, 12) comes first: 1x12 2x6 3x4 4x3 6x2 12x1. In Java, it prints in insertion order: 12x1 6x2 4x3 3x4 2x6 1x12. This is a clear mismatch in behavior."
+        }
+      ]
+    }
+  }
+}

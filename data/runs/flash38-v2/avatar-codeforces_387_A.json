@@ -1,0 +1,205 @@
+{
+  "sample_id": "avatar-codeforces_387_A",
+  "finished_at": "2026-11-24T21:59:43.645191Z",
+  "seconds": 9.29,
+  "explanation": {
+    "flags": [
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 1,
+          "end_line": 1,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          7
+        ],
+        "assumption": "The Java code uses `input.nextLine()`, which reads the entire line matching Python's `input()`.",
+        "suggestion": null,
+        "reasoning": "nextLine() reads the whole line as expected."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 2,
+          "end_line": 2,
+          "snippet": "h1 * 60",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          10
+        ],
+        "assumption": "The Java code assumes `h1` represents hours (typically 0-23) and fits within a standard 32-bit signed integer without overflow.",
+        "suggestion": null,
+        "reasoning": "Hours fit comfortably within int."
+      },
+      {
+        "site": {
+          "rule": "line_input",
+          "category": "input",
+          "line": 3,
+          "end_line": 3,
+          "snippet": "input ( )",
+          "reason": "Python reads whole lines; Java Scanner reads whitespace-separated tokens, and nextLine() after nextInt() returns the rest of the current line, often an empty string."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          12
+        ],
+        "assumption": "The Java code uses `input.nextLine()`, which directly reads the whole line just like `input()` in Python.",
+        "suggestion": null,
+        "reasoning": "nextLine() correctly reads the next line without any preceding nextInt() leftover issues."
+      },
+      {
+        "site": {
+          "rule": "int_overflow",
+          "category": "numeric",
+          "line": 4,
+          "end_line": 4,
+          "snippet": "h2 * 60",
+          "reason": "Python ints have unlimited precision; Java int and long arithmetic wraps silently on overflow (1000000 * 1000000 as an int is -727379968)."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          15
+        ],
+        "assumption": "The Java code assumes `h2` fits well within a 32-bit signed `int` without overflowing when multiplied by 60.",
+        "suggestion": null,
+        "reasoning": "Hours fit in int."
+      },
+      {
+        "site": {
+          "rule": "modulo_sign",
+          "category": "division",
+          "line": 6,
+          "end_line": 6,
+          "snippet": "m2 %= 1440",
+          "reason": "Python % takes the divisor's sign (-7 % 2 is 1); Java % takes the dividend's (-7 % 2 is -1). Math.floorMod matches Python."
+        },
+        "verdict": "mismatch",
+        "translation_lines": [
+          18
+        ],
+        "assumption": "The Java translation assumes `m2` (which is `m1 - m2`) is non-negative, but if `m1 < m2`, Java's `% 1440` produces a negative result whereas Python's `% 1440` yields a non-negative result in `[0, 1439]`.",
+        "suggestion": "m2 = Math.floorMod(m2, 1440);",
+        "reasoning": "In Codeforces 387A, George sleeps from time s to time t (or goes to bed s hours/mins after waking at t), so `m1 - m2` can be negative (e.g. 05:00 and 06:00 -> m1 - m2 = -60). Python -60 % 1440 == 1380. Java -60 % 1440 == -60."
+      },
+      {
+        "site": {
+          "rule": "floor_division",
+          "category": "division",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "m2 // 60",
+          "reason": "Python // rounds down (-7 // 2 is -4); Java integer / rounds toward zero (-7 / 2 is -3). Math.floorDiv matches Python."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          20
+        ],
+        "assumption": "After the modulo 1440, Python's `m2` is strictly in the range `[0, 1439]`, where integer division `/` and `//` produce identical non-negative results.",
+        "suggestion": null,
+        "reasoning": "In Python, m2 is in [0, 1439] after line 6, so m2 // 60 is strictly non-negative. Note: Although Java line 18 has a mismatch, the Python site itself (m2 // 60) operates on non-negative numbers in Python, so Java's `m2 / 60` for non-negative ints behaves identically."
+      },
+      {
+        "site": {
+          "rule": "percent_format",
+          "category": "output",
+          "line": 7,
+          "end_line": 7,
+          "snippet": "\"%02d:%02d\" % ( m2 // 60 , m2 % 60 )",
+          "reason": "Python %-formatting is lenient ('%d' % 3.7 gives '3'); Java String.format throws IllegalFormatConversionException for %d with a double."
+        },
+        "verdict": "handled",
+        "translation_lines": [
+          20
+        ],
+        "assumption": "The Java code assumes both arguments passed to `printf` are integers (`int`), matching the `%02d` format specifiers.",
+        "suggestion": null,
+        "reasoning": "Both arguments are ints, matching %02d."
+      }
+    ],
+    "dropped": [],
+    "model": "gemini-3.8-flash",
+    "prompt_version": "2",
+    "answer": {
+      "answers": [
+        {
+          "site_id": 0,
+          "verdict": "handled",
+          "translation_lines": [
+            7
+          ],
+          "assumption": "The Java code uses `input.nextLine()`, which reads the entire line matching Python's `input()`.",
+          "suggestion": null,
+          "reasoning": "nextLine() reads the whole line as expected."
+        },
+        {
+          "site_id": 1,
+          "verdict": "handled",
+          "translation_lines": [
+            10
+          ],
+          "assumption": "The Java code assumes `h1` represents hours (typically 0-23) and fits within a standard 32-bit signed integer without overflow.",
+          "suggestion": null,
+          "reasoning": "Hours fit comfortably within int."
+        },
+        {
+          "site_id": 2,
+          "verdict": "handled",
+          "translation_lines": [
+            12
+          ],
+          "assumption": "The Java code uses `input.nextLine()`, which directly reads the whole line just like `input()` in Python.",
+          "suggestion": null,
+          "reasoning": "nextLine() correctly reads the next line without any preceding nextInt() leftover issues."
+        },
+        {
+          "site_id": 3,
+          "verdict": "handled",
+          "translation_lines": [
+            15
+          ],
+          "assumption": "The Java code assumes `h2` fits well within a 32-bit signed `int` without overflowing when multiplied by 60.",
+          "suggestion": null,
+          "reasoning": "Hours fit in int."
+        },
+        {
+          "site_id": 4,
+          "verdict": "mismatch",
+          "translation_lines": [
+            18
+          ],
+          "assumption": "The Java translation assumes `m2` (which is `m1 - m2`) is non-negative, but if `m1 < m2`, Java's `% 1440` produces a negative result whereas Python's `% 1440` yields a non-negative result in `[0, 1439]`.",
+          "suggestion": "m2 = Math.floorMod(m2, 1440);",
+          "reasoning": "In Codeforces 387A, George sleeps from time s to time t (or goes to bed s hours/mins after waking at t), so `m1 - m2` can be negative (e.g. 05:00 and 06:00 -> m1 - m2 = -60). Python -60 % 1440 == 1380. Java -60 % 1440 == -60."
+        },
+        {
+          "site_id": 5,
+          "verdict": "handled",
+          "translation_lines": [
+            20
+          ],
+          "assumption": "After the modulo 1440, Python's `m2` is strictly in the range `[0, 1439]`, where integer division `/` and `//` produce identical non-negative results.",
+          "suggestion": null,
+          "reasoning": "In Python, m2 is in [0, 1439] after line 6, so m2 // 60 is strictly non-negative. Note: Although Java line 18 has a mismatch, the Python site itself (m2 // 60) operates on non-negative numbers in Python, so Java's `m2 / 60` for non-negative ints behaves identically."
+        },
+        {
+          "site_id": 6,
+          "verdict": "handled",
+          "translation_lines": [
+            20
+          ],
+          "assumption": "The Java code assumes both arguments passed to `printf` are integers (`int`), matching the `%02d` format specifiers.",
+          "suggestion": null,
+          "reasoning": "Both arguments are ints, matching %02d."
+        }
+      ]
+    }
+  }
+}
