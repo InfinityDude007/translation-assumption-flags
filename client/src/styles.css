@@ -850,6 +850,165 @@ code {
     padding-left: 18px;
 }
 
+/* Scores page */
+
+.scores {
+    grid-row: 2 / -1;
+    overflow-y: auto;
+    display: grid;
+    align-content: start;
+    gap: 32px;
+    padding: 20px 20px 40px;
+}
+
+.scores-section {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.scores-section h2 {
+    font-size: 17px;
+}
+
+.scores-lead {
+    margin: 0;
+    max-width: 75ch;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.scores-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 12px 24px;
+}
+
+.scores-head h2 {
+    margin-right: 8px;
+    align-self: center;
+}
+
+.scores-head label {
+    display: grid;
+    gap: 3px;
+    font-size: 14.5px;
+    font-weight: 600;
+}
+
+.scores-head select {
+    font: 16px var(--text);
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 5px 8px;
+}
+
+.segmented {
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--rule);
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--ink) 5%, var(--page));
+}
+
+.segmented button {
+    font: 14.5px var(--text);
+    color: var(--muted);
+    background: none;
+    border: 0;
+    border-radius: 5px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.segmented button[aria-pressed="true"] {
+    color: var(--surface);
+    background: var(--ink);
+    font-weight: 600;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+}
+
+.scores-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.scores-table th,
+.scores-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+}
+
+.scores-table thead th {
+    font-size: 14.5px;
+    color: var(--muted);
+    font-weight: 600;
+    vertical-align: bottom;
+}
+
+.scores-table tbody tr:last-child > * {
+    border-bottom: 0;
+}
+
+.scores-table tbody th {
+    font-weight: 600;
+}
+
+.scores-table tr[data-current] {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.scores-table .number {
+    font-variant-numeric: tabular-nums;
+}
+
+.scores-table .muted {
+    color: var(--muted);
+}
+
+.outcome[data-caught="true"] {
+    color: var(--intended);
+    font-weight: 600;
+}
+
+.outcome[data-caught="false"] {
+    color: var(--mismatch);
+    font-weight: 600;
+}
+
+.link-button {
+    font: inherit;
+    color: var(--focus);
+    background: none;
+    border: 0;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 /* Narrow screens: panes stack, the bridge and grip give way. */
 
 @media (max-width: 900px) {

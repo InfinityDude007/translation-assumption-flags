@@ -154,9 +154,10 @@ export function KeyGuide() {
                     <section>
                         <h3>What this page does not show</h3>
                         <p>
-                            The hand-tagged bug lines, and how well each run
-                            scored against them, are hidden here so the page
-                            cannot give away the answer before you decide.
+                            The hand-tagged bug lines are hidden here so the
+                            page cannot give away the answer before you decide.
+                            How well each run scored against them is on the
+                            Scores tab.
                         </p>
                     </section>
                 </div>

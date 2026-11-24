@@ -8,16 +8,20 @@ import {
     type SampleSummary,
 } from "./api";
 import { ReviewPage, type Status } from "./components/ReviewPage";
+import { ScoresPage } from "./components/ScoresPage";
 import { describeError } from "./errors";
 import { APP_NAME } from "./labels";
 import { defaultRun, LIVE } from "./runs";
 
-/** The two pages: flags saved in earlier runs, or flags from Gemini now. */
-type Page = "archived" | "live";
+/** The pages: saved flags, flags from Gemini now, and how each run scored. */
+type Page = "archived" | "live" | "scores";
 
 /** Read the page from the address, e.g. #/live. */
-const pageFromHash = (): Page =>
-    window.location.hash === "#/live" ? "live" : "archived";
+const pageFromHash = (): Page => {
+    if (window.location.hash === "#/live") return "live";
+    if (window.location.hash === "#/scores") return "scores";
+    return "archived";
+};
 
 /**
  * The app shell.
@@ -68,15 +72,33 @@ export default function App() {
                     >
                         Live analysis
                     </a>
+                    <a
+                        href="#/scores"
+                        aria-current={page === "scores" ? "page" : undefined}
+                    >
+                        Scores
+                    </a>
                 </nav>
             </header>
             {startError ? (
                 <main className="start-error">
                     <p role="alert">{startError}</p>
                 </main>
+            ) : page === "scores" ? (
+                <ScoresPage
+                    runs={runs}
+                    samples={samples}
+                    runName={runName}
+                    onRun={setRunName}
+                    onReview={(id, run) => {
+                        setSampleId(id);
+                        setRunName(run);
+                        window.location.hash = "#/";
+                    }}
+                />
             ) : (
                 <ReviewPage
-                    mode={page}
+                    mode={page === "live" ? "live" : "archived"}
                     samples={samples}
                     runs={runs}
                     sampleId={sampleId}

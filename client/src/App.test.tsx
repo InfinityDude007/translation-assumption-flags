@@ -76,6 +76,37 @@ beforeEach(() => {
         },
         [`GET /decisions?sample_id=${SAMPLE}`]: [],
         [`GET /runs/test-v2/samples/${SAMPLE}`]: REVIEW,
+        "GET /runs/test-v2/score": {
+            config: {
+                name: "test-v2",
+                model: "gemini-test",
+                prompt_version: "2",
+                created_at: "2026-11-22T06:00:00Z",
+            },
+            samples: [
+                {
+                    sample_id: SAMPLE,
+                    group: "buggy",
+                    no_bug: false,
+                    bug_lines: [5],
+                    latent_lines: [],
+                    mismatch_flags: 3,
+                    bug_caught: false,
+                    latent_caught: null,
+                    false_alarms: 3,
+                    handled: 1,
+                    unclear: 0,
+                    dropped: 0,
+                },
+            ],
+            bugs: 1,
+            bugs_caught: 0,
+            latent: 0,
+            latent_caught: 0,
+            mismatch_flags: 3,
+            false_alarms: 3,
+            missing: [],
+        },
     };
     vi.stubGlobal(
         "fetch",
@@ -286,6 +317,33 @@ describe("App", () => {
                 "translation-assumption-flags.side-width",
             ),
         ).toBe(String(after));
+    });
+
+    it("shows each run's scores on their own page, and never on the review page", async () => {
+        const user = userEvent.setup();
+        render(<App />);
+        await screen.findByText("0 of 2 decided");
+        expect(screen.queryByText(/Bugs caught/)).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole("link", { name: "Scores" }));
+        const runs = await screen.findByRole("table", { name: "" });
+        const row = within(runs).getByRole("row", { name: /test-v2/ });
+        expect(row).toHaveTextContent("0 of 1 (0%)");
+        expect(row).toHaveTextContent("0 of 3 (0%)");
+        expect(screen.getByText("Missed")).toBeInTheDocument();
+    });
+
+    it("opens a missed program on the review page from the scores", async () => {
+        const user = userEvent.setup();
+        render(<App />);
+        await screen.findByText("0 of 2 decided");
+        await user.click(screen.getByRole("link", { name: "Scores" }));
+        await user.click(
+            await screen.findByRole("button", { name: "Missed bugs" }),
+        );
+        await user.click(screen.getByRole("button", { name: "Review" }));
+        expect(await screen.findByLabelText("Run")).toHaveValue("test-v2");
+        expect(window.location.hash).toBe("#/");
     });
 
     it("says how to start the API when it cannot be reached", async () => {
