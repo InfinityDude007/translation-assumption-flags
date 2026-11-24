@@ -5,6 +5,7 @@ from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict
 
+from ..baseline.models import LineProbability
 from ..dataset.types import Dataset
 from ..detection.models import Site
 from ..explanation.models import DroppedSite, Explanation, Flag, Verdict
@@ -57,6 +58,40 @@ class RunSummary(BaseModel):
     prompt_version: str
     created_at: datetime
     samples: int
+
+
+class BaselineSummary(BaseModel):
+    """A token-probability baseline that the frontend can show.
+
+    Attributes:
+        name: Baseline name.
+        model: Hugging Face model ID that scored the tokens.
+        prompt_version: Translation prompt version the Java was scored under.
+        created_at: When the baseline was started.
+        samples: Number of samples scored in the baseline.
+    """
+
+    name: str
+    model: str
+    prompt_version: str
+    created_at: datetime
+    samples: int
+
+
+class ProbabilityReview(BaseModel):
+    """One program's token probabilities, for the probability view.
+
+    Attributes:
+        baseline: The baseline they came from.
+        model: Hugging Face model ID that scored the tokens.
+        threshold: Tokens below this probability are highlighted.
+        lines: Every Java line, in order.
+    """
+
+    baseline: str
+    model: str
+    threshold: float
+    lines: list[LineProbability]
 
 
 class ReviewFlag(BaseModel):

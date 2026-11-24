@@ -1,4 +1,4 @@
-"""FastAPI app serving samples, archived and live flags, and reviewer decisions."""
+"""FastAPI app serving samples, flags, token probabilities and reviewer decisions."""
 
 from pathlib import Path
 from typing import Annotated
@@ -6,6 +6,9 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from ..baseline.archive import CONFIG_FILE as BASELINE_CONFIG
+from ..baseline.models import BaselineConfig, BaselineScore, SampleBaseline
+from ..baseline.scoring import score_baseline
 from ..dataset import SampleMeta
 from ..evaluation.archive import CONFIG_FILE, load_samples
 from ..evaluation.models import RunConfig, RunScore, SampleRun
@@ -15,8 +18,10 @@ from ..gemini import GeminiClient, GeminiError, get_client
 from .decisions import load_decisions, save_decision
 from .models import (
     AnalyseRequest,
+    BaselineSummary,
     Decision,
     DecisionRequest,
+    ProbabilityReview,
     Review,
     RunSummary,
     SampleCode,
@@ -44,6 +49,8 @@ def create_app(
     runs_dir: Path,
     decisions_file: Path,
     cors_origins: list[str],
+    baselines_dir: Path | None = None,
+    threshold: float = 0.05,
 ) -> FastAPI:
     """Build the API over the given folders.
 
@@ -52,6 +59,8 @@ def create_app(
         runs_dir: The archived runs folder.
         decisions_file: JSON Lines file for reviewer decisions.
         cors_origins: Browser origins allowed to call the API.
+        baselines_dir: The token-probability baselines folder; none if omitted.
+        threshold: Lines whose least likely token is below this are highlighted.
 
     Returns:
         The app.
@@ -80,6 +89,22 @@ def create_app(
             for path in sorted(runs_dir.glob(f"*/{CONFIG_FILE}"))
         )
         return {config.name: config for config in configs}
+
+    def find_baselines() -> dict[str, BaselineConfig]:
+        """Read every baseline's config, by baseline name."""
+        if baselines_dir is None or not baselines_dir.is_dir():
+            return {}
+        configs = (
+            BaselineConfig.model_validate_json(path.read_text())
+            for path in sorted(baselines_dir.glob(f"*/{BASELINE_CONFIG}"))
+        )
+        return {config.name: config for config in configs}
+
+    def baseline_folder(name: str) -> Path:
+        """Return a baseline's folder, after checking the name is a real baseline."""
+        if baselines_dir is None or name not in find_baselines():
+            raise HTTPException(status.HTTP_404_NOT_FOUND, f"no baseline {name!r}")
+        return baselines_dir / name
 
     @app.get("/samples")
     def list_samples() -> list[SampleSummary]:
@@ -136,6 +161,47 @@ def create_app(
         if run not in find_runs():
             raise HTTPException(status.HTTP_404_NOT_FOUND, f"no run {run!r}")
         return score_run(runs_dir / run, samples_dir)
+
+    @app.get("/baselines")
+    def list_baselines() -> list[BaselineSummary]:
+        """List the token-probability baselines and how many samples each holds."""
+        return [
+            BaselineSummary(
+                **config.model_dump(),
+                samples=sum(
+                    1
+                    for path in baseline_folder(name).glob("*.json")
+                    if path.name not in (BASELINE_CONFIG, "score.json")
+                ),
+            )
+            for name, config in find_baselines().items()
+        ]
+
+    @app.get("/baselines/{name}/samples/{sample_id}")
+    def get_probabilities(name: str, sample_id: str) -> ProbabilityReview:
+        """Return a sample's token probabilities from a baseline."""
+        folder = baseline_folder(name)
+        path = folder / f"{find_sample(sample_id).id}.json"
+        if not path.exists():
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, f"baseline {name!r} has no {sample_id!r}"
+            )
+        scored = SampleBaseline.model_validate_json(path.read_text())
+        return ProbabilityReview(
+            baseline=name,
+            model=find_baselines()[name].model,
+            threshold=threshold,
+            lines=scored.lines,
+        )
+
+    @app.get("/baselines/{name}/score")
+    def get_baseline_score(name: str) -> BaselineScore:
+        """Score a baseline against the tagged lines at the configured threshold.
+
+        Like the run scores, this shows the ground truth, so the review pages
+        never call it.
+        """
+        return score_baseline(baseline_folder(name), samples_dir, threshold)
 
     @app.post("/analyse")
     def analyse(

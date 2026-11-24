@@ -12,6 +12,8 @@ from pydantic import BaseModel
 from pydantic_settings import SettingsConfigDict
 
 from server.api import create_app, gemini_client
+from server.baseline.lines import line_probabilities
+from server.baseline.models import BaselineConfig, SampleBaseline
 from server.dataset import SampleMeta
 from server.evaluation.models import RunConfig, SampleRun
 from server.explanation import explain
@@ -102,10 +104,23 @@ def folders(tmp_path: Path) -> dict[str, Path]:
     (run / f"{SAMPLE}.json").write_text(archived.model_dump_json())
     (run / "score.json").write_text("{}")
 
+    baseline = tmp_path / "baselines" / "test-model"
+    baseline.mkdir(parents=True)
+    (baseline / "baseline.json").write_text(
+        BaselineConfig(
+            name="test-model", model="fake/model", prompt_version="1", created_at=now
+        ).model_dump_json()
+    )
+    lines = line_probabilities(TRANSLATION, [(0, len(TRANSLATION), 0.5)])
+    lines[4] = lines[4].model_copy(update={"lowest": 0.01})
+    scored = SampleBaseline(sample_id=SAMPLE, finished_at=now, seconds=0.1, lines=lines)
+    (baseline / f"{SAMPLE}.json").write_text(scored.model_dump_json())
+
     return {
         "samples": tmp_path / "samples",
         "runs": tmp_path / "runs",
         "decisions": tmp_path / "decisions.jsonl",
+        "baselines": tmp_path / "baselines",
     }
 
 
@@ -113,7 +128,12 @@ def folders(tmp_path: Path) -> dict[str, Path]:
 def api(folders: dict[str, Path]) -> Iterator[TestClient]:
     """A test client for the app over the temporary folders."""
     app = create_app(
-        folders["samples"], folders["runs"], folders["decisions"], [ORIGIN]
+        folders["samples"],
+        folders["runs"],
+        folders["decisions"],
+        [ORIGIN],
+        folders["baselines"],
+        0.05,
     )
     app.dependency_overrides[gemini_client] = lambda: FakeClient()
     yield TestClient(app)
@@ -202,6 +222,53 @@ def test_run_score_counts_caught_bugs(api: TestClient) -> None:
 def test_unknown_run_has_no_score(api: TestClient) -> None:
     """Scoring a run that does not exist is a 404."""
     assert api.get("/runs/nope/score").status_code == 404
+
+
+def test_baselines_are_listed(api: TestClient) -> None:
+    """Each baseline is listed with its model and sample count."""
+    [baseline] = api.get("/baselines").json()
+    assert (baseline["name"], baseline["model"]) == ("test-model", "fake/model")
+    assert baseline["samples"] == 1
+
+
+def test_probabilities_come_with_the_threshold(api: TestClient) -> None:
+    """A sample's lines are returned with the threshold the view highlights at."""
+    response = api.get(f"/baselines/test-model/samples/{SAMPLE}")
+    assert response.status_code == 200
+    body = response.json()
+    assert (body["baseline"], body["model"], body["threshold"]) == (
+        "test-model",
+        "fake/model",
+        0.05,
+    )
+    assert [line["lowest"] for line in body["lines"]][3:5] == [0.5, 0.01]
+
+
+@pytest.mark.parametrize(
+    "path", ["/baselines/nope/samples/x", f"/baselines/nope/samples/{SAMPLE}"]
+)
+def test_unknown_baselines_are_not_found(api: TestClient, path: str) -> None:
+    """An unknown baseline is a 404, before the sample is looked at."""
+    assert api.get(path).status_code == 404
+
+
+def test_baseline_score_uses_the_threshold(api: TestClient) -> None:
+    """Only the line below 0.05 is highlighted, and it is the bug line."""
+    score = api.get("/baselines/test-model/score").json()
+    assert (score["threshold"], score["bugs_caught"], score["highlighted"]) == (
+        0.05,
+        1,
+        1,
+    )
+
+
+def test_no_baselines_folder_means_none(folders: dict[str, Path]) -> None:
+    """Without a baselines folder the list is empty and lookups are 404."""
+    api = TestClient(
+        create_app(folders["samples"], folders["runs"], folders["decisions"], [])
+    )
+    assert api.get("/baselines").json() == []
+    assert api.get("/baselines/test-model/score").status_code == 404
 
 
 def test_analyse_explains_live(api: TestClient) -> None:
