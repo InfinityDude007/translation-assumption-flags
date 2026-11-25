@@ -5,9 +5,24 @@ A review aid for LLM code translation.
 
 When an LLM translates Python to Java, some lines force it to assume something the Python never states, such as how large an integer gets or how negative division rounds. This system finds those lines, has Gemini say what the Java assumed, and leaves the verdict to the reviewer.
 
-**README prose word count: 1530** (excluding code, commands and file paths)
+**README prose word count: 1565** (excluding code, commands, file paths and the table of contents)
 
-## Project status
+## Table of Contents
+1. [Project Status](#project-status)
+2. [Tech Stack](#tech-stack)
+3. [Running or inspecting the work](#running-or-inspecting-the-work)
+   - [Requirements](#requirements)
+   - [Backend (`server/`)](#backend-server)
+   - [Frontend (`client/`)](#frontend-client)
+4. [Archive](#archive)
+5. [Development Record](#development-record)
+6. [AI assistance](#ai-assistance)
+7. [More Details](#more-details)
+8. [Additional Files](#additional-files)
+9.  [Data and Licences](#data-and-licences)
+
+
+## Project Status
 
 | Part | Status |
 |---|---|
@@ -37,7 +52,7 @@ Results on 35 programs (21 test-exposed bugs, 8 latent bugs no test catches, 10 
 - Identical repeats agree on 95% of verdicts. With 21 bugs, hydrogen's lead over flash (6 to 1 on bugs only one caught) is a direction, not proof (sign test p ≈ 0.125).
 - Gemini's free tier (20 requests per model per day, frequent 503s, 2–4 minutes per program) made each run take days. This is why the archive exists.
 
-## Technology stack
+## Tech Stack
 
 | Technology | Role |
 |---|---|
@@ -54,13 +69,15 @@ Results on 35 programs (21 test-exposed bugs, 8 latent bugs no test catches, 10 
 
 ## Running or inspecting the work
 
-### Requirements:
+### Requirements
 1. [uv](https://docs.astral.sh/uv/getting-started/installation/)
-2. Node.js 20.19+ or 22.12+.
+2. Python 3.13+
+3. Node.js 20.19+ or 22.12+.
+4. npm 11.21.0+
 
 > NOTE: No key is needed for the archived runs and scores.
 
-### Backend (`server/`):
+### Backend (`server/`)
 1. Install dependencies:
    - From `server/` (`uv sync` includes PyTorch, a large download):
 
@@ -79,7 +96,7 @@ uv run check
 uv run serve
 ```
 
-### Frontend (`client/`):
+### Frontend (`client/`)
 
 1. Install dependencies:
    - From `client/`, in a second terminal:
@@ -111,9 +128,9 @@ Without running anything, `data/runs/<run>/` holds every answer with its model a
 - `data/samples/<id>/meta.json` holds the tags.
 - The prompt is in `server/src/server/explanation/prompts.py` and the rules in `server/src/server/detection/rules/rules.py`.
 
-## Development record
+## Development Record
 
-**Detector** ([`6961eaa`](https://github.com/InfinityDude007/translation-assumption-flags/commit/6961eaa)–[`c9eb5e7`](https://github.com/InfinityDude007/translation-assumption-flags/commit/c9eb5e7), [`9b24424`](https://github.com/InfinityDude007/translation-assumption-flags/commit/9b24424))
+**Detector** ([`6961eaa`](https://github.com/InfinityDude007/translation-assumption-flags/commit/6961eaa)-[`c9eb5e7`](https://github.com/InfinityDude007/translation-assumption-flags/commit/c9eb5e7), [`9b24424`](https://github.com/InfinityDude007/translation-assumption-flags/commit/9b24424))
 - Categories follow Pan et al. so flags can be scored against their bugs. Run on all 450 AVATAR and CodeNet programs: one labelled `int()` overflow had no site, so I added an `int()` rule.
 - I found the rule reasons were unsourced, so I moved them into a sourced rule booklet. Checking each against the Python docs, the Java spec and small test programs found two wrong (`split(" ")`, `copyOfRange`); output on all 450 programs was unchanged.
 
@@ -151,22 +168,24 @@ I used **Claude Code** (Anthropic) throughout.
 - **Reviews:** Claude's reviews of my commits found real faults I then fixed, such as renamed `visit_*` methods that silently disabled the detector, tests left on old setting names after my rename, and `uv run serve` pointing at a renamed file.
 - **Tagging:** Claude Code ran each translation, proposed the bug lines and fixes, and verified them against the tests. I directed the rechecks (Pan's labels, the no-bug programs, checks beyond test output), decided the `latent` field and scoring rules, and adopted all 25 proposals unchanged. `evidence/tagging/bug_lines_review.md` is Claude's report for my review.
 - **Frontend, mostly AI-generated:** Claude Code generated `client/` (design, code, styles and tests) with Anthropic's frontend-design skill. I set the scope, asked for the revisions above, fixed broken or misaligned elements myself, and checked it with `npm run check`, a build and browser checks on real runs, which caught a wrong default run.
+- **Tests, mostly AI-generated:** Claude Code wrote unit and coverage tests (in `server/tests`). I reviewed the test cases to ensure they made sense and covered key functionality.
 - **Analysis:** Claude computed run comparisons and the sign test from the archive, I chose what to run next and when to stop.
 - **Direct writes**, with my permission: `evidence/tagging/` and `client/`. Claude also looked up commit hashes for this record.
 
-## More details
+## More Details
 1. [`server/README.md`](server/README.md) (per-stage commands, API)
 2. [`client/README.md`](client/README.md) (interface)
 3. [`data/README.md`](data/README.md) (data formats and tags)
 4. [`server/tests/README.md`](server/tests/README.md) (tests).
 
-## Additional files
+## Additional Files
 
 - `data/samples/`, `data/runs/`, `data/baselines/`: programs and tags, saved runs, baseline probabilities.
 - `evidence/tagging/`: the tagging review, `runone.py` and 21 fixed translations, see its [README](evidence/tagging/README.md) for rerunning a check. The fuzzing scripts were run outside the repository and are not included.
 - Not committed: `data/raw/` (from `uv run get-dataset`, about 900 MB) and `data/decisions.jsonl` (written by the decision buttons on the UI).
 - No ZIP accompanies the report.
 
-## Data and licences
+## Data and Licences
 
-Code: MIT. Programs, translations and bug labels: Pan, R. et al. (2024) *Lost in Translation: A Study of Bugs Introduced by Large Language Models while Translating Code*, ICSE 2024, [doi:10.5281/zenodo.10447705](https://doi.org/10.5281/zenodo.10447705), CC BY 4.0; changes listed in `data/NOTICE`.
+- **Code:** MIT
+- **Programs, translations and bug labels:** Pan, R. et al. (2024) *Lost in Translation: A Study of Bugs Introduced by Large Language Models while Translating Code*, ICSE 2024, [doi:10.5281/zenodo.10447705](https://doi.org/10.5281/zenodo.10447705), CC BY 4.0. Changes listed in `data/NOTICE`.
