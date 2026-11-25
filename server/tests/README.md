@@ -43,7 +43,7 @@ Some tests were checked by breaking the code on purpose: for example, letting Ge
 ![Coverage](coverage.svg)
 
 <!-- coverage:start -->
-**Total: 78%** of 1169 statements (261 missed), from the pytest suite on commit `9f91868`, 2026-11-25. Updated by the Coverage workflow.
+**Total: 78%** of 1169 statements (261 missed), from the pytest suite on commit `056b938`, 2026-11-25. Updated by the Coverage workflow.
 
 <details>
 <summary>Coverage by file</summary>
