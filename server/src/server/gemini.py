@@ -12,11 +12,11 @@ RETRY = types.HttpRetryOptions(
     attempts=11,
     initial_delay=1,
     max_delay=10,
-    exp_base=1,
+    exp_base=2,
     jitter=0,
     http_status_codes=[503],
 )
-"""Resend up to 10 times (+1st try), 30 s apart, while the model is unavailable (503).
+"""Resend up to 10 times (+1st try), 1s apart doubling to at most 10s, while the model is unavailable (503).
 
 Rate limits (429) are not retried, so a run stops and can be resumed later.
 """

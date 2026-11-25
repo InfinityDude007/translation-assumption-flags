@@ -74,7 +74,7 @@ A prompt-v1 run has to be made from a checkout of [`455b3eb`](https://github.com
 |---|---|
 | `detection/` | `MismatchVisitor` (the `ast` rules), `detect()`, and `rules/`: the rule booklet, where each rule has a category, a reason and its sources |
 | `explanation/` | The prompt (`PROMPT_VERSION`, system prompt, `build_prompt`), the answer schema, and `explain()`, which calls Gemini and checks the answer |
-| `gemini.py` | Cached Gemini client: structured output against a pydantic schema, 503 retries (1–10 s, up to 10 retries), errors keep the HTTP status |
+| `gemini.py` | Cached Gemini client: structured output against a pydantic schema, 503 retries (1-10s apart, up to 10 retries), errors keep the HTTP status |
 | `evaluation/` | Run archive (`run_samples`, resume, model and prompt guard) and scoring |
 | `baseline/` | Token scoring with a local model, token-to-line mapping, the line-budget threshold and scoring |
 | `dataset/` | Download, sample selection and the `meta.json` model (`SampleMeta`, with `bug_lines` and `latent`) |
