@@ -5,7 +5,7 @@
 The backend for this project: the detector, the Gemini explainer, the run archive and scoring, the token-probability baseline, and the review API.
 > See the [root README](../README.md) for the project overview.
 
-**README prose word count: 672** (excluding code, commands, file paths and the table of contents)
+**README prose word count: 674** (excluding code, commands, file paths and the table of contents)
 
 ## Table of Contents
 1. [Running Locally](#running-locally)

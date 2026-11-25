@@ -2,7 +2,7 @@
 
 The backend tests. None of them call Gemini or download a model. Gemini is replaced by fake HTTP responses or a fake client, and the baseline by a fake scorer.
 
-**README prose word count: 261** (excluding code, commands, file paths, the table of contents and the generated coverage report)
+**README prose word count: 270** (excluding code, commands, file paths, the table of contents and the generated coverage report)
 
 ## Table of Contents
 1. [Running Tests](#running-tests)

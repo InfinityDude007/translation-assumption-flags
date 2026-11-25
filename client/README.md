@@ -7,7 +7,7 @@ The review UI, meant to be used by a reviewer when translating code.
 
 **This frontend was mostly AI-generated.** Claude Code wrote it (design plan, code, styles and tests) using Anthropic's frontend-design skill. I set the scope, asked for revisions, checked the result, made changes where required, particularly broken/misaligned elements, and decided what to commit. See [AI assistance](../README.md#ai-assistance).
 
-**README prose word count: 501** (excluding code, commands, file paths and the table of contents)
+**README prose word count: 502** (excluding code, commands, file paths and the table of contents)
 
 ## Table of Contents
 1. [Running Locally](#running-locally)

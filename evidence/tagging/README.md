@@ -3,7 +3,7 @@
 Evidence for the line-level bug tags in `data/samples/*/meta.json`.
 >See [`data/README.md`](../../data/README.md) for how the tags are used.
 
-**README prose word count: 273** (excluding code, commands, file paths and the table of contents)
+**README prose word count: 265** (excluding code, commands, file paths and the table of contents)
 
 ## Table of Contents
 1. [Files](#files)
