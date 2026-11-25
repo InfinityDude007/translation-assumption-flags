@@ -436,6 +436,20 @@ describe("App", () => {
         await user.click(within(panel).getByRole("button", { name: /line 5/ }));
         expect(low.closest(".line")).toHaveAttribute("data-selected", "true");
 
+        expect(screen.queryByText(/Behaves differently \(/)).toBeNull();
+        expect(
+            screen.getByText(/line with a shaded token \(1\)/),
+        ).toBeInTheDocument();
+        await user.click(
+            screen.getByRole("button", { name: "What do these mean?" }),
+        );
+        const guide = screen.getByRole("dialog", {
+            name: "How to read this page",
+        });
+        expect(within(guide).getByText("Shading")).toBeInTheDocument();
+        expect(within(guide).queryByText("Detector")).toBeNull();
+        await user.click(within(guide).getByRole("button", { name: "Close" }));
+
         await user.click(screen.getByRole("button", { name: "Flags" }));
         expect(await screen.findByText("0 of 2 decided")).toBeInTheDocument();
     });

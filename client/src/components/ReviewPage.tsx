@@ -377,6 +377,7 @@ export function ReviewPage(props: Props) {
                         flags={view === "flags" ? (review?.flags ?? []) : []}
                         selectedId={view === "flags" ? selectedId : null}
                         onSelect={select}
+                        probabilityView={view === "probabilities"}
                         probabilities={
                             shownProbabilities && "review" in shownProbabilities
                                 ? shownProbabilities.review

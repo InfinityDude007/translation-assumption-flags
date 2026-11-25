@@ -33,7 +33,9 @@ interface Props {
     flags: ReviewFlag[];
     selectedId: string | null;
     onSelect: (id: string) => void;
-    /** Token probabilities to show on the Java instead of flags. */
+    /** Show the token-probability view instead of flags, with its own key. */
+    probabilityView?: boolean;
+    /** Token probabilities to shade the Java with; null while loading or failed. */
     probabilities?: ProbabilityReview | null;
     selectedLine?: number | null;
     onSelectLine?: (line: number) => void;
@@ -47,7 +49,8 @@ interface Props {
  */
 export function CodeBench(props: Props) {
     const { code, flags, selectedId, onSelect } = props;
-    const { probabilities = null, selectedLine = null, onSelectLine } = props;
+    const { probabilityView = false, probabilities = null } = props;
+    const { selectedLine = null, onSelectLine } = props;
     const scroller = useRef<HTMLDivElement>(null);
     const source = useMemo(
         () => highlightLines(code.source, "python"),
@@ -109,7 +112,7 @@ export function CodeBench(props: Props) {
 
     return (
         <div className="bench-wrap">
-            {probabilities ? (
+            {probabilityView ? (
                 <ProbabilityKey review={probabilities} />
             ) : (
                 <Key flags={flags} />
@@ -183,32 +186,41 @@ function Key({ flags }: { flags: ReviewFlag[] }) {
                     {flags.filter((flag) => flag.verdict === verdict).length})
                 </span>
             ))}
-            <KeyGuide />
+            <KeyGuide view="flags" />
         </div>
     );
 }
 
-/** What the probability shading means, with how many lines are marked. */
-function ProbabilityKey({ review }: { review: ProbabilityReview }) {
-    const marked = review.lines.filter(
+/**
+ * What the probability shading means, with how many lines are marked.
+ *
+ * Shown for the whole probability view, so the verdict key never appears over
+ * code that has no flags; the counts wait until the probabilities arrive.
+ */
+function ProbabilityKey({ review }: { review: ProbabilityReview | null }) {
+    const marked = review?.lines.filter(
         (line) => line.lowest < review.threshold,
     ).length;
+    const below = review ? percent(review.threshold) : "the threshold";
     return (
         <div className="key">
-            <span className="key-title">Token probabilities:</span>
+            <span className="key-title">
+                Local model's probability for each Java token:
+            </span>
             <span className="key-item">
                 <span className="token" data-low="true">
                     shaded
                 </span>
-                below {percent(review.threshold)}, by the local model
+                token below {below}
             </span>
             <span className="key-item">
                 <span className="mark probability-mark" aria-hidden="true">
                     •
                 </span>
-                line marked ({marked})
+                line with a shaded token
+                {marked === undefined ? "" : ` (${marked})`}
             </span>
-            <KeyGuide />
+            <KeyGuide view="probabilities" />
         </div>
     );
 }
