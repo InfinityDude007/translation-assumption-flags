@@ -3,7 +3,7 @@
 The dataset of sample programs from Pan et. al.'s 2024 study, their hand-checked ground truth, and every model output used in the evaluation.
 > See the [root README](../README.md) for the project overview.
 
-**README prose word count: 581** (excluding code, commands, file paths and the table of contents)
+**README prose word count: 585** (excluding code, commands, file paths and the table of contents)
 
 ## Table of Contents
 1. [Contents](#contents)
