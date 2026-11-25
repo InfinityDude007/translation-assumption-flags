@@ -1,0 +1,217 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Live analysis sequence" id="sequence">
+    <mxGraphModel dx="1911" dy="1068" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1340" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=2;" value="&lt;b&gt;Reviewer&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;dashPattern=8 6;strokeWidth=3;strokeColor=#9673a6;opacity=70;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90" y="100" as="sourcePoint" />
+            <mxPoint x="90" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;" value="&lt;b&gt;Frontend&lt;br&gt;(React)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="220" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;dashPattern=8 6;strokeWidth=3;strokeColor=#6c8ebf;opacity=70;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="100" as="sourcePoint" />
+            <mxPoint x="290" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;" value="&lt;b&gt;Backend&lt;br&gt;(FastAPI)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="430" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;dashPattern=8 6;strokeWidth=3;strokeColor=#82b366;opacity=70;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="100" as="sourcePoint" />
+            <mxPoint x="500" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#d6b656;strokeWidth=2;" value="&lt;b&gt;Detector&lt;br&gt;(ast rules)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="640" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;dashPattern=8 6;strokeWidth=3;strokeColor=#d6b656;opacity=70;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="100" as="sourcePoint" />
+            <mxPoint x="710" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=2;" value="&lt;b&gt;Decision log&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="850" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;dashPattern=8 6;strokeWidth=3;strokeColor=#b85450;opacity=70;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="100" as="sourcePoint" />
+            <mxPoint x="920" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#ffffff;strokeColor=#9673a6;strokeWidth=3;" value="&lt;b&gt;◆ Gemini&lt;br&gt;(gemini-4-hydrogen)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="1080" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;dashPattern=8 6;strokeWidth=3;strokeColor=#9673a6;opacity=70;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="100" as="sourcePoint" />
+            <mxPoint x="1150" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c13" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;strokeColor=#333333;strokeWidth=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="20" as="sourcePoint" />
+            <mxPoint x="190" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c14" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;strokeColor=#333333;strokeWidth=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="20" as="sourcePoint" />
+            <mxPoint x="395" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c15" edge="1" parent="1" style="endArrow=none;html=1;dashed=1;strokeColor=#333333;strokeWidth=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1035" y="20" as="sourcePoint" />
+            <mxPoint x="1035" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c16" parent="1" style="text;html=1;fontSize=11;fontColor=#555555;align=center;fontStyle=2;" value="Browser" vertex="1">
+          <mxGeometry height="20" width="195" x="195" y="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="text;html=1;fontSize=11;fontColor=#555555;align=center;fontStyle=2;" value="Local server (server/)" vertex="1">
+          <mxGeometry height="20" width="630" x="400" y="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="text;html=1;fontSize=11;fontColor=#555555;align=center;fontStyle=2;" value="External API (your key)" vertex="1">
+          <mxGeometry height="20" width="220" x="1040" y="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="1. clicks “Analyse with Gemini”">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90" y="140" as="sourcePoint" />
+            <mxPoint x="290" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c20" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="2. POST /analyse (Python + Java*)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="185" as="sourcePoint" />
+            <mxPoint x="500" y="185" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c21" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="3. “Waiting for Gemini, N s so far…”">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="230" as="sourcePoint" />
+            <mxPoint x="90" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c25" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="4. detect(Python)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="305" as="sourcePoint" />
+            <mxPoint x="710" y="305" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c26" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="5. sites: line, rule, reason">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="350" as="sourcePoint" />
+            <mxPoint x="500" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c27" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="6. prompt v2: sites + Python + Java, JSON schema">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="395" as="sourcePoint" />
+            <mxPoint x="1150" y="395" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c28" parent="1" style="text;html=1;whiteSpace=wrap;fontSize=12;align=left;verticalAlign=top;fontSize=11;fontColor=#555555;" value="&lt;i&gt;503: retry after 1, 2, 4, 8, 10 s…&lt;br&gt;(up to 10); 429: not retried&lt;/i&gt;" vertex="1">
+          <mxGeometry height="40" width="164" x="1076" y="412" as="geometry" />
+        </mxCell>
+        <mxCell id="c29" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="7. per site: verdict, Java lines, assumption, fix">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="465" as="sourcePoint" />
+            <mxPoint x="500" y="465" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c30" parent="1" style="text;html=1;whiteSpace=wrap;fontSize=12;align=left;verticalAlign=top;" value="&lt;b&gt;8. server checks&lt;/b&gt;&lt;br&gt;&lt;i&gt;drop answers citing no real Java line;&lt;br&gt;keep a fix only for “behaves differently”;&lt;br&gt;record model + prompt version&lt;/i&gt;" vertex="1">
+          <mxGeometry height="75" width="214" x="510" y="482" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="9. flags + dropped sites (no reasoning)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="585" as="sourcePoint" />
+            <mxPoint x="290" y="585" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c32" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="10. marks, curves, evidence by source">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="630" as="sourcePoint" />
+            <mxPoint x="90" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c35" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="E1. 503 / 429 + reason">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="715" as="sourcePoint" />
+            <mxPoint x="290" y="715" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c36" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="E2. message says what to do">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="760" as="sourcePoint" />
+            <mxPoint x="90" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c37" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="11. Confirm / Intended / Dismiss + note">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90" y="830" as="sourcePoint" />
+            <mxPoint x="290" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c38" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="12. POST /decisions">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="875" as="sourcePoint" />
+            <mxPoint x="500" y="875" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c39" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="13. append: flag, model, prompt">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="920" as="sourcePoint" />
+            <mxPoint x="920" y="920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c40" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="14. “1 of N decided”, next flag opens">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="965" as="sourcePoint" />
+            <mxPoint x="90" y="965" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c41" parent="1" style="text;html=1;fontSize=12;align=left;verticalAlign=middle;" value="All steps implemented. * The Java is Pan et al.&#39;s saved GPT-4 output, replayed from the dataset (simulated translation)." vertex="1">
+          <mxGeometry height="22" width="657" x="30" y="1051" as="geometry" />
+        </mxCell>
+        <mxCell id="Xy9_TsGNP7p2_S-Puj8h-6" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="20" width="293" x="927" y="1052" as="geometry" />
+        </mxCell>
+        <mxCell id="Xy9_TsGNP7p2_S-Puj8h-4" connectable="0" parent="Xy9_TsGNP7p2_S-Puj8h-6" style="group" value="" vertex="1">
+          <mxGeometry height="20" width="167" x="126" as="geometry" />
+        </mxCell>
+        <mxCell id="c44" edge="1" parent="Xy9_TsGNP7p2_S-Puj8h-4" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;dashPattern=6 4;endArrow=open;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="10" as="sourcePoint" />
+            <mxPoint x="60" y="10" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c45" parent="Xy9_TsGNP7p2_S-Puj8h-4" style="text;html=1;fontSize=12;align=left;verticalAlign=middle;" value="Reply / Feedback" vertex="1">
+          <mxGeometry height="20" width="102" x="65" as="geometry" />
+        </mxCell>
+        <mxCell id="Xy9_TsGNP7p2_S-Puj8h-5" connectable="0" parent="Xy9_TsGNP7p2_S-Puj8h-6" style="group" value="" vertex="1">
+          <mxGeometry height="20" width="98" as="geometry" />
+        </mxCell>
+        <mxCell id="c42" edge="1" parent="Xy9_TsGNP7p2_S-Puj8h-5" style="endArrow=block;endFill=1;html=1;strokeWidth=2;verticalAlign=bottom;fontSize=12;labelBackgroundColor=#ffffff;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="11" as="sourcePoint" />
+            <mxPoint x="60" y="11" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c43" parent="Xy9_TsGNP7p2_S-Puj8h-5" style="text;html=1;fontSize=12;align=left;verticalAlign=middle;" value="Call" vertex="1">
+          <mxGeometry height="20" width="28" x="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
