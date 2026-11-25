@@ -1,0 +1,49 @@
+name: Coverage
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - ".github/workflows/coverage.yml"
+      - ".github/scripts/coverage_readme.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: coverage
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies without the PyTorch baseline group
+        run: uv sync --frozen --no-group baseline
+
+      - name: Run the tests with coverage
+        run: uv run --no-sync pytest -q --cov --cov-report=term --cov-report=json:coverage.json
+
+      - name: Write the report and badge
+        run: python3 ../.github/scripts/coverage_readme.py coverage.json tests/README.md tests/coverage.svg
+
+      - name: Commit the report if it changed
+        run: |
+          git add tests/README.md tests/coverage.svg
+          if git diff --cached --quiet; then
+            echo "Coverage report unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: update coverage report [skip ci]"
+          git push
