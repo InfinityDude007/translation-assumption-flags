@@ -5,7 +5,7 @@ A review aid for LLM code translation.
 
 When an LLM translates Python to Java, some lines force it to assume something the Python never states, such as how large an integer gets or how negative division rounds. This system finds those lines, has Gemini say what the Java assumed, and leaves the verdict to the reviewer.
 
-**README prose word count: 1565** (excluding code, commands, file paths and the table of contents)
+**README prose word count: 1656** (excluding code, commands, file paths and the table of contents)
 
 ## Table of Contents
 1. [Project Status](#project-status)
@@ -33,7 +33,7 @@ When an LLM translates Python to Java, some lines force it to assume something t
 | **Live analysis** of any sample with your own Gemini key | Implemented |
 | **Scores page** against hand-tagged bug lines | Implemented |
 | **Token-probability baseline** (the usual "highlight unlikely tokens") | Implemented with a **stand-in model**: real probabilities for the exact Java, from local Qwen2.5-Coder 1.5B/3B, not GPT-4 |
-| **Translation**: the Java is Pan et al.'s saved GPT-4 output, which the tags depend on | Replayed from the dataset |
+| **Translation**: the Java is Pan et al.'s saved GPT-4 output, which the tags depend on | **Simulated**: replayed from the dataset, no live translation |
 | **Live translation** of new programs | **Planned** |
 | **Prompt v3**: give the explainer the problem's input constraints | **Planned** |
 
@@ -160,17 +160,22 @@ Without running anything, `data/runs/<run>/` holds every answer with its model a
 - No API gives GPT-4's probabilities for its saved output, so a local model scores the exact Java, labelled as a stand-in.
 - Each threshold is set without the tags to mark 70 lines, about as many as the flags. Both models catch 7 of 21, so the gap is the method, not model size. ABC123_C's overflowing lines score 94–100%: the model shares the assumption.
 
+**Checks and polish** ([`d8c6257`](https://github.com/InfinityDude007/translation-assumption-flags/commit/d8c6257), [`81583fc`](https://github.com/InfinityDude007/translation-assumption-flags/commit/81583fc))
+- A GitHub Actions workflow runs the backend tests on each push to `main` that changes the server, and commits the coverage report and badge to [`server/tests/README.md`](server/tests/README.md). It skips PyTorch, since all tests pass and coverage is identical without it.
+- I found the token-probability view still showed the verdict key while loading, so it now has its own key and guide.
+
 ## AI assistance
 
 I used **Claude Code** (Anthropic) throughout.
 
-- **Backend:** Claude gave code in chat. I applied and edited it, never with direct writes to the source. For example, I dropped a redundant credential validator, renamed settings, and split the detector into packages. Claude wrote the tests and docstrings first, I edited and adopted them as needed.
+- **Backend:** Claude gave code in chat. I applied and edited it, never with direct writes to the source. For example, I dropped a redundant credential validator, renamed settings, and split the detector into packages. Claude wrote the docstrings first. I edited and adopted them.
 - **Reviews:** Claude's reviews of my commits found real faults I then fixed, such as renamed `visit_*` methods that silently disabled the detector, tests left on old setting names after my rename, and `uv run serve` pointing at a renamed file.
 - **Tagging:** Claude Code ran each translation, proposed the bug lines and fixes, and verified them against the tests. I directed the rechecks (Pan's labels, the no-bug programs, checks beyond test output), decided the `latent` field and scoring rules, and adopted all 25 proposals unchanged. `evidence/tagging/bug_lines_review.md` is Claude's report for my review.
 - **Frontend, mostly AI-generated:** Claude Code generated `client/` (design, code, styles and tests) with Anthropic's frontend-design skill. I set the scope, asked for the revisions above, fixed broken or misaligned elements myself, and checked it with `npm run check`, a build and browser checks on real runs, which caught a wrong default run.
-- **Tests, mostly AI-generated:** Claude Code wrote unit and coverage tests (in `server/tests`). I reviewed the test cases to ensure they made sense and covered key functionality.
+- **Tests, mostly AI-generated:** Claude Code wrote the backend unit tests (`server/tests/`) and the coverage workflow. I reviewed each test case to check it made sense and covered the key behaviour, and edited and adopted them as needed.
 - **Analysis:** Claude computed run comparisons and the sign test from the archive, I chose what to run next and when to stop.
-- **Direct writes**, with my permission: `evidence/tagging/` and `client/`. Claude also looked up commit hashes for this record.
+- **Direct writes**, with my permission: `evidence/tagging/`, `client/` and some README edits.
+- **Documentation:** Claude drafted the READMEs and looked up commit hashes for this record. I restructured them and checked each claim against the code and data.
 
 ## More Details
 1. [`server/README.md`](server/README.md) (per-stage commands, API)
